@@ -271,3 +271,44 @@ def pad(array, pad_width, mode='constant', **kwargs):
         array = creation.asarray(array)
     result = np.pad(array.get(), pad_width, mode=mode, **kwargs)
     return creation.array(result)
+
+
+def block(arrays):
+    """Assemble an ndarray from nested lists of blocks."""
+    def _to_numpy(obj):
+        if isinstance(obj, ndarray):
+            return obj.get()
+        if isinstance(obj, list):
+            return [_to_numpy(item) for item in obj]
+        return np.asarray(obj)
+
+    np_arrays = _to_numpy(arrays)
+    result = np.block(np_arrays)
+    return creation.array(result)
+
+
+def insert(arr, obj, values, axis=None):
+    """Insert values along the given axis before the given indices."""
+    if not isinstance(arr, ndarray):
+        arr = creation.asarray(arr)
+    val_np = values.get() if isinstance(values, ndarray) else np.asarray(values)
+    result = np.insert(arr.get(), obj, val_np, axis=axis)
+    return creation.array(result)
+
+
+def broadcast_shapes(*args):
+    """Broadcast shapes and return the resulting shape."""
+    return np.broadcast_shapes(*args)
+
+
+def asfortranarray(a, dtype=None):
+    """Return an array laid out in Fortran order in memory.
+
+    Since Metal is row-major only, this returns a contiguous (C-order) copy
+    with the correct values and dtype, matching the NumPy interface.
+    """
+    if not isinstance(a, ndarray):
+        a = creation.asarray(a)
+    if dtype is not None:
+        return creation.array(a.get(), dtype=dtype)
+    return creation.array(a.get())

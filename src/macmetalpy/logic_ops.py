@@ -103,3 +103,27 @@ def array_equiv(a1, a2):
     a1_np = a1.get() if isinstance(a1, ndarray) else a1
     a2_np = a2.get() if isinstance(a2, ndarray) else a2
     return bool(np.array_equiv(a1_np, a2_np))
+
+
+# -- Object-level type checks (CPU — check dtype.kind, not element values) --
+
+
+def iscomplexobj(x):
+    """Return True if x has a complex dtype (checks dtype.kind == 'c')."""
+    if isinstance(x, ndarray):
+        return x.dtype.kind == 'c'
+    return bool(np.iscomplexobj(x))
+
+
+def isrealobj(x):
+    """Return True if x does NOT have a complex dtype."""
+    return not iscomplexobj(x)
+
+
+def isfortran(a):
+    """Return True if the array is Fortran-contiguous.
+
+    macmetalpy arrays are always row-major (C-contiguous), so this always
+    returns False.
+    """
+    return False

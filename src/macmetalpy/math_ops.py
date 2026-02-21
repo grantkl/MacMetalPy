@@ -302,6 +302,9 @@ def round_(x, decimals=0):
     return around(x, decimals=decimals)
 
 
+round = around
+
+
 def mod(x1, x2):
     """Element-wise remainder of division (NumPy-compatible: sign of divisor)."""
     if not isinstance(x1, ndarray):

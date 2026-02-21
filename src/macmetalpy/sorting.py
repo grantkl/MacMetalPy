@@ -24,12 +24,38 @@ def argsort(a, axis=-1):
     return creation.array(result)
 
 
-def unique(a):
-    """Find the unique elements of an array."""
-    if not isinstance(a, ndarray):
-        a = creation.asarray(a)
-    result = np.unique(a.get())
-    return creation.array(result)
+def unique(ar, return_index=False, return_inverse=False, return_counts=False,
+           axis=None, equal_nan=True):
+    """Find the unique elements of an array.
+
+    Parameters
+    ----------
+    ar : array_like
+        Input array.
+    return_index : bool, optional
+        If True, return indices of first occurrences.
+    return_inverse : bool, optional
+        If True, return indices to reconstruct input from unique.
+    return_counts : bool, optional
+        If True, return counts of each unique value.
+    axis : int or None, optional
+        Axis along which to find unique values.
+    equal_nan : bool, optional
+        If True (default), treat NaN values as equal.
+    """
+    if not isinstance(ar, ndarray):
+        ar = creation.asarray(ar)
+    np_result = np.unique(
+        ar.get(),
+        return_index=return_index,
+        return_inverse=return_inverse,
+        return_counts=return_counts,
+        axis=axis,
+        equal_nan=equal_nan,
+    )
+    if isinstance(np_result, tuple):
+        return tuple(creation.array(r) for r in np_result)
+    return creation.array(np_result)
 
 
 def searchsorted(a, v, side='left'):

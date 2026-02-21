@@ -22,6 +22,28 @@ from ._metal_backend import MetalBackend
 __all__ = ["ndarray"]
 
 
+class _FlatIterator:
+    """Simple flat iterator for ndarray.flat property."""
+
+    def __init__(self, arr):
+        self._data = arr.get().ravel()
+        self._index = 0
+
+    def __iter__(self):
+        self._index = 0
+        return self
+
+    def __next__(self):
+        if self._index >= len(self._data):
+            raise StopIteration
+        val = self._data[self._index]
+        self._index += 1
+        return val
+
+    def __len__(self):
+        return len(self._data)
+
+
 def _c_contiguous_strides(shape: Tuple[int, ...]) -> Tuple[int, ...]:
     """Return C-contiguous *element* strides for *shape*."""
     if not shape:
@@ -102,6 +124,33 @@ class ndarray:
     @property
     def T(self) -> ndarray:
         return self.transpose()
+
+    @property
+    def real(self) -> ndarray:
+        """Real part of the array."""
+        if self._dtype == np.complex64:
+            from . import creation
+            return creation.array(self.get().real)
+        return self
+
+    @property
+    def imag(self) -> ndarray:
+        """Imaginary part of the array."""
+        if self._dtype == np.complex64:
+            from . import creation
+            return creation.array(self.get().imag)
+        from . import creation
+        return creation.array(np.zeros(self._shape, dtype=self._dtype))
+
+    @property
+    def flat(self):
+        """Return a flat iterator over the array."""
+        return _FlatIterator(self)
+
+    @property
+    def base(self):
+        """Return the base object if memory is from some other object."""
+        return self._base
 
     # ------------------------------------------------------------------ contiguity
     def _is_c_contiguous(self) -> bool:
@@ -882,6 +931,130 @@ class ndarray:
         buf = backend.array_to_buffer(np.ascontiguousarray(np_data))
         return ndarray._from_buffer(buf, self._shape, self._dtype)
 
+    # ------------------------------------------------------------------ gap methods
+    def item(self, *args):
+        """Extract a Python scalar from the array."""
+        return self.get().item(*args)
+
+    def tolist(self):
+        """Return the array as a nested list of Python scalars."""
+        return self.get().tolist()
+
+    def fill(self, value):
+        """Fill the array with a scalar value (in-place)."""
+        self.set(np.full(self._shape, value, dtype=self._dtype))
+
+    def round(self, decimals=0):
+        """Round to the given number of decimals."""
+        from . import math_ops
+        return math_ops.around(self, decimals=decimals)
+
+    def clip(self, min=None, max=None):
+        """Clip values to [min, max]."""
+        from . import math_ops
+        return math_ops.clip(self, min, max)
+
+    def conj(self):
+        """Return the complex conjugate."""
+        if self._dtype == np.complex64:
+            from . import creation
+            return creation.array(np.conj(self.get()))
+        return self.copy()
+
+    def diagonal(self, offset=0):
+        """Return specified diagonals."""
+        from . import math_ops
+        return math_ops.diagonal(self, offset=offset)
+
+    def trace(self, offset=0):
+        """Return the sum along diagonals."""
+        from . import math_ops
+        return math_ops.trace(self, offset=offset)
+
+    def repeat(self, repeats, axis=None):
+        """Repeat elements of the array."""
+        from . import manipulation
+        return manipulation.repeat(self, repeats, axis=axis)
+
+    def take(self, indices, axis=None):
+        """Take elements from the array."""
+        from . import indexing
+        return indexing.take(self, indices, axis=axis)
+
+    def put(self, indices, values):
+        """Set a.flat[n] = values[n] for all n in indices (in-place)."""
+        from . import indexing
+        indexing.put(self, indices, values)
+
+    def choose(self, choices):
+        """Construct an array from an index array and choices."""
+        from . import indexing
+        return indexing.choose(self, choices)
+
+    def compress(self, condition, axis=None):
+        """Return selected slices along given axis."""
+        from . import indexing
+        return indexing.compress(condition, self, axis=axis)
+
+    def searchsorted(self, v, side='left'):
+        """Find indices where elements should be inserted."""
+        from . import sorting as sorting_mod
+        return sorting_mod.searchsorted(self, v, side=side)
+
+    def nonzero(self):
+        """Return the indices of non-zero elements."""
+        from . import indexing
+        return indexing.nonzero(self)
+
+    def sort(self, axis=-1):
+        """Sort the array in-place."""
+        from . import sorting as sorting_mod
+        result = sorting_mod.sort(self, axis=axis)
+        self.set(result.get())
+
+    def argsort(self, axis=-1):
+        """Return the indices that would sort the array."""
+        from . import sorting as sorting_mod
+        return sorting_mod.argsort(self, axis=axis)
+
+    def argmax(self, axis=None):
+        """Return indices of the maximum values."""
+        from . import reductions as reductions_mod
+        return reductions_mod.argmax(self, axis=axis)
+
+    def argmin(self, axis=None):
+        """Return indices of the minimum values."""
+        from . import reductions as reductions_mod
+        return reductions_mod.argmin(self, axis=axis)
+
+    def ptp(self, axis=None):
+        """Peak-to-peak (max - min) along an axis."""
+        from . import reductions as reductions_mod
+        return reductions_mod.ptp(self, axis=axis)
+
+    def partition(self, kth, axis=-1):
+        """Partially sort the array in-place."""
+        from . import sorting as sorting_mod
+        result = sorting_mod.partition(self, kth, axis=axis)
+        self.set(result.get())
+
+    def argpartition(self, kth, axis=-1):
+        """Return indices that would partition the array."""
+        from . import sorting as sorting_mod
+        return sorting_mod.argpartition(self, kth, axis=axis)
+
+    def tobytes(self):
+        """Return the array data as bytes."""
+        return self.get().tobytes()
+
+    def view(self, dtype):
+        """View the array with a different dtype (reinterpret buffer)."""
+        from . import creation
+        dtype = np.dtype(dtype)
+        np_data = self.get()
+        viewed = np_data.view(dtype)
+        return creation.array(viewed)
+
     # ------------------------------------------------------------------ repr
     def __repr__(self) -> str:
         np_data = self.get()
@@ -905,3 +1078,129 @@ class ndarray:
         if self.size != 1:
             raise TypeError("only size-1 arrays can be converted to Python scalars")
         return int(self.get().ravel()[0])
+
+    def __bool__(self) -> bool:
+        if self.size != 1:
+            raise ValueError(
+                "The truth value of an array with more than one element is ambiguous."
+            )
+        return bool(self.get().ravel()[0])
+
+    def __pos__(self):
+        return self.copy()
+
+    def __complex__(self) -> complex:
+        if self.size != 1:
+            raise TypeError("only size-1 arrays can be converted to Python scalars")
+        return complex(self.get().ravel()[0])
+
+    def __index__(self) -> int:
+        if self.size != 1:
+            raise TypeError("only size-1 arrays can be converted to Python scalars")
+        if not np.issubdtype(self._dtype, np.integer):
+            raise TypeError("only integer arrays can be used as indices")
+        return int(self.get().ravel()[0])
+
+    def __contains__(self, item) -> bool:
+        return bool(item in self.get())
+
+    # Floor division //
+    def __floordiv__(self, other):
+        from . import ufunc_ops
+        from . import creation
+        if not isinstance(other, ndarray):
+            other = creation.array(np.asarray(other), dtype=self._dtype)
+        return ufunc_ops.floor_divide(self, other)
+
+    def __rfloordiv__(self, other):
+        from . import ufunc_ops
+        from . import creation
+        if not isinstance(other, ndarray):
+            other = creation.array(np.asarray(other), dtype=self._dtype)
+        return ufunc_ops.floor_divide(other, self)
+
+    def __ifloordiv__(self, other):
+        from . import ufunc_ops
+        from . import creation
+        if not isinstance(other, ndarray):
+            other = creation.array(np.asarray(other), dtype=self._dtype)
+        result = ufunc_ops.floor_divide(self, other)
+        self.set(result.astype(self._dtype).get())
+        return self
+
+    # Modulo %
+    def __mod__(self, other):
+        from . import math_ops
+        from . import creation
+        if not isinstance(other, ndarray):
+            other = creation.array(np.asarray(other), dtype=self._dtype)
+        return math_ops.mod(self, other)
+
+    def __rmod__(self, other):
+        from . import math_ops
+        from . import creation
+        if not isinstance(other, ndarray):
+            other = creation.array(np.asarray(other), dtype=self._dtype)
+        return math_ops.mod(other, self)
+
+    def __imod__(self, other):
+        from . import math_ops
+        from . import creation
+        if not isinstance(other, ndarray):
+            other = creation.array(np.asarray(other), dtype=self._dtype)
+        result = math_ops.mod(self, other)
+        self.set(result.astype(self._dtype).get())
+        return self
+
+    # Left shift <<
+    def __lshift__(self, other):
+        from . import bitwise_ops
+        return bitwise_ops.left_shift(self, other)
+
+    def __rlshift__(self, other):
+        from . import bitwise_ops
+        return bitwise_ops.left_shift(other, self)
+
+    # Right shift >>
+    def __rshift__(self, other):
+        from . import bitwise_ops
+        return bitwise_ops.right_shift(self, other)
+
+    def __rrshift__(self, other):
+        from . import bitwise_ops
+        return bitwise_ops.right_shift(other, self)
+
+    # In-place &=
+    def __iand__(self, other):
+        result = self._boolean_op(other, "and_op")
+        self.set(result.get())
+        self._dtype = np.dtype(np.bool_)
+        return self
+
+    # XOR ^
+    def __xor__(self, other):
+        return self._boolean_op(other, "xor_op")
+
+    # In-place ^=
+    def __ixor__(self, other):
+        result = self._boolean_op(other, "xor_op")
+        self.set(result.get())
+        self._dtype = np.dtype(np.bool_)
+        return self
+
+    # Reverse matmul
+    def __rmatmul__(self, other):
+        if not isinstance(other, ndarray):
+            from . import creation
+            other = creation.array(other, dtype=self._dtype)
+        return other.__matmul__(self)
+
+    # In-place matmul
+    def __imatmul__(self, other):
+        result = self.__matmul__(other)
+        self.set(result.get())
+        return self
+
+    # divmod
+    def __divmod__(self, other):
+        return (self // other, self % other)

@@ -5,44 +5,69 @@ from __future__ import annotations
 import numpy as np
 
 
-def sum(a, axis=None, keepdims=False):
+def _copy_to_out(result, out):
+    """Copy result data into out array and return out."""
+    from . import creation
+    # Transfer result to numpy, write into out's buffer
+    np_data = result.get()
+    out_np = np_data.astype(out.dtype)
+    tmp = creation.array(out_np)
+    out._buffer = tmp._buffer
+    return out
+
+
+def sum(a, axis=None, dtype=None, out=None, keepdims=False):
     """Sum of array elements."""
     from .ndarray import ndarray
     from . import creation
 
     if not isinstance(a, ndarray):
         a = creation.asarray(a)
-    return a.sum(axis=axis, keepdims=keepdims)
+    if dtype is not None:
+        a = creation.array(a.get().astype(dtype))
+    result = a.sum(axis=axis, keepdims=keepdims)
+    if out is not None:
+        return _copy_to_out(result, out)
+    return result
 
 
-def mean(a, axis=None, keepdims=False):
+def mean(a, axis=None, dtype=None, out=None, keepdims=False):
     """Arithmetic mean of array elements."""
     from .ndarray import ndarray
     from . import creation
 
     if not isinstance(a, ndarray):
         a = creation.asarray(a)
-    return a.mean(axis=axis, keepdims=keepdims)
+    result = a.mean(axis=axis, keepdims=keepdims)
+    if out is not None:
+        return _copy_to_out(result, out)
+    return result
 
 
-def max(a, axis=None, keepdims=False):
+def max(a, axis=None, out=None, keepdims=False):
     """Maximum of array elements."""
     from .ndarray import ndarray
     from . import creation
 
     if not isinstance(a, ndarray):
         a = creation.asarray(a)
-    return a.max(axis=axis, keepdims=keepdims)
+    result = a.max(axis=axis, keepdims=keepdims)
+    if out is not None:
+        return _copy_to_out(result, out)
+    return result
 
 
-def min(a, axis=None, keepdims=False):
+def min(a, axis=None, out=None, keepdims=False):
     """Minimum of array elements."""
     from .ndarray import ndarray
     from . import creation
 
     if not isinstance(a, ndarray):
         a = creation.asarray(a)
-    return a.min(axis=axis, keepdims=keepdims)
+    result = a.min(axis=axis, keepdims=keepdims)
+    if out is not None:
+        return _copy_to_out(result, out)
+    return result
 
 
 def any(a, axis=None, keepdims=False):
@@ -109,34 +134,65 @@ def argmin(a, axis=None):
     return a._reduce_axis("argmin_axis", axis, out_dtype=np.int32)
 
 
-def std(a, axis=None, keepdims=False):
-    """Standard deviation of array elements."""
+def std(a, axis=None, dtype=None, keepdims=False, ddof=0):
+    """Standard deviation of array elements.
+
+    Parameters
+    ----------
+    ddof : int, optional
+        Delta degrees of freedom. Default is 0 (population std).
+        Use ddof=1 for sample std.
+    """
     from .ndarray import ndarray
     from . import creation
 
     if not isinstance(a, ndarray):
         a = creation.asarray(a)
-    return a.std(axis=axis, keepdims=keepdims)
+    if ddof == 0:
+        return a.std(axis=axis, keepdims=keepdims)
+    # For ddof != 0, use CPU fallback for correctness
+    result = np.std(a.get(), axis=axis, keepdims=keepdims, ddof=ddof)
+    if not isinstance(result, np.ndarray):
+        result = np.array(result)
+    return creation.array(result)
 
 
-def var(a, axis=None, keepdims=False):
-    """Variance of array elements."""
+def var(a, axis=None, dtype=None, keepdims=False, ddof=0):
+    """Variance of array elements.
+
+    Parameters
+    ----------
+    ddof : int, optional
+        Delta degrees of freedom. Default is 0 (population variance).
+        Use ddof=1 for sample variance.
+    """
     from .ndarray import ndarray
     from . import creation
 
     if not isinstance(a, ndarray):
         a = creation.asarray(a)
-    return a.var(axis=axis, keepdims=keepdims)
+    if ddof == 0:
+        return a.var(axis=axis, keepdims=keepdims)
+    # For ddof != 0, use CPU fallback for correctness
+    result = np.var(a.get(), axis=axis, keepdims=keepdims, ddof=ddof)
+    if not isinstance(result, np.ndarray):
+        result = np.array(result)
+    return creation.array(result)
 
 
-def prod(a, axis=None, keepdims=False):
+def prod(a, axis=None, dtype=None, out=None, keepdims=False):
     """Product of array elements."""
     from .ndarray import ndarray
     from . import creation
 
     if not isinstance(a, ndarray):
         a = creation.asarray(a)
-    return a.prod(axis=axis, keepdims=keepdims)
+    if dtype is not None:
+        a = creation.array(a.get().astype(dtype))
+    result = a.prod(axis=axis, keepdims=keepdims)
+    if out is not None:
+        return _copy_to_out(result, out)
+    return result
 
 
 def median(a, axis=None):

@@ -163,3 +163,41 @@ def pinv(a, rcond=1e-15):
         a = creation.asarray(a)
     result = np.linalg.pinv(a.get(), rcond=rcond)
     return creation.array(result)
+
+
+# Re-export numpy's LinAlgError for API compatibility
+LinAlgError = np.linalg.LinAlgError
+
+
+def multi_dot(arrays, *, out=None):
+    """Compute the dot product of two or more arrays in a single call."""
+    np_arrays = []
+    for a in arrays:
+        if isinstance(a, ndarray):
+            np_arrays.append(a.get())
+        else:
+            np_arrays.append(np.asarray(a))
+    result = np.linalg.multi_dot(np_arrays)
+    gpu_result = creation.array(result)
+    if out is not None:
+        out.set(gpu_result.get())
+        return out
+    return gpu_result
+
+
+def tensorsolve(a, b, axes=None):
+    """Solve the tensor equation a x = b for x."""
+    if not isinstance(a, ndarray):
+        a = creation.asarray(a)
+    if not isinstance(b, ndarray):
+        b = creation.asarray(b)
+    result = np.linalg.tensorsolve(a.get(), b.get(), axes=axes)
+    return creation.array(result)
+
+
+def tensorinv(a, ind=2):
+    """Compute the tensor inverse of an array."""
+    if not isinstance(a, ndarray):
+        a = creation.asarray(a)
+    result = np.linalg.tensorinv(a.get(), ind=ind)
+    return creation.array(result)

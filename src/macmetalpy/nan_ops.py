@@ -202,3 +202,65 @@ def gradient(f, *varargs):
     if isinstance(result, list):
         return [creation.array(r) for r in result]
     return creation.array(result)
+
+
+# ================================================================== NaN percentile/quantile
+
+def nanpercentile(a, q, axis=None, out=None, overwrite_input=False,
+                  method='linear', keepdims=False):
+    """Compute the q-th percentile of data along the specified axis, ignoring NaN values.
+
+    Parameters
+    ----------
+    a : array_like
+        Input array.
+    q : float or array_like of float
+        Percentile(s) to compute, in range [0, 100].
+    axis : int or None, optional
+        Axis along which to compute.
+    keepdims : bool, optional
+        If True, keep reduced axes as size-1 dimensions.
+    """
+    a = _ensure_ndarray(a)
+    result = np.nanpercentile(a.get(), q, axis=axis, keepdims=keepdims)
+    return _wrap_result(result)
+
+
+def nanquantile(a, q, axis=None, out=None, overwrite_input=False,
+                method='linear', keepdims=False):
+    """Compute the q-th quantile of data along the specified axis, ignoring NaN values.
+
+    Parameters
+    ----------
+    a : array_like
+        Input array.
+    q : float or array_like of float
+        Quantile(s) to compute, in range [0, 1].
+    axis : int or None, optional
+        Axis along which to compute.
+    keepdims : bool, optional
+        If True, keep reduced axes as size-1 dimensions.
+    """
+    a = _ensure_ndarray(a)
+    result = np.nanquantile(a.get(), q, axis=axis, keepdims=keepdims)
+    return _wrap_result(result)
+
+
+def histogram_bin_edges(a, bins=10, range=None, weights=None):
+    """Compute only the bin edges for a histogram (no counts).
+
+    Parameters
+    ----------
+    a : array_like
+        Input data.
+    bins : int or str, optional
+        Number of bins or binning strategy.
+    range : (float, float) or None, optional
+        Lower and upper range of the bins.
+    weights : array_like or None, optional
+        Weights (unused for edge computation but accepted for API compat).
+    """
+    a = _ensure_ndarray(a)
+    w = weights.get() if isinstance(weights, ndarray) else weights
+    result = np.histogram_bin_edges(a.get(), bins=bins, range=range, weights=w)
+    return _wrap_result(result)

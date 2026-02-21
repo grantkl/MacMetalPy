@@ -165,9 +165,13 @@ def full_like(a, fill_value, dtype=None) -> ndarray:
     return full(shape, fill_value, dtype=dtype)
 
 
-def linspace(start, stop, num=50, dtype=None) -> ndarray:
+def linspace(start, stop, num=50, endpoint=True, retstep=False, dtype=None) -> ndarray:
     """Return evenly spaced numbers over a specified interval."""
-    np_data = np.linspace(start, stop, num)
+    np_result = np.linspace(start, stop, num, endpoint=endpoint, retstep=retstep)
+    if retstep:
+        np_data, step = np_result
+    else:
+        np_data = np_result
     if dtype is not None:
         dtype = resolve_dtype(dtype)
     else:
@@ -175,7 +179,10 @@ def linspace(start, stop, num=50, dtype=None) -> ndarray:
     np_data = np.ascontiguousarray(np_data, dtype=dtype)
     backend = MetalBackend()
     buf = backend.array_to_buffer(np_data)
-    return ndarray._from_buffer(buf, np_data.shape, dtype)
+    arr = ndarray._from_buffer(buf, np_data.shape, dtype)
+    if retstep:
+        return arr, step
+    return arr
 
 
 def eye(N, M=None, dtype=None) -> ndarray:
@@ -310,3 +317,26 @@ def vander(x, N=None, increasing=False):
 def asanyarray(a, dtype=None):
     """Convert input to an ndarray (pass-through for ndarrays)."""
     return asarray(a, dtype=dtype)
+
+
+def geomspace(start, stop, num=50, dtype=None):
+    """Return numbers spaced evenly on a log scale (a geometric progression)."""
+    np_data = np.geomspace(start, stop, num)
+    if dtype is not None:
+        dtype = resolve_dtype(dtype)
+    else:
+        dtype = resolve_dtype(np_data.dtype)
+    np_data = np.ascontiguousarray(np_data, dtype=dtype)
+    backend = MetalBackend()
+    buf = backend.array_to_buffer(np_data)
+    return ndarray._from_buffer(buf, np_data.shape, dtype)
+
+
+def frombuffer(buffer, dtype=float, count=-1, offset=0):
+    """Interpret a buffer as a 1-D array."""
+    dtype = resolve_dtype(dtype)
+    np_data = np.frombuffer(buffer, dtype=dtype, count=count, offset=offset)
+    np_data = np.ascontiguousarray(np_data)
+    backend = MetalBackend()
+    buf = backend.array_to_buffer(np_data)
+    return ndarray._from_buffer(buf, np_data.shape, dtype)

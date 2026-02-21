@@ -25,6 +25,7 @@ from .creation import (
     logspace, meshgrid, indices,
     # Extended creation
     fromfunction, diagflat, vander, asanyarray,
+    geomspace, frombuffer,
 )
 from .math_ops import (
     sqrt, exp, log, abs, power,
@@ -41,6 +42,7 @@ from .math_ops import (
     isclose, allclose, array_equal, count_nonzero,
     copy, ascontiguousarray, trace, diagonal,
 )
+from .math_ops import round
 from .reductions import (
     sum, mean, max, min, any, all, argmax, argmin,
     std, var, prod, median, percentile,
@@ -69,6 +71,8 @@ from .manipulation import (
     delete, append, resize, trim_zeros,
     fliplr, flipud, rot90,
     broadcast_arrays, copyto, pad,
+    # Gap-filling manipulation
+    block, insert, broadcast_shapes, asfortranarray,
 )
 
 # Linear algebra
@@ -96,7 +100,8 @@ from .nan_ops import (
     nansum, nanprod, nancumsum, nancumprod,
     nanmax, nanmin, nanmean, nanmedian,
     nanstd, nanvar, nanargmax, nanargmin,
-    histogram, histogram2d, histogramdd,
+    nanpercentile, nanquantile,
+    histogram, histogram2d, histogramdd, histogram_bin_edges,
     bincount, digitize,
     ediff1d, gradient,
     corrcoef, correlate, cov,
@@ -107,6 +112,7 @@ from .logic_ops import (
     logical_and, logical_or, logical_not, logical_xor,
     greater, greater_equal, less, less_equal, equal, not_equal,
     isneginf, isposinf, iscomplex, isreal, isscalar, array_equiv,
+    iscomplexobj, isrealobj, isfortran,
 )
 
 # Bitwise operations
@@ -142,6 +148,28 @@ from .window import bartlett, blackman, hamming, hanning, kaiser
 # Math extensions
 from .math_ext import sinc, i0, convolve, interp, fix, unwrap, trapezoid
 
+# Complex number operations
+from .complex_ops import angle, real, imag, conj, conjugate, real_if_close
+
+# Dtype utilities
+from .dtype_utils import (
+    can_cast, promote_types, result_type, common_type, min_scalar_type,
+    finfo, iinfo, issubdtype,
+    ndim, shape, size,
+    euler_gamma,
+    int_, float_, complex_, intp, uintp,
+)
+
+# Functional programming
+from .functional import vectorize, apply_along_axis, apply_over_axes
+
+# Index expression objects
+from .index_tricks import c_, r_, s_, mgrid, ogrid
+
+# I/O
+from . import io
+from .io import save, load, savez, savez_compressed
+
 
 def expand_dims(a, axis):
     """Insert a new axis at the given position."""
@@ -159,15 +187,21 @@ import math as _math
 
 float16 = _np.float16
 float32 = _np.float32
+float64 = _np.float64
 int16 = _np.int16
 int32 = _np.int32
+int64 = _np.int64
 uint16 = _np.uint16
 uint32 = _np.uint32
-int64 = _np.int64
 uint64 = _np.uint64
 bool_ = _np.bool_
-float64 = _np.float64
+complex64 = _np.complex64
 newaxis = _np.newaxis
+
+# Bitwise alias
+bitwise_invert = invert
+bitwise_left_shift = left_shift
+bitwise_right_shift = right_shift
 
 nan = float('nan')
 inf = float('inf')
