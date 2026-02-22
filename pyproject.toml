@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=68.0", "wheel", "numpy>=1.24"]
+requires = ["setuptools>=68.0", "wheel", "numpy>=2.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -22,7 +22,7 @@ classifiers = [
     "Topic :: Scientific/Engineering",
 ]
 dependencies = [
-    "numpy>=1.24",
+    "numpy>=2.0",
     "metalgpu>=0.0.5",
 ]
 

@@ -45,7 +45,7 @@ pip install macmetalpy
 **Requirements:**
 - macOS (Apple Silicon — M1/M2/M3/M4)
 - Python >= 3.10
-- numpy >= 1.24
+- numpy >= 2.0
 - metalgpu >= 0.0.5
 
 ---
