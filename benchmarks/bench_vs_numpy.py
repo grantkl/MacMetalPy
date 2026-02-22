@@ -31,12 +31,14 @@ SIZE_TIERS = {
     "small": 1_000,
     "medium": 100_000,
     "large": 1_000_000,
+    "xlarge": 10_000_000,
 }
 
 DEFAULT_REPEATS = {
     "small": 50,
     "medium": 30,
     "large": 10,
+    "xlarge": 5,
 }
 
 WARMUP_RUNS = 2
@@ -507,7 +509,7 @@ def main():
     # Build work items: (bench_entry, size_name, size, repeats)
     work_items = []
     for bench in benchmarks:
-        bench_sizes = bench.get("sizes", ["small", "medium", "large"])
+        bench_sizes = bench.get("sizes", ["small", "medium", "large", "xlarge"])
         for tier, size, repeats in tier_configs:
             if tier in bench_sizes:
                 work_items.append((bench, tier, size, repeats))

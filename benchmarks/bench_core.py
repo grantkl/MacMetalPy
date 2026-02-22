@@ -16,7 +16,7 @@ SIZE_MAP = {
     "large": 1_000_000,
 }
 
-ALL_SIZES = ["small", "medium", "large"]
+ALL_SIZES = ["small", "medium", "large", "xlarge"]
 
 # Number of warmup + timed iterations for stable medians
 _WARMUP = 2

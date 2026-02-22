@@ -2,162 +2,127 @@
 
 **Platform**: arm  
 **Python**: 3.11.14  
-**Date**: 2026-02-21 20:47  
+**Date**: 2026-02-21 21:18  
 **Warmup**: 2 runs  
 
 ## Category Summary
 
-| Category | small speedup | Avg Speedup |
+| Category | xlarge speedup | Avg Speedup |
 |---|---|---|
-| bitwise | 0.36x | **0.36x** |
-| comparison | 0.37x | **0.37x** |
-| complex_ops | 0.45x | **0.45x** |
-| creation | 0.56x | **0.56x** |
-| creation_extra | 0.66x | **0.66x** |
-| fft | 0.90x | **0.90x** |
-| fft_extra | 0.75x | **0.75x** |
-| indexing | 0.46x | **0.46x** |
-| indexing_extra | 0.72x | **0.72x** |
-| io | 1.00x | **1.00x** |
-| linalg | 0.80x | **0.80x** |
+| bitwise | 0.62x | **0.62x** |
+| comparison | 1.17x | **1.17x** |
+| complex_ops | 0.67x | **0.67x** |
+| creation | 146.07x | **146.07x** |
+| creation_extra | 0.77x | **0.77x** |
+| fft_extra | 0.91x | **0.91x** |
+| indexing_extra | 5.71x | **5.71x** |
 | linalg_extra | 0.79x | **0.79x** |
-| logic | 0.46x | **0.46x** |
-| manipulation | 0.40x | **0.40x** |
-| manipulation_extra | 0.53x | **0.53x** |
-| math | 0.56x | **0.56x** |
-| math_ext | 0.71x | **0.71x** |
-| misc | 0.66x | **0.66x** |
-| nan_extra | 0.84x | **0.84x** |
-| nan_ops | 0.69x | **0.69x** |
-| poly | 0.97x | **0.97x** |
-| poly_extra | 0.67x | **0.67x** |
-| random | 0.87x | **0.87x** |
-| reduction | 0.51x | **0.51x** |
-| reduction_extra | 0.66x | **0.66x** |
-| set_extra | 0.97x | **0.97x** |
-| set_ops | 0.93x | **0.93x** |
-| sorting | 0.68x | **0.68x** |
-| sorting_extra | 0.80x | **0.80x** |
-| stats | 0.84x | **0.84x** |
-| trig | 0.74x | **0.74x** |
-| ufuncs_extra | 0.58x | **0.58x** |
-| window | 0.88x | **0.88x** |
+| logic | 0.74x | **0.74x** |
+| manipulation_extra | 52.44x | **52.44x** |
+| math | 5.79x | **5.79x** |
+| math_ext | 0.98x | **0.98x** |
+| misc | 2.04x | **2.04x** |
+| nan_extra | 3.23x | **3.23x** |
+| reduction | 1.29x | **1.29x** |
+| reduction_extra | 1.86x | **1.86x** |
+| set_extra | 1.02x | **1.02x** |
+| sorting_extra | 0.98x | **0.98x** |
+| stats | 1.25x | **1.25x** |
+| trig | 7.95x | **7.95x** |
+| ufuncs_extra | 5.29x | **5.29x** |
+| window | 0.95x | **0.95x** |
 
 ## Top 10: macmetalpy Fastest vs NumPy
 
 | Rank | API | Category | Size | Speedup |
 |------|-----|----------|------|---------|
-| 1 | float_power | ufuncs_extra | small | **1.53x** |
-| 2 | fabs | ufuncs_extra | small | **1.45x** |
-| 3 | zeros_like | creation | small | **1.08x** |
-| 4 | save_load | io | small | **1.07x** |
-| 5 | i0 | math_ext | small | **1.04x** |
-| 6 | eigvals | linalg_extra | small | **1.01x** |
-| 7 | eig | linalg | small | **1.00x** |
-| 8 | put_along_axis | indexing_extra | small | **1.00x** |
-| 9 | cond | linalg_extra | small | **0.99x** |
-| 10 | pinv | linalg_extra | small | **0.99x** |
+| 1 | array | creation | xlarge | **1451.44x** |
+| 2 | copyto | manipulation_extra | xlarge | **1398.82x** |
+| 3 | put_along_axis | indexing_extra | xlarge | **83.75x** |
+| 4 | floor_divide | math | xlarge | **26.67x** |
+| 5 | logaddexp | ufuncs_extra | xlarge | **24.27x** |
+| 6 | logaddexp2 | ufuncs_extra | xlarge | **22.59x** |
+| 7 | heaviside | ufuncs_extra | xlarge | **20.21x** |
+| 8 | nextafter | ufuncs_extra | xlarge | **18.94x** |
+| 9 | arccos | trig | xlarge | **18.42x** |
+| 10 | fmod | ufuncs_extra | xlarge | **17.30x** |
 
 ## Top 10: macmetalpy Slowest vs NumPy
 
 | Rank | API | Category | Size | Speedup |
 |------|-----|----------|------|---------|
-| 1 | searchsorted | sorting | small | **0.01x** |
-| 2 | asarray | creation_extra | small | **0.08x** |
-| 3 | flip | manipulation | small | **0.15x** |
-| 4 | asanyarray | creation_extra | small | **0.17x** |
-| 5 | divide | math | small | **0.17x** |
-| 6 | imag | complex_ops | small | **0.18x** |
-| 7 | concatenate | manipulation | small | **0.18x** |
-| 8 | asfortranarray | manipulation_extra | small | **0.18x** |
-| 9 | minimum | ufuncs_extra | small | **0.18x** |
-| 10 | maximum | ufuncs_extra | small | **0.19x** |
+| 1 | frombuffer | creation_extra | xlarge | **0.00x** |
+| 2 | fill_diagonal | indexing_extra | xlarge | **0.01x** |
+| 3 | asarray | creation_extra | xlarge | **0.09x** |
+| 4 | asfortranarray | manipulation_extra | xlarge | **0.10x** |
+| 5 | asanyarray | creation_extra | xlarge | **0.12x** |
+| 6 | imag | complex_ops | xlarge | **0.18x** |
+| 7 | flipud | manipulation_extra | xlarge | **0.21x** |
+| 8 | real | complex_ops | xlarge | **0.22x** |
+| 9 | fliplr | manipulation_extra | xlarge | **0.26x** |
+| 10 | swapaxes | manipulation_extra | xlarge | **0.26x** |
 
 ## Category Aggregates
 
 | Category | Benchmarks | GPU Wins | Avg Speedup | Median Speedup | Min | Max |
 |----------|------------|----------|-------------|----------------|-----|-----|
-| bitwise | 9 | 0 | 0.36x | 0.27x | 0.23x | 0.76x |
-| comparison | 4 | 0 | 0.37x | 0.37x | 0.36x | 0.38x |
-| complex_ops | 5 | 0 | 0.45x | 0.40x | 0.18x | 0.76x |
-| creation | 10 | 1 | 0.56x | 0.52x | 0.21x | 1.08x |
-| creation_extra | 18 | 0 | 0.66x | 0.76x | 0.08x | 0.99x |
-| fft | 6 | 0 | 0.90x | 0.90x | 0.85x | 0.95x |
-| fft_extra | 6 | 0 | 0.75x | 0.79x | 0.55x | 0.88x |
-| indexing | 5 | 0 | 0.46x | 0.43x | 0.20x | 0.77x |
-| indexing_extra | 19 | 1 | 0.72x | 0.81x | 0.24x | 1.00x |
-| io | 2 | 1 | 1.00x | 1.00x | 0.92x | 1.07x |
-| linalg | 10 | 1 | 0.80x | 0.87x | 0.48x | 1.00x |
-| linalg_extra | 12 | 1 | 0.79x | 0.86x | 0.35x | 1.01x |
-| logic | 16 | 0 | 0.46x | 0.36x | 0.25x | 0.94x |
-| manipulation | 11 | 0 | 0.40x | 0.33x | 0.15x | 0.64x |
-| manipulation_extra | 27 | 0 | 0.53x | 0.63x | 0.18x | 0.89x |
-| math | 14 | 0 | 0.56x | 0.73x | 0.17x | 0.83x |
-| math_ext | 11 | 1 | 0.71x | 0.81x | 0.29x | 1.04x |
-| misc | 11 | 0 | 0.66x | 0.64x | 0.35x | 0.91x |
-| nan_extra | 9 | 0 | 0.84x | 0.84x | 0.68x | 0.96x |
-| nan_ops | 5 | 0 | 0.69x | 0.64x | 0.55x | 0.91x |
-| poly | 3 | 0 | 0.97x | 0.98x | 0.94x | 0.99x |
-| poly_extra | 7 | 0 | 0.67x | 0.52x | 0.43x | 0.99x |
-| random | 5 | 0 | 0.87x | 0.91x | 0.74x | 0.97x |
-| reduction | 13 | 0 | 0.51x | 0.49x | 0.32x | 0.72x |
-| reduction_extra | 9 | 0 | 0.66x | 0.62x | 0.43x | 0.87x |
-| set_extra | 1 | 0 | 0.97x | 0.97x | 0.97x | 0.97x |
-| set_ops | 5 | 0 | 0.93x | 0.91x | 0.89x | 0.98x |
-| sorting | 5 | 0 | 0.68x | 0.85x | 0.01x | 0.92x |
-| sorting_extra | 3 | 0 | 0.80x | 0.80x | 0.78x | 0.81x |
-| stats | 9 | 0 | 0.84x | 0.89x | 0.62x | 0.94x |
-| trig | 15 | 0 | 0.74x | 0.74x | 0.67x | 0.83x |
-| ufuncs_extra | 34 | 2 | 0.58x | 0.57x | 0.18x | 1.53x |
-| window | 5 | 0 | 0.88x | 0.84x | 0.81x | 0.98x |
+| bitwise | 9 | 1 | 0.62x | 0.56x | 0.37x | 1.06x |
+| comparison | 4 | 3 | 1.17x | 1.19x | 0.90x | 1.41x |
+| complex_ops | 5 | 0 | 0.67x | 0.99x | 0.18x | 1.00x |
+| creation | 10 | 5 | 146.07x | 1.00x | 0.31x | 1451.44x |
+| creation_extra | 16 | 4 | 0.77x | 0.94x | 0.00x | 1.04x |
+| fft_extra | 6 | 2 | 0.91x | 0.95x | 0.72x | 1.01x |
+| indexing_extra | 17 | 4 | 5.71x | 0.98x | 0.01x | 83.75x |
+| linalg_extra | 3 | 2 | 0.79x | 1.02x | 0.28x | 1.07x |
+| logic | 16 | 7 | 0.74x | 0.77x | 0.32x | 1.24x |
+| manipulation_extra | 27 | 5 | 52.44x | 0.63x | 0.10x | 1398.82x |
+| math | 14 | 8 | 5.79x | 3.98x | 0.41x | 26.67x |
+| math_ext | 10 | 3 | 0.98x | 0.99x | 0.38x | 1.85x |
+| misc | 9 | 4 | 2.04x | 1.00x | 0.29x | 7.24x |
+| nan_extra | 9 | 8 | 3.23x | 3.83x | 0.99x | 5.57x |
+| reduction | 13 | 5 | 1.29x | 0.66x | 0.40x | 4.22x |
+| reduction_extra | 9 | 3 | 1.86x | 0.99x | 0.38x | 10.40x |
+| set_extra | 1 | 1 | 1.02x | 1.02x | 1.02x | 1.02x |
+| sorting_extra | 3 | 1 | 0.98x | 0.97x | 0.97x | 1.00x |
+| stats | 6 | 3 | 1.25x | 1.02x | 0.77x | 2.05x |
+| trig | 15 | 15 | 7.95x | 5.68x | 2.79x | 18.42x |
+| ufuncs_extra | 34 | 16 | 5.29x | 0.98x | 0.35x | 24.27x |
+| window | 5 | 0 | 0.95x | 0.95x | 0.91x | 0.98x |
 
 ## Failed Benchmarks
 
 | API | Category | Size | Error |
 |-----|----------|------|-------|
-| mask_indices | indexing_extra | small | TypeError: Unsupported dtype for Metal: object |
+| mask_indices | indexing_extra | xlarge | TypeError: Unsupported dtype for Metal: object |
+| select | indexing_extra | xlarge | RecursionError: maximum recursion depth exceeded |
 
 ## Optimization Guidance
 
 ### Where macmetalpy is slower than NumPy
 
-- **ufuncs_extra**: 32/34 benchmarks slower (avg 0.58x)
-- **manipulation_extra**: 27/27 benchmarks slower (avg 0.53x)
-- **creation_extra**: 18/18 benchmarks slower (avg 0.66x)
-- **indexing_extra**: 18/19 benchmarks slower (avg 0.72x)
-- **logic**: 16/16 benchmarks slower (avg 0.46x)
-- **trig**: 15/15 benchmarks slower (avg 0.74x)
-- **math**: 14/14 benchmarks slower (avg 0.56x)
-- **reduction**: 13/13 benchmarks slower (avg 0.51x)
-- **linalg_extra**: 11/12 benchmarks slower (avg 0.79x)
-- **manipulation**: 11/11 benchmarks slower (avg 0.40x)
-- **misc**: 11/11 benchmarks slower (avg 0.66x)
-- **math_ext**: 10/11 benchmarks slower (avg 0.71x)
-- **bitwise**: 9/9 benchmarks slower (avg 0.36x)
-- **creation**: 9/10 benchmarks slower (avg 0.56x)
-- **linalg**: 9/10 benchmarks slower (avg 0.80x)
-- **nan_extra**: 9/9 benchmarks slower (avg 0.84x)
-- **reduction_extra**: 9/9 benchmarks slower (avg 0.66x)
-- **stats**: 9/9 benchmarks slower (avg 0.84x)
-- **poly_extra**: 7/7 benchmarks slower (avg 0.67x)
-- **fft**: 6/6 benchmarks slower (avg 0.90x)
-- **fft_extra**: 6/6 benchmarks slower (avg 0.75x)
-- **complex_ops**: 5/5 benchmarks slower (avg 0.45x)
-- **indexing**: 5/5 benchmarks slower (avg 0.46x)
-- **nan_ops**: 5/5 benchmarks slower (avg 0.69x)
-- **random**: 5/5 benchmarks slower (avg 0.87x)
-- **set_ops**: 5/5 benchmarks slower (avg 0.93x)
-- **sorting**: 5/5 benchmarks slower (avg 0.68x)
-- **window**: 5/5 benchmarks slower (avg 0.88x)
-- **comparison**: 4/4 benchmarks slower (avg 0.37x)
-- **poly**: 3/3 benchmarks slower (avg 0.97x)
-- **sorting_extra**: 3/3 benchmarks slower (avg 0.80x)
-- **io**: 1/2 benchmarks slower (avg 1.00x)
-- **set_extra**: 1/1 benchmarks slower (avg 0.97x)
+- **manipulation_extra**: 22/27 benchmarks slower (avg 52.44x)
+- **ufuncs_extra**: 18/34 benchmarks slower (avg 5.29x)
+- **indexing_extra**: 13/17 benchmarks slower (avg 5.71x)
+- **creation_extra**: 12/16 benchmarks slower (avg 0.77x)
+- **logic**: 9/16 benchmarks slower (avg 0.74x)
+- **bitwise**: 8/9 benchmarks slower (avg 0.62x)
+- **reduction**: 8/13 benchmarks slower (avg 1.29x)
+- **math_ext**: 7/10 benchmarks slower (avg 0.98x)
+- **math**: 6/14 benchmarks slower (avg 5.79x)
+- **reduction_extra**: 6/9 benchmarks slower (avg 1.86x)
+- **complex_ops**: 5/5 benchmarks slower (avg 0.67x)
+- **creation**: 5/10 benchmarks slower (avg 146.07x)
+- **misc**: 5/9 benchmarks slower (avg 2.04x)
+- **window**: 5/5 benchmarks slower (avg 0.95x)
+- **fft_extra**: 4/6 benchmarks slower (avg 0.91x)
+- **stats**: 3/6 benchmarks slower (avg 1.25x)
+- **sorting_extra**: 2/3 benchmarks slower (avg 0.98x)
+- **comparison**: 1/4 benchmarks slower (avg 1.17x)
+- **linalg_extra**: 1/3 benchmarks slower (avg 0.79x)
+- **nan_extra**: 1/9 benchmarks slower (avg 3.23x)
 
 ### General Observations
 
-- **small** (1,000 elements): GPU wins 8/324, avg speedup 0.64x
 
 ### Recommendations
 

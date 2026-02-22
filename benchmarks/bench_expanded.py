@@ -11,7 +11,7 @@ import numpy as np
 import macmetalpy as cp
 
 SIZE_MAP = {"small": 1_000, "medium": 100_000, "large": 1_000_000}
-ALL_SIZES = ["small", "medium", "large"]
+ALL_SIZES = ["small", "medium", "large", "xlarge"]
 
 _WARMUP = 1
 _REPEATS = 5
