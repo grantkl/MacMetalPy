@@ -4,12 +4,20 @@ from __future__ import annotations
 
 import numpy as np
 
-from .ndarray import ndarray
+from .ndarray import (ndarray, _fast_unary, _fast_binary,
+    _UOP_SQRT, _UOP_EXP, _UOP_LOG, _UOP_ABS, _UOP_SIGN, _UOP_FLOOR,
+    _UOP_CEIL, _UOP_SIN, _UOP_COS, _UOP_TAN, _UOP_ASIN, _UOP_ACOS,
+    _UOP_ATAN, _UOP_SINH, _UOP_COSH, _UOP_TANH, _UOP_LOG2, _UOP_LOG10,
+    _UOP_SQUARE, _UOP_NEGATIVE, _OP_POW)
 from . import creation
 
 
 def sqrt(x):
     """Element-wise square root."""
+    if _fast_unary is not None and type(x) is ndarray:
+        r = _fast_unary(x, _UOP_SQRT)
+        if r is not None:
+            return r
     if type(x) is not ndarray:
         x = creation.asarray(x)
     return x._unary_op("sqrt_op")
@@ -17,6 +25,10 @@ def sqrt(x):
 
 def exp(x):
     """Element-wise exponential."""
+    if _fast_unary is not None and type(x) is ndarray:
+        r = _fast_unary(x, _UOP_EXP)
+        if r is not None:
+            return r
     if type(x) is not ndarray:
         x = creation.asarray(x)
     return x._unary_op("exp_op")
@@ -24,6 +36,10 @@ def exp(x):
 
 def log(x):
     """Element-wise natural logarithm."""
+    if _fast_unary is not None and type(x) is ndarray:
+        r = _fast_unary(x, _UOP_LOG)
+        if r is not None:
+            return r
     if type(x) is not ndarray:
         x = creation.asarray(x)
     return x._unary_op("log_op")
@@ -31,6 +47,10 @@ def log(x):
 
 def abs(x):
     """Element-wise absolute value."""
+    if _fast_unary is not None and type(x) is ndarray:
+        r = _fast_unary(x, _UOP_ABS)
+        if r is not None:
+            return r
     if type(x) is not ndarray:
         x = creation.asarray(x)
     return x._unary_op("abs_op")
@@ -38,6 +58,10 @@ def abs(x):
 
 def power(x1, x2):
     """Element-wise power."""
+    if _fast_binary is not None and type(x1) is ndarray:
+        r = _fast_binary(x1, x2, _OP_POW)
+        if r is not None:
+            return r
     if type(x1) is not ndarray:
         x1 = creation.asarray(x1)
     return x1._binary_op(x2, "pow_op")
@@ -270,6 +294,10 @@ def hstack(arrays, dtype=None, casting='same_kind'):
 
 def sign(x):
     """Element-wise sign function."""
+    if _fast_unary is not None and type(x) is ndarray:
+        r = _fast_unary(x, _UOP_SIGN)
+        if r is not None:
+            return r
     if type(x) is not ndarray:
         x = creation.asarray(x)
     return x._unary_op("sign_op")
@@ -277,6 +305,10 @@ def sign(x):
 
 def floor(x):
     """Element-wise floor."""
+    if _fast_unary is not None and type(x) is ndarray:
+        r = _fast_unary(x, _UOP_FLOOR)
+        if r is not None:
+            return r
     if type(x) is not ndarray:
         x = creation.asarray(x)
     return x._unary_op("floor_op")
@@ -284,6 +316,10 @@ def floor(x):
 
 def ceil(x):
     """Element-wise ceiling."""
+    if _fast_unary is not None and type(x) is ndarray:
+        r = _fast_unary(x, _UOP_CEIL)
+        if r is not None:
+            return r
     if type(x) is not ndarray:
         x = creation.asarray(x)
     return x._unary_op("ceil_op")
@@ -291,6 +327,10 @@ def ceil(x):
 
 def sin(x):
     """Element-wise sine."""
+    if _fast_unary is not None and type(x) is ndarray:
+        r = _fast_unary(x, _UOP_SIN)
+        if r is not None:
+            return r
     if type(x) is not ndarray:
         x = creation.asarray(x)
     return x._unary_op("sin_op")
@@ -298,6 +338,10 @@ def sin(x):
 
 def cos(x):
     """Element-wise cosine."""
+    if _fast_unary is not None and type(x) is ndarray:
+        r = _fast_unary(x, _UOP_COS)
+        if r is not None:
+            return r
     if type(x) is not ndarray:
         x = creation.asarray(x)
     return x._unary_op("cos_op")
@@ -305,6 +349,10 @@ def cos(x):
 
 def tan(x):
     """Element-wise tangent."""
+    if _fast_unary is not None and type(x) is ndarray:
+        r = _fast_unary(x, _UOP_TAN)
+        if r is not None:
+            return r
     if type(x) is not ndarray:
         x = creation.asarray(x)
     return x._unary_op("tan_op")
@@ -312,6 +360,10 @@ def tan(x):
 
 def arcsin(x):
     """Element-wise inverse sine."""
+    if _fast_unary is not None and type(x) is ndarray:
+        r = _fast_unary(x, _UOP_ASIN)
+        if r is not None:
+            return r
     if type(x) is not ndarray:
         x = creation.asarray(x)
     return x._unary_op("asin_op")
@@ -319,6 +371,10 @@ def arcsin(x):
 
 def arccos(x):
     """Element-wise inverse cosine."""
+    if _fast_unary is not None and type(x) is ndarray:
+        r = _fast_unary(x, _UOP_ACOS)
+        if r is not None:
+            return r
     if type(x) is not ndarray:
         x = creation.asarray(x)
     return x._unary_op("acos_op")
@@ -326,6 +382,10 @@ def arccos(x):
 
 def arctan(x):
     """Element-wise inverse tangent."""
+    if _fast_unary is not None and type(x) is ndarray:
+        r = _fast_unary(x, _UOP_ATAN)
+        if r is not None:
+            return r
     if type(x) is not ndarray:
         x = creation.asarray(x)
     return x._unary_op("atan_op")
@@ -333,6 +393,10 @@ def arctan(x):
 
 def sinh(x):
     """Element-wise hyperbolic sine."""
+    if _fast_unary is not None and type(x) is ndarray:
+        r = _fast_unary(x, _UOP_SINH)
+        if r is not None:
+            return r
     if type(x) is not ndarray:
         x = creation.asarray(x)
     return x._unary_op("sinh_op")
@@ -340,6 +404,10 @@ def sinh(x):
 
 def cosh(x):
     """Element-wise hyperbolic cosine."""
+    if _fast_unary is not None and type(x) is ndarray:
+        r = _fast_unary(x, _UOP_COSH)
+        if r is not None:
+            return r
     if type(x) is not ndarray:
         x = creation.asarray(x)
     return x._unary_op("cosh_op")
@@ -347,6 +415,10 @@ def cosh(x):
 
 def tanh(x):
     """Element-wise hyperbolic tangent."""
+    if _fast_unary is not None and type(x) is ndarray:
+        r = _fast_unary(x, _UOP_TANH)
+        if r is not None:
+            return r
     if type(x) is not ndarray:
         x = creation.asarray(x)
     return x._unary_op("tanh_op")
@@ -354,6 +426,10 @@ def tanh(x):
 
 def log2(x):
     """Element-wise base-2 logarithm."""
+    if _fast_unary is not None and type(x) is ndarray:
+        r = _fast_unary(x, _UOP_LOG2)
+        if r is not None:
+            return r
     if type(x) is not ndarray:
         x = creation.asarray(x)
     return x._unary_op("log2_op")
@@ -361,6 +437,10 @@ def log2(x):
 
 def log10(x):
     """Element-wise base-10 logarithm."""
+    if _fast_unary is not None and type(x) is ndarray:
+        r = _fast_unary(x, _UOP_LOG10)
+        if r is not None:
+            return r
     if type(x) is not ndarray:
         x = creation.asarray(x)
     return x._unary_op("log10_op")
@@ -368,6 +448,10 @@ def log10(x):
 
 def square(x):
     """Element-wise square."""
+    if _fast_unary is not None and type(x) is ndarray:
+        r = _fast_unary(x, _UOP_SQUARE)
+        if r is not None:
+            return r
     if type(x) is not ndarray:
         x = creation.asarray(x)
     return x._unary_op("square_op")
@@ -375,6 +459,10 @@ def square(x):
 
 def negative(x):
     """Element-wise negation."""
+    if _fast_unary is not None and type(x) is ndarray:
+        r = _fast_unary(x, _UOP_NEGATIVE)
+        if r is not None:
+            return r
     if type(x) is not ndarray:
         x = creation.asarray(x)
     return x._unary_op("negative_op")

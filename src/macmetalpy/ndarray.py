@@ -134,8 +134,53 @@ for _op in _NP_BINARY:
 # Binary ops
 _OP_ADD, _OP_SUB, _OP_MUL, _OP_DIV = 0, 1, 2, 3
 _OP_POW, _OP_MOD, _OP_FLOOR_DIV = 4, 5, 6
+_OP_FMOD = 7
+_OP_ATAN2 = 8
+_OP_HYPOT = 9
+_OP_LOGADDEXP = 10
+_OP_LOGADDEXP2 = 11
+_OP_HEAVISIDE = 12
+_OP_COPYSIGN = 13
+_OP_NEXTAFTER = 14
+_OP_FMAX = 15
+_OP_FMIN = 16
+_OP_MINIMUM = 17
+_OP_MAXIMUM = 18
 # Unary ops
-_UOP_NEG, _UOP_ABS = 0, 1
+_UOP_NEG = 0
+_UOP_ABS = 1
+_UOP_SQRT = 2
+_UOP_EXP = 3
+_UOP_LOG = 4
+_UOP_SIN = 5
+_UOP_COS = 6
+_UOP_TAN = 7
+_UOP_CEIL = 8
+_UOP_FLOOR = 9
+_UOP_SIGN = 10
+_UOP_SQUARE = 11
+_UOP_EXP2 = 12
+_UOP_LOG2 = 13
+_UOP_LOG10 = 14
+_UOP_TANH = 15
+_UOP_SINH = 16
+_UOP_COSH = 17
+_UOP_ASIN = 18
+_UOP_ACOS = 19
+_UOP_ATAN = 20
+_UOP_ASINH = 21
+_UOP_ACOSH = 22
+_UOP_ATANH = 23
+_UOP_RINT = 24
+_UOP_TRUNC = 25
+_UOP_EXPM1 = 26
+_UOP_LOG1P = 27
+_UOP_CBRT = 28
+_UOP_RECIPROCAL = 29
+_UOP_DEGREES = 30
+_UOP_RADIANS = 31
+_UOP_NEGATIVE = 32
+_UOP_POSITIVE = 33
 # Comparison ops
 _COP_LT, _COP_LE, _COP_GT, _COP_GE, _COP_EQ, _COP_NE = 0, 1, 2, 3, 4, 5
 
@@ -2456,10 +2501,54 @@ if _accelerator is not None:
                 (np.power, _BINARY_THRESHOLD.get("pow_op", _GPU_THRESHOLD), 0),  # 4 = _OP_POW
                 (np.mod, _BINARY_THRESHOLD.get("mod_op", _GPU_THRESHOLD), 0),    # 5 = _OP_MOD
                 (np.floor_divide, _BINARY_THRESHOLD.get("floor_divide_op", _GPU_THRESHOLD), 0),  # 6 = _OP_FLOOR_DIV
+                (np.fmod, _BINARY_THRESHOLD.get("fmod_op", _GPU_THRESHOLD), 0),          # 7
+                (np.arctan2, _BINARY_THRESHOLD.get("atan2_op", _GPU_THRESHOLD), 0),      # 8
+                (np.hypot, _BINARY_THRESHOLD.get("hypot_op", _GPU_THRESHOLD), 0),        # 9
+                (np.logaddexp, _BINARY_THRESHOLD.get("logaddexp_op", _GPU_THRESHOLD), 0),  # 10
+                (np.logaddexp2, _BINARY_THRESHOLD.get("logaddexp2_op", _GPU_THRESHOLD), 0), # 11
+                (np.heaviside, _BINARY_THRESHOLD.get("heaviside_op", _GPU_THRESHOLD), 0),  # 12
+                (np.copysign, _BINARY_THRESHOLD.get("copysign_op", _GPU_THRESHOLD), 0),  # 13
+                (np.nextafter, _BINARY_THRESHOLD.get("nextafter_op", _GPU_THRESHOLD), 0),  # 14
+                (np.fmax, _BINARY_THRESHOLD.get("fmax_op", _GPU_THRESHOLD), 0),          # 15
+                (np.fmin, _BINARY_THRESHOLD.get("fmin_op", _GPU_THRESHOLD), 0),          # 16
+                (np.minimum, _BINARY_THRESHOLD.get("min_op", _GPU_THRESHOLD), 0),        # 17
+                (np.maximum, _BINARY_THRESHOLD.get("max_op", _GPU_THRESHOLD), 0),        # 18
             ],
             [  # unary_list - indexed by op_id
-                (np.negative, _UNARY_THRESHOLD["neg_op"], 0),  # 0 = _UOP_NEG
-                (np.abs, _UNARY_THRESHOLD["abs_op"], 0),       # 1 = _UOP_ABS
+                (np.negative, _UNARY_THRESHOLD["neg_op"], 0),       # 0 = _UOP_NEG
+                (np.abs, _UNARY_THRESHOLD["abs_op"], 0),             # 1 = _UOP_ABS
+                (np.sqrt, _UNARY_THRESHOLD.get("sqrt_op", _GPU_THRESHOLD), 0),           # 2
+                (np.exp, _UNARY_THRESHOLD.get("exp_op", _GPU_THRESHOLD), 0),             # 3
+                (np.log, _UNARY_THRESHOLD.get("log_op", _GPU_THRESHOLD), 0),             # 4
+                (np.sin, _UNARY_THRESHOLD.get("sin_op", _GPU_THRESHOLD), 0),             # 5
+                (np.cos, _UNARY_THRESHOLD.get("cos_op", _GPU_THRESHOLD), 0),             # 6
+                (np.tan, _UNARY_THRESHOLD.get("tan_op", _GPU_THRESHOLD), 0),             # 7
+                (np.ceil, _UNARY_THRESHOLD.get("ceil_op", _GPU_THRESHOLD), 0),           # 8
+                (np.floor, _UNARY_THRESHOLD.get("floor_op", _GPU_THRESHOLD), 0),         # 9
+                (np.sign, _UNARY_THRESHOLD.get("sign_op", _GPU_THRESHOLD), 0),           # 10
+                (np.square, _UNARY_THRESHOLD.get("square_op", _GPU_THRESHOLD), 0),       # 11
+                (np.exp2, _UNARY_THRESHOLD.get("exp2_op", _GPU_THRESHOLD), 0),           # 12
+                (np.log2, _UNARY_THRESHOLD.get("log2_op", _GPU_THRESHOLD), 0),           # 13
+                (np.log10, _UNARY_THRESHOLD.get("log10_op", _GPU_THRESHOLD), 0),         # 14
+                (np.tanh, _UNARY_THRESHOLD.get("tanh_op", _GPU_THRESHOLD), 0),           # 15
+                (np.sinh, _UNARY_THRESHOLD.get("sinh_op", _GPU_THRESHOLD), 0),           # 16
+                (np.cosh, _UNARY_THRESHOLD.get("cosh_op", _GPU_THRESHOLD), 0),           # 17
+                (np.arcsin, _UNARY_THRESHOLD.get("asin_op", _GPU_THRESHOLD), 0),         # 18
+                (np.arccos, _UNARY_THRESHOLD.get("acos_op", _GPU_THRESHOLD), 0),         # 19
+                (np.arctan, _UNARY_THRESHOLD.get("atan_op", _GPU_THRESHOLD), 0),         # 20
+                (np.arcsinh, _UNARY_THRESHOLD.get("asinh_op", _GPU_THRESHOLD), 0),       # 21
+                (np.arccosh, _UNARY_THRESHOLD.get("acosh_op", _GPU_THRESHOLD), 0),       # 22
+                (np.arctanh, _UNARY_THRESHOLD.get("atanh_op", _GPU_THRESHOLD), 0),       # 23
+                (np.rint, _UNARY_THRESHOLD.get("rint_op", _GPU_THRESHOLD), 0),           # 24
+                (np.trunc, _UNARY_THRESHOLD.get("trunc_op", _GPU_THRESHOLD), 0),         # 25
+                (np.expm1, _UNARY_THRESHOLD.get("expm1_op", _GPU_THRESHOLD), 0),         # 26
+                (np.log1p, _UNARY_THRESHOLD.get("log1p_op", _GPU_THRESHOLD), 0),         # 27
+                (np.cbrt, _UNARY_THRESHOLD.get("cbrt_op", _GPU_THRESHOLD), 0),           # 28
+                (np.reciprocal, _UNARY_THRESHOLD.get("reciprocal_op", _GPU_THRESHOLD), 0), # 29
+                (np.degrees, _UNARY_THRESHOLD.get("degrees_op", _GPU_THRESHOLD), 0),     # 30
+                (np.radians, _UNARY_THRESHOLD.get("radians_op", _GPU_THRESHOLD), 0),     # 31
+                (np.negative, _UNARY_THRESHOLD.get("negative_op", _GPU_THRESHOLD), 0),   # 32
+                (np.positive, _UNARY_THRESHOLD.get("positive_op", _GPU_THRESHOLD), 0),   # 33
             ],
             [  # cmp_list - indexed by op_id
                 (np.less, _GPU_THRESHOLD_MEMORY, 0),           # 0 = _COP_LT

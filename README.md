@@ -108,17 +108,17 @@ MacMetalPy vs NumPy on an **M4 Mac Mini**, float32. The GPU's advantage grows wi
 
 | Operation | 1K | 100K | 1M | 10M |
 |---|---|---|---|---|
-| `a + b` | 0.29x | 0.96x | 1.07x | — |
-| `sin(a)` | 0.73x | 1.03x | 3.42x | **3.71x** |
-| `exp(a)` | 0.76x | 1.09x | 3.68x | **4.45x** |
-| `tan(a)` | 0.81x | 1.08x | 8.64x | **14.0x** |
-| `arcsin(a)` | 0.82x | 1.04x | 12.7x | **16.5x** |
-| `power(a, b)` | 0.77x | 1.05x | 6.83x | **7.71x** |
-| `floor_divide` | 0.80x | 1.04x | 17.2x | **26.7x** |
-| `mod(a, b)` | 0.83x | 1.05x | 7.02x | **12.1x** |
+| `a + b` | 0.43x | 0.96x | 1.07x | — |
+| `sin(a)` | 0.80x | 1.03x | 3.42x | **3.71x** |
+| `exp(a)` | 0.82x | 1.09x | 3.68x | **4.45x** |
+| `tan(a)` | 0.82x | 1.08x | 8.64x | **14.0x** |
+| `arcsin(a)` | 0.80x | 1.04x | 12.7x | **16.5x** |
+| `power(a, b)` | 0.88x | 1.05x | 6.83x | **7.71x** |
+| `floor_divide` | 0.88x | 1.04x | 17.2x | **26.7x** |
+| `mod(a, b)` | 0.85x | 1.05x | 7.02x | **12.1x** |
 | `cumsum(a)` | 0.66x | 0.96x | 2.43x | **2.81x** |
-| `nanprod(a)` | 0.68x | 0.95x | 3.95x | **5.57x** |
-| `sort(a)` | 0.91x | 1.07x | 9.16x | — |
+| `nanprod(a)` | 0.69x | 0.95x | 3.95x | **5.57x** |
+| `sort(a)` | 0.90x | 1.07x | 9.16x | — |
 
 > Values are speedup vs NumPy (higher = GPU faster). **Bold** = GPU wins by 2x+.
 

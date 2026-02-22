@@ -20,9 +20,14 @@ class _Ufunc2:
 
     def __call__(self, a, b):
         """Element-wise operation via Metal GPU kernel."""
-        from .ndarray import ndarray
+        from .ndarray import ndarray, _fast_binary, _OP_MINIMUM, _OP_MAXIMUM
         from . import creation
 
+        if _fast_binary is not None and type(a) is ndarray:
+            op_id = _OP_MAXIMUM if self._gpu_op == "max_op" else _OP_MINIMUM
+            r = _fast_binary(a, b, op_id)
+            if r is not None:
+                return r
         if type(a) is not ndarray:
             a = creation.asarray(a)
 
