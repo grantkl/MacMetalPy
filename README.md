@@ -18,8 +18,8 @@ A **CuPy-compatible** GPU array library that rips through computation on Apple S
 ```python
 import macmetalpy as cp
 
-a = cp.random.randn(4096, 4096, dtype=cp.float32)
-b = cp.random.randn(4096, 4096, dtype=cp.float32)
+a = cp.random.randn(4096, 4096)
+b = cp.random.randn(4096, 4096)
 c = a @ b  # 🔥 Metal GPU goes brrr
 ```
 
@@ -57,10 +57,10 @@ pip install macmetalpy
 ```python
 import macmetalpy as cp
 
-a = cp.zeros((1000, 1000), dtype=cp.float32)
-b = cp.ones((1000, 1000), dtype=cp.float32)
-c = cp.arange(0, 100, dtype=cp.int32)
-d = cp.linspace(0, 1, 256, dtype=cp.float16)
+a = cp.zeros((1000, 1000))
+b = cp.ones((1000, 1000))
+c = cp.arange(0, 100, dtype=cp.int32)    # explicit int dtype
+d = cp.linspace(0, 1, 256, dtype=cp.float16)  # half precision
 ```
 
 **Rip through math:**
@@ -68,7 +68,7 @@ d = cp.linspace(0, 1, 256, dtype=cp.float16)
 ```python
 import macmetalpy as cp
 
-x = cp.random.randn(10000, dtype=cp.float32)
+x = cp.random.randn(10000)
 
 # Elementwise operations — all on the GPU
 y = cp.sqrt(cp.abs(x)) + cp.exp(-x ** 2)
@@ -83,8 +83,8 @@ avg = cp.mean(y)
 ```python
 import macmetalpy as cp
 
-A = cp.random.randn(512, 512, dtype=cp.float32)
-b = cp.random.randn(512, dtype=cp.float32)
+A = cp.random.randn(512, 512)
+b = cp.random.randn(512)
 
 x = cp.linalg.solve(A, b)          # Solve Ax = b
 U, S, Vt = cp.linalg.svd(A)        # SVD
@@ -94,7 +94,7 @@ eigenvalues = cp.linalg.eigvalsh(A @ A.T)  # Eigenvalues
 **Pull results back to CPU:**
 
 ```python
-gpu_result = cp.sum(cp.random.randn(1000000, dtype=cp.float32))
+gpu_result = cp.sum(cp.random.randn(1000000))
 numpy_array = gpu_result.get()  # Transfer to NumPy
 ```
 
@@ -173,7 +173,6 @@ When the built-in operations don't cut it, write your own Metal Shading Language
 ```python
 from macmetalpy import RawKernel
 import macmetalpy as cp
-import numpy as np
 
 # Write a custom Metal kernel
 kernel_source = """
@@ -192,9 +191,9 @@ kernel void saxpy(device float *x [[buffer(0)]],
 saxpy = RawKernel(kernel_source, 'saxpy')
 
 N = 1_000_000
-x = cp.random.randn(N, dtype=np.float32)
-y = cp.random.randn(N, dtype=np.float32)
-out = cp.empty(N, dtype=np.float32)
+x = cp.random.randn(N)
+y = cp.random.randn(N)
+out = cp.empty(N)
 
 saxpy(N, (x, y, out))  # Launch N GPU threads
 
