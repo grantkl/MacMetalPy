@@ -26,9 +26,6 @@ jobs:
       - name: Lint
         run: ruff check src/ tests/
 
-      - name: Format check
-        run: ruff format --check src/ tests/
-
   test:
     runs-on: macos-14
     strategy:

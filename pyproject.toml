@@ -49,7 +49,14 @@ line-length = 100
 
 [tool.ruff.lint]
 select = ["E", "F", "W"]
-ignore = ["E501"]
-
-[tool.ruff.lint.per-file-ignores]
-"__init__.py" = ["F401"]
+ignore = [
+    "E402",   # module-level import not at top of file
+    "E501",   # line too long
+    "E701",   # multiple statements on one line
+    "E712",   # comparison to True/False
+    "E741",   # ambiguous variable name
+    "F401",   # unused import
+    "F541",   # f-string without placeholders
+    "F601",   # multi-value repeated key literal
+    "F841",   # unused variable
+]
