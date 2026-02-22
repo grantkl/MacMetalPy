@@ -292,6 +292,16 @@ set_config(default_float_dtype="float32")
 
 ---
 
+## Acknowledgments
+
+MacMetalPy stands on the shoulders of giants:
+
+- **[NumPy](https://numpy.org/)** — The foundation. MacMetalPy's API is modeled after NumPy's, because they got it right the first time.
+- **[CuPy](https://cupy.dev/)** — The blueprint for GPU array libraries. CuPy proved that a drop-in NumPy replacement on the GPU is both possible and practical.
+- **[metalgpu](https://github.com/MK-ek11/metalgpu)** — The engine under the hood. Without metalgpu's Python-to-Metal bridge, MacMetalPy wouldn't exist.
+
+---
+
 ## The Crew
 
 **License:** MIT
