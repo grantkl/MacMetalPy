@@ -9,7 +9,7 @@ description = "CuPy-compatible GPU array library for Apple Silicon using MetalGP
 readme = "README.md"
 requires-python = ">=3.10"
 license = {file = "LICENSE"}
-authors = [{name = "Grant Klepzig", url = "https://github.com/grantkl"}]
+authors = [{name = "Grant Klepzig"}]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Science/Research",
@@ -48,5 +48,5 @@ target-version = "py310"
 line-length = 100
 
 [tool.ruff.lint]
-select = ["E", "F", "I", "W"]
+select = ["E", "F", "W"]
 ignore = ["E501"]
