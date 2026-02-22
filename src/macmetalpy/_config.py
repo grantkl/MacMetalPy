@@ -27,7 +27,7 @@ class MacMetalConfig:
         with cls._lock:
             if cls._instance is None:
                 inst = super().__new__(cls)
-                inst.float64_behavior: Literal["downcast", "cpu_fallback"] = "downcast"
+                inst.float64_behavior: Literal["downcast", "cpu_fallback"] = "cpu_fallback"
                 inst.warn_on_downcast: bool = True
                 inst.default_float_dtype = "float32"
                 cls._instance = inst

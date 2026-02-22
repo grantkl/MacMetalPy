@@ -56,6 +56,7 @@ static OpEntry cmp_table[MAX_OPS];
 
 static PyTypeObject *cached_ndarray_type = NULL;
 static PyObject     *cached_bool_dtype   = NULL;
+static PyObject     *cached_float64_dtype = NULL;
 
 /* ------------------------------------------------------------------ */
 /* Direct dict access — version-guarded for 3.12+ managed dicts       */
@@ -518,6 +519,11 @@ accel_init_dispatch(PyObject *self, PyObject *const *args, Py_ssize_t nargs)
     cached_bool_dtype = bool_dtype;
     Py_INCREF(bool_dtype);
 
+    /* Cache float64 dtype for fast comparison */
+    Py_XDECREF(cached_float64_dtype);
+    cached_float64_dtype = (PyObject *)PyArray_DescrFromType(NPY_FLOAT64);
+    if (!cached_float64_dtype) return NULL;
+
     /* Populate all three tables */
     if (populate_table(binary_table, binary_list, "binary_list") < 0)
         return NULL;
@@ -578,6 +584,10 @@ accel_fast_binary(PyObject *self, PyObject *const *args, Py_ssize_t nargs)
     PyObject *a_dtype = dict_read(a, str_dtype);
     PyObject *b_dtype = dict_read(b, str_dtype);
     if (!a_dtype || !b_dtype)
+        Py_RETURN_NONE;
+
+    /* Float64: fall through to Python CPU path */
+    if (a_dtype == cached_float64_dtype || b_dtype == cached_float64_dtype)
         Py_RETURN_NONE;
 
     if (a_dtype != b_dtype) {
@@ -650,6 +660,10 @@ accel_fast_unary(PyObject *self, PyObject *const *args, Py_ssize_t nargs)
     /* 3. Get a._dtype and check it's not complex64 (dtype.kind == 'c') */
     PyObject *a_dtype = dict_read(a, str_dtype);
     if (!a_dtype)
+        Py_RETURN_NONE;
+
+    /* Float64: fall through to Python CPU path */
+    if (a_dtype == cached_float64_dtype)
         Py_RETURN_NONE;
 
     PyObject *kind = PyObject_GetAttr(a_dtype, str_kind);
@@ -738,6 +752,10 @@ accel_fast_cmp(PyObject *self, PyObject *const *args, Py_ssize_t nargs)
     PyObject *a_dtype = dict_read(a, str_dtype);
     PyObject *b_dtype = dict_read(b, str_dtype);
     if (!a_dtype || !b_dtype)
+        Py_RETURN_NONE;
+
+    /* Float64: fall through to Python CPU path */
+    if (a_dtype == cached_float64_dtype || b_dtype == cached_float64_dtype)
         Py_RETURN_NONE;
 
     if (a_dtype != b_dtype) {

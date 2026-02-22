@@ -139,6 +139,9 @@ _UOP_NEG, _UOP_ABS = 0, 1
 # Comparison ops
 _COP_LT, _COP_LE, _COP_GT, _COP_GE, _COP_EQ, _COP_NE = 0, 1, 2, 3, 4, 5
 
+_F64_DTYPE = np.dtype(np.float64)
+_C128_DTYPE = np.dtype(np.complex128)
+
 
 class _FlatIterator:
     """Simple flat iterator for ndarray.flat property."""
@@ -277,6 +280,11 @@ class ndarray:
 
     def _ensure_gpu(self) -> ndarray:
         """Ensure data is in a Metal buffer (lazy upload from CPU)."""
+        if self._dtype == _F64_DTYPE or self._dtype == _C128_DTYPE:
+            raise TypeError(
+                "float64/complex128 arrays cannot be uploaded to Metal GPU. "
+                "Use .astype(np.float32) to convert, or keep operations on CPU."
+            )
         if self._np_data is not None:
             backend = MetalBackend()
             data = np.ascontiguousarray(self._np_data)
@@ -854,7 +862,8 @@ class ndarray:
             if np_a is not None and np_b is not None:
                 sdtype = self._dtype
                 threshold = _BINARY_THRESHOLD.get(op_name)
-                if threshold is not None and np_a.size < threshold:
+                is_f64 = sdtype == _F64_DTYPE or other._dtype == _F64_DTYPE
+                if threshold is not None and (is_f64 or np_a.size < threshold):
                     np_func = _NP_BINARY.get(op_name)
                     if np_func is not None:
                         # Same dtype: skip result_dtype entirely (~350ns saved)
@@ -927,6 +936,12 @@ class ndarray:
             if op_func is not None:
                 return creation.array(op_func(a_np, b_np))
             return creation.array(a_np)
+
+        # Float64/complex128: always run on CPU (Metal doesn't support these)
+        if rdtype == _F64_DTYPE or rdtype == _C128_DTYPE:
+            np_func = _NP_BINARY.get(op_name)
+            if np_func is not None:
+                return self._cpu_binary(other, np_func, rdtype)
 
         # CPU fallback for small arrays (single dict lookup for threshold)
         threshold = _BINARY_THRESHOLD.get(op_name)
@@ -1006,7 +1021,8 @@ class ndarray:
         # ── Ultra-fast path: CPU-resident, non-complex ──
         if np_data is not None and self._dtype != np.complex64:
             threshold = _UNARY_THRESHOLD.get(op_name)
-            if threshold is not None and np_data.size < threshold:
+            is_f64 = self._dtype == _F64_DTYPE
+            if threshold is not None and (is_f64 or np_data.size < threshold):
                 np_func = _NP_UNARY.get(op_name)
                 if np_func is not None:
                     result = np_func(np_data)
@@ -1029,6 +1045,12 @@ class ndarray:
             if op_func is not None:
                 return creation.array(op_func(self.get()))
             return creation.array(self.get())
+
+        # Float64: always run on CPU (Metal doesn't support float64)
+        if self._dtype == _F64_DTYPE:
+            np_func = _NP_UNARY.get(op_name)
+            if np_func is not None:
+                return self._cpu_unary(np_func)
 
         # CPU fallback for GPU-resident small arrays
         threshold = _UNARY_THRESHOLD.get(op_name)
@@ -1063,6 +1085,22 @@ class ndarray:
                 else:
                     MetalBackend().synchronize()
                     result = op_func(self._get_view())
+                arr = ndarray.__new__(ndarray)
+                arr._buffer = None
+                arr._np_data = result
+                arr._shape = result.shape
+                arr._dtype = result.dtype
+                arr._strides = _c_contiguous_strides(result.shape)
+                arr._offset = 0
+                arr._base = None
+                return arr
+
+        # Float64: always run on CPU (Metal doesn't support float64)
+        if self._dtype == _F64_DTYPE:
+            op_func = _NP_PRED.get(op_name)
+            if op_func is not None:
+                np_data = self._np_data if self._np_data is not None else self.get()
+                result = op_func(np_data)
                 arr = ndarray.__new__(ndarray)
                 arr._buffer = None
                 arr._np_data = result
@@ -1245,7 +1283,8 @@ class ndarray:
             np_b = other._np_data
             if np_a is not None and np_b is not None and self._dtype != np.complex64:
                 np_func = _NP_CMP.get(op_name)
-                if np_func is not None and np_a.size < _GPU_THRESHOLD_MEMORY:
+                is_f64 = self._dtype == _F64_DTYPE or other._dtype == _F64_DTYPE
+                if np_func is not None and (is_f64 or np_a.size < _GPU_THRESHOLD_MEMORY):
                     sdtype = self._dtype
                     if sdtype is other._dtype or sdtype == other._dtype:
                         result = np_func(np_a, np_b)
@@ -1306,6 +1345,21 @@ class ndarray:
                 a_np = np.broadcast_to(a_np, out_shape)
                 b_np = np.broadcast_to(b_np, out_shape)
             return creation.array(op_func(a_np, b_np))
+
+        # Float64/complex128: always run on CPU (Metal doesn't support these)
+        if rdtype == _F64_DTYPE or rdtype == _C128_DTYPE:
+            np_func = _NP_CMP.get(op_name)
+            if np_func is not None:
+                a_np = self._np_data if self._np_data is not None else self.get()
+                b_np = other._np_data if other._np_data is not None else other.get()
+                a_np = a_np.astype(rdtype, copy=False)
+                b_np = b_np.astype(rdtype, copy=False)
+                if a_np.shape != b_np.shape:
+                    out_shape = np.broadcast_shapes(a_np.shape, b_np.shape)
+                    a_np = np.broadcast_to(a_np, out_shape)
+                    b_np = np.broadcast_to(b_np, out_shape)
+                result = np_func(a_np, b_np)
+                return ndarray._from_np_direct(result)
 
         # CPU fallback — comparisons are memory-bound, CPU SIMD wins
         if self.size < _GPU_THRESHOLD_MEMORY and other.size < _GPU_THRESHOLD_MEMORY:
@@ -1880,6 +1934,11 @@ class ndarray:
         dtype = np.dtype(dtype)
         if dtype == self._dtype:
             return self
+
+        # Float64/complex128: always handle on CPU (Metal doesn't support these)
+        if dtype == _F64_DTYPE or dtype == _C128_DTYPE or self._dtype == _F64_DTYPE or self._dtype == _C128_DTYPE:
+            np_data = self._np_data if self._np_data is not None else self.get()
+            return ndarray._from_np_direct(np_data.astype(dtype, copy=False))
 
         # Opt 2: CPU fallback for small arrays (astype is light, CPU-resident)
         if self.size < _GPU_THRESHOLD_LIGHT and self._dtype != np.complex64:
