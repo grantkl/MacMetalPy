@@ -427,6 +427,20 @@ def _collect_benchmarks(filter_category: str | None = None):
         except ImportError as e:
             print(f"  WARNING: Could not import bench_expanded: {e}")
 
+    # Import bench_float64
+    try:
+        from bench_float64 import BENCHMARKS as float64_benchmarks
+        benchmarks.extend(float64_benchmarks)
+    except ImportError:
+        try:
+            bench_dir = os.path.dirname(os.path.abspath(__file__))
+            if bench_dir not in sys.path:
+                sys.path.insert(0, bench_dir)
+            from bench_float64 import BENCHMARKS as float64_benchmarks
+            benchmarks.extend(float64_benchmarks)
+        except ImportError as e:
+            print(f"  WARNING: Could not import bench_float64: {e}")
+
     if filter_category:
         filter_cats = {c.strip().lower() for c in filter_category.split(",")}
         benchmarks = [b for b in benchmarks if b["category"].lower() in filter_cats]
