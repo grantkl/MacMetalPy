@@ -31,7 +31,7 @@ c = a @ b  # 🔥 Metal GPU goes brrr
 - **200+ NumPy-compatible functions** — creation, math, linalg, FFT, random, indexing, sorting, reductions, and more
 - **Async Metal dispatch** — operations fire off to the GPU and don't wait around
 - **RawKernel** — write your own Metal Shading Language kernels when the built-in riffs aren't enough
-- **15,000+ passing tests** — battle-tested across 10 dtypes and every edge case we could throw at it
+- **17,000+ passing tests** — battle-tested across 10 dtypes and every edge case we could throw at it
 - **Zero CUDA dependency** — pure Apple Silicon, pure Metal
 
 ---
@@ -97,6 +97,53 @@ eigenvalues = cp.linalg.eigvalsh(A @ A.T)  # Eigenvalues
 gpu_result = cp.sum(cp.random.randn(1000000, dtype=cp.float32))
 numpy_array = gpu_result.get()  # Transfer to NumPy
 ```
+
+---
+
+## Benchmarks — When Does the GPU Shred?
+
+MacMetalPy vs NumPy on an **M4 Mac Mini**, float32. The GPU's advantage grows with array size — small arrays have fixed dispatch overhead, but once you're past ~100K elements, Metal starts winning, and at 10M+ it absolutely rips.
+
+### The Scaling Story
+
+| Operation | 1K | 100K | 1M | 10M |
+|---|---|---|---|---|
+| `a + b` | 0.29x | 0.96x | 1.07x | — |
+| `sin(a)` | 0.73x | 1.03x | 3.42x | **3.71x** |
+| `exp(a)` | 0.76x | 1.09x | 3.68x | **4.45x** |
+| `tan(a)` | 0.81x | 1.08x | 8.64x | **14.0x** |
+| `arcsin(a)` | 0.82x | 1.04x | 12.7x | **16.5x** |
+| `power(a, b)` | 0.77x | 1.05x | 6.83x | **7.71x** |
+| `floor_divide` | 0.80x | 1.04x | 17.2x | **26.7x** |
+| `mod(a, b)` | 0.83x | 1.05x | 7.02x | **12.1x** |
+| `cumsum(a)` | 0.66x | 0.96x | 2.43x | **2.81x** |
+| `nanprod(a)` | 0.68x | 0.95x | 3.95x | **5.57x** |
+| `sort(a)` | 0.91x | 1.07x | 9.16x | — |
+
+> Values are speedup vs NumPy (higher = GPU faster). **Bold** = GPU wins by 2x+.
+
+### By Category at 10M Elements
+
+| Category | Avg Speedup | GPU Wins | Highlights |
+|---|---|---|---|
+| **Trig** | **8.0x** | 15/15 | Every trig op faster on GPU |
+| **Math** | **5.8x** | 8/14 | Transcendentals dominate |
+| **Ufuncs** | **5.3x** | 16/34 | `fmod` 17x, `heaviside` 20x |
+| **NaN ops** | **3.2x** | 8/9 | `nancumprod` 5.2x, `nanprod` 5.6x |
+| **Reductions** | **1.3x** | 5/13 | `prod` 4.2x, `cumsum` 2.8x |
+| **Comparisons** | **1.2x** | 3/4 | `less` 1.4x, `equal` 1.2x |
+| **Stats** | **1.3x** | 3/6 | `digitize` 2.1x |
+
+### The Rule of Thumb
+
+| Array Size | Who Wins | Why |
+|---|---|---|
+| **< 10K** | NumPy | GPU dispatch overhead dominates |
+| **10K – 100K** | Roughly even | Overhead amortized, GPU warming up |
+| **100K – 1M** | GPU pulls ahead | Parallel compute outpaces CPU SIMD |
+| **1M+** | **GPU shreds** | 3-27x on compute-heavy ops |
+
+> Run the benchmarks yourself: `python benchmarks/bench_vs_numpy.py --sizes small,medium,large,xlarge --serial`
 
 ---
 
