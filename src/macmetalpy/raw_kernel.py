@@ -53,5 +53,10 @@ class RawKernel:
                 grid = MetalSize(*grid)
             else:
                 raise ValueError("grid tuple must have 1-3 elements")
+        for a in args:
+            a._ensure_gpu()
         buffers = [a._buffer for a in args]
         backend.execute_kernel(self._source, self._func_name, grid, buffers)
+        # GPU kernel may have written to any buffer; clear stale CPU data
+        for a in args:
+            a._np_data = None

@@ -1,0 +1,4736 @@
+MACMETALPY TEST COVERAGE REPORT
+========================================
+Total test files:   80
+Total test classes:  1153
+Total test methods:  3416
+========================================
+
+=== tests/test_broadcasting.py ===
+TestBroadcastShapes:
+  test_same_shapes
+  test_trailing_broadcast
+  test_leading_broadcast
+  test_3d_broadcast
+  test_scalar_broadcast
+  test_empty_shapes
+  test_single_shape
+  test_multiple_shapes
+  test_complex_broadcast
+  test_incompatible_raises
+  test_incompatible_2d_raises
+TestBroadcastedOperations:
+  test_2d_plus_1d
+  test_column_plus_row
+  test_3d_plus_1d
+  test_scalar_broadcast
+  test_mul_broadcast
+  test_sub_broadcast
+  test_incompatible_shapes_raise
+
+=== tests/test_comparison.py ===
+TestComparisonFloat:
+  test_less_than
+  test_less_equal
+  test_greater_than
+  test_greater_equal
+  test_equal
+  test_not_equal
+TestComparisonScalar:
+  test_less_equal_scalar
+  test_greater_scalar
+  test_equal_scalar
+  test_not_equal_scalar
+TestBooleanLogic:
+  test_and
+  test_or
+  test_invert
+  test_ior
+TestMixedDtypeComparison:
+  test_float32_vs_int32
+  test_int32_vs_float32
+TestTradingBotPatterns:
+  test_trading_bot_fill_mask
+  test_bool_slice_assignment
+  test_ior_slice
+  test_comparison_returns_bool_dtype
+
+=== tests/test_complex_ops.py ===
+TestAngle:
+  test_basic
+  test_deg
+  test_real_input
+  test_single_value
+TestReal:
+  test_complex_input
+  test_real_input
+  test_2d_complex
+  test_scalar_complex
+TestImag:
+  test_complex_input
+  test_real_input
+  test_2d_complex
+TestConj:
+  test_complex_input
+  test_real_input
+  test_2d
+  test_conjugate_alias
+TestRealIfClose:
+  test_close_to_real
+  test_not_close_to_real
+  test_custom_tol
+  test_real_input
+TestRoundAlias:
+  test_round_exists
+  test_round_matches_around
+
+=== tests/test_config.py ===
+TestMacMetalConfigSingleton:
+  test_singleton_identity
+  test_get_config_returns_singleton
+TestGetConfig:
+  test_default_float64_behavior
+  test_default_warn_on_downcast
+  test_default_float_dtype
+TestSetConfig:
+  test_set_float64_behavior_downcast
+  test_set_float64_behavior_cpu_fallback
+  test_set_warn_on_downcast_false
+  test_set_warn_on_downcast_true
+  test_set_default_float_dtype
+  test_set_multiple_values
+TestSetConfigValidation:
+  test_invalid_float64_behavior_raises
+  test_invalid_float64_behavior_none_string_raises
+  test_none_values_do_not_change_config
+
+=== tests/test_config_integration.py ===
+TestFloat64Downcast:
+  test_array_downcasts_float64
+  test_array_float64_without_explicit_dtype
+TestWarnOnDowncast:
+  test_warn_on_downcast_true_emits_warning
+  test_warn_on_downcast_false_silent
+  test_no_warning_for_float32
+TestDefaultFloatDtype:
+  test_default_float32
+  test_default_float16
+TestConfigMidSession:
+  test_change_default_dtype_mid_session
+  test_change_warn_setting_mid_session
+
+=== tests/test_creation.py ===
+TestZeros:
+  test_values
+  test_default_dtype
+  test_1d
+  test_2d
+  test_3d
+TestOnes:
+  test_values
+  test_default_dtype
+  test_1d
+  test_2d
+TestEmpty:
+  test_shape_dtype
+  test_default_dtype
+  test_does_not_error
+TestFull:
+  test_scalar
+  test_zero
+  test_nan
+  test_inf
+  test_negative
+  test_default_dtype
+  test_float_fill
+TestArange:
+  test_int_step
+  test_float_step
+  test_negative_step
+  test_large_range
+  test_start_equals_stop
+  test_stop_only
+  test_start_stop
+TestArray:
+  test_from_list
+  test_from_nested_list
+  test_from_tuple
+  test_from_ndarray
+  test_scalar
+  test_empty
+  test_dtype_override
+  test_roundtrip
+  test_from_macmetalpy
+TestAsarray:
+  test_from_numpy
+  test_preserves_dtype
+  test_conversion
+  test_passthrough
+TestZerosLike:
+  test_same_dtype
+  test_override_dtype
+TestOnesLike:
+  test_same_dtype
+  test_override_dtype
+TestEmptyLike:
+  test_same_dtype
+  test_override_dtype
+TestFullLike:
+  test_same_dtype
+  test_override_dtype
+TestLinspace:
+  test_basic
+  test_num_1
+  test_num_0
+  test_negative_range
+TestEye:
+  test_square
+  test_non_square
+  test_n1
+  test_n4_default
+  test_default_dtype
+TestDiag:
+  test_1d_to_2d
+  test_2d_to_1d
+  test_k_offset
+TestIdentity:
+  test_n1
+  test_n4
+TestTri:
+  test_square
+  test_non_square
+  test_k_offset
+TestTriu:
+  test_k0
+  test_k_positive
+  test_k_negative
+TestTril:
+  test_k0
+  test_k_positive
+  test_k_negative
+TestLogspace:
+  test_basic
+  test_num_small
+TestMeshgrid:
+  test_2args
+  test_3args
+  test_ij_indexing
+  test_xy_indexing
+TestIndices:
+  test_2d
+  test_3d
+  test_shapes
+TestFromfunction:
+  test_1d
+  test_2d
+TestDiagflat:
+  test_basic
+  test_k_offset
+TestVander:
+  test_basic
+  test_n
+  test_increasing
+TestAsanyarray:
+  test_passthrough
+  test_from_list
+
+=== tests/test_creation_gaps.py ===
+TestGeomspace:
+  test_basic
+  test_num_50
+  test_num_1
+  test_fractional_endpoints
+  test_same_start_stop
+  test_default_num
+TestFrombuffer:
+  test_basic
+  test_with_count
+  test_with_offset
+  test_with_count_and_offset
+  test_bytearray_input
+TestLinspaceEndpoint:
+  test_endpoint_true
+  test_endpoint_false
+  test_endpoint_false_num_1
+  test_endpoint_false_large
+TestLinspaceRetstep:
+  test_retstep_true
+  test_retstep_false
+  test_retstep_endpoint_false
+  test_retstep_num_0
+
+=== tests/test_creation_linalg.py ===
+TestDiag:
+  test_diag_from_1d
+  test_diag_from_2d
+  test_diag_offset_positive
+  test_diag_offset_negative
+  test_diag_from_numpy_array
+TestIdentity:
+  test_identity_3
+  test_identity_dtype
+TestTri:
+  test_tri_square
+  test_tri_rect
+  test_tri_with_offset
+  test_tri_dtype
+TestTriu:
+  test_triu_basic
+  test_triu_offset
+  test_triu_from_numpy
+TestTril:
+  test_tril_basic
+  test_tril_offset
+TestLogspace:
+  test_logspace_basic
+  test_logspace_dtype
+  test_logspace_default_num
+TestMeshgrid:
+  test_meshgrid_2d
+  test_meshgrid_indexing_ij
+  test_meshgrid_numpy_input
+TestIndices:
+  test_indices_2d
+  test_indices_3d
+TestLinalgNorm:
+  test_vector_norm
+  test_matrix_frobenius_norm
+  test_norm_axis
+TestLinalgInv:
+  test_inv_2x2
+  test_inv_identity
+TestLinalgDet:
+  test_det_2x2
+  test_det_identity
+TestLinalgSolve:
+  test_solve_simple
+  test_solve_identity
+TestLinalgEigh:
+  test_eigh_symmetric
+TestLinalgSVD:
+  test_svd_basic
+  test_svd_square
+TestLinalgCholesky:
+  test_cholesky_spd
+  test_cholesky_reconstruction
+TestCopy:
+  test_copy_values
+  test_copy_is_independent
+TestAscontiguousarray:
+  test_ascontiguousarray_basic
+  test_ascontiguousarray_from_numpy
+TestTrace:
+  test_trace_basic
+  test_trace_offset
+TestDiagonal:
+  test_diagonal_basic
+  test_diagonal_offset
+  test_diagonal_negative_offset
+
+=== tests/test_creation_linalg_ext.py ===
+TestFromfunction:
+  test_basic
+  test_1d
+TestDiagflat:
+  test_basic
+  test_with_k
+  test_negative_k
+TestVander:
+  test_basic
+  test_increasing
+  test_with_N
+TestAsanyarray:
+  test_ndarray_passthrough
+  test_list_input
+  test_with_dtype
+TestMatrixPower:
+  test_square
+  test_zero_power
+TestQR:
+  test_reduced
+  test_mode_r
+TestEig:
+  test_basic
+TestEigvals:
+  test_basic
+TestEigvalsh:
+  test_symmetric
+TestCond:
+  test_basic
+TestMatrixRank:
+  test_full_rank
+  test_rank_deficient
+TestSlogdet:
+  test_basic
+TestLstsq:
+  test_overdetermined
+TestPinv:
+  test_basic
+TestVdot:
+  test_basic
+TestInner:
+  test_1d
+TestOuter:
+  test_basic
+TestTensordot:
+  test_basic
+TestEinsum:
+  test_matrix_multiply
+  test_trace
+TestKron:
+  test_basic
+TestMatmul:
+  test_basic
+TestCross:
+  test_3d
+
+=== tests/test_creation_params_final.py ===
+TestAsarrayChkfinite:
+  test_basic_list
+  test_with_dtype
+  test_raises_on_nan
+  test_raises_on_inf
+  test_raises_on_neg_inf
+  test_from_ndarray
+TestFromiter:
+  test_basic
+  test_with_count
+  test_int_dtype
+TestFromstring:
+  test_basic_sep
+  test_comma_sep
+  test_with_count
+TestIndicesSparse:
+  test_dense_default
+  test_sparse_true
+  test_sparse_false
+TestAsfarray:
+  test_basic_list
+  test_from_int_array
+  test_with_float32_dtype
+TestInterpPeriod:
+  test_basic_no_period
+  test_with_period
+TestUnwrapPeriod:
+  test_basic_no_period
+  test_with_period
+TestPiecewise:
+  test_basic
+  test_with_ndarray_conditions
+TestLoadParams:
+  test_load_with_encoding
+  test_load_with_fix_imports
+  test_load_with_all_params
+TestSpacing:
+  test_basic
+  test_multiple_values
+TestIsnat:
+  test_nat
+
+=== tests/test_dtype_format_final.py ===
+TestIntegerDtypeAliases:
+  test_int8_is_numpy_int8
+  test_uint8_is_numpy_uint8
+  test_byte_is_numpy_byte
+  test_ubyte_is_numpy_ubyte
+  test_short_is_numpy_short
+  test_ushort_is_numpy_ushort
+  test_intc_is_numpy_intc
+  test_uintc_is_numpy_uintc
+  test_uint_is_numpy_uint
+  test_longlong_is_numpy_longlong
+  test_ulonglong_is_numpy_ulonglong
+TestFloatDtypeAliases:
+  test_single_is_numpy_single
+  test_double_is_numpy_double
+  test_half_is_numpy_half
+  test_longdouble_is_numpy_longdouble
+TestComplexDtypeAliases:
+  test_csingle_is_numpy_csingle
+  test_cdouble_is_numpy_cdouble
+  test_clongdouble_is_numpy_clongdouble
+  test_complex128_is_numpy_complex128
+TestAbstractTypes:
+  test_complexfloating
+  test_floating
+  test_integer
+  test_signedinteger
+  test_unsignedinteger
+  test_number
+  test_generic
+  test_inexact
+TestUtilityReexports:
+  test_dtype_is_numpy_dtype
+  test_dtype_can_create
+  test_broadcast_is_numpy_broadcast
+  test_broadcast_usage
+  test_flatiter_is_numpy_flatiter
+  test_nditer_is_numpy_nditer
+  test_nditer_usage
+TestArray2String:
+  test_basic
+  test_separator
+  test_precision
+  test_2d
+  test_matches_numpy
+TestArrayRepr:
+  test_basic
+  test_precision
+  test_matches_numpy
+TestArrayStr:
+  test_basic
+  test_matches_numpy
+TestBaseRepr:
+  test_binary
+  test_hex
+  test_octal
+  test_with_padding
+TestBinaryRepr:
+  test_basic
+  test_with_width
+  test_negative
+  test_zero
+TestFormatFloatPositional:
+  test_basic
+  test_precision
+  test_trim
+  test_sign
+TestFormatFloatScientific:
+  test_basic
+  test_precision
+  test_exp_digits
+TestTypename:
+  test_float
+  test_double
+  test_int
+  test_long
+TestMintypecode:
+  test_basic
+  test_with_default
+  test_complex
+
+=== tests/test_dtype_system.py ===
+TestResolveDtype:
+  test_supported_dtype_passthrough
+  test_none_defaults_to_float32
+  test_float64_downcast_to_float32
+  test_float64_downcast_emits_warning
+  test_float64_downcast_no_warning_when_disabled
+  test_complex128_downcast_to_complex64
+  test_complex64_accepted
+  test_unsupported_dtype_raises_typeerror
+  test_string_dtype_passthrough
+TestResultDtype:
+  test_result_dtype_matches_numpy
+TestTypeMapping:
+  test_numpy_to_metal_roundtrip
+  test_numpy_to_metal_unsupported_raises
+  test_metal_to_numpy_unknown_raises
+  test_metal_type_names_exist
+TestArrayRoundtrip:
+  test_create_and_get
+TestBinaryOpCrossDtype:
+  test_add_result_dtype
+
+=== tests/test_dtype_utils.py ===
+TestCanCast:
+  test_safe_cast_int16_to_float32
+  test_unsafe_cast
+  test_same_type_cast
+  test_no_cast
+  test_with_macmetalpy_array
+  test_equiv_cast
+  test_safe_downcast_fails
+TestPromoteTypes:
+  test_int_float_promotion
+  test_same_type
+  test_int_types
+  test_bool_int
+TestResultType:
+  test_two_dtypes
+  test_with_macmetalpy_array
+  test_multiple_types
+TestCommonType:
+  test_float_arrays
+  test_int_array
+TestMinScalarType:
+  test_small_int
+  test_float
+  test_large_int
+TestFinfo:
+  test_float32
+  test_float16
+  test_float64
+  test_dtype_object
+TestIinfo:
+  test_int32
+  test_int64
+  test_uint32
+  test_int16
+TestIssubdtype:
+  test_float_is_floating
+  test_int_is_integer
+  test_float_is_not_integer
+  test_bool_is_generic
+  test_complex_is_number
+TestNdim:
+  test_macmetalpy_1d
+  test_macmetalpy_2d
+  test_macmetalpy_scalar
+  test_python_scalar
+  test_python_list
+TestShape:
+  test_macmetalpy_1d
+  test_macmetalpy_2d
+  test_macmetalpy_scalar
+  test_python_scalar
+  test_python_list
+TestSize:
+  test_macmetalpy_1d
+  test_macmetalpy_2d
+  test_macmetalpy_2d_axis0
+  test_macmetalpy_2d_axis1
+  test_python_list
+  test_scalar
+TestConstants:
+  test_euler_gamma
+  test_euler_gamma_value
+TestDtypeAliases:
+  test_complex64
+  test_int_
+  test_float_
+  test_complex_
+  test_intp
+  test_uintp
+
+=== tests/test_edge_shapes.py ===
+TestZeroSize1D:
+  test_zeros_empty_1d
+  test_array_empty_list
+TestZeroSize2D:
+  test_zeros_0_3
+  test_zeros_3_0
+TestZeroSizeReductions:
+  test_sum_empty_returns_zero
+  test_mean_empty_returns_nan
+TestZeroSizeConcatStack:
+  test_concatenate_with_empty
+  test_concatenate_two_empty
+TestZeroSizeElementwise:
+  test_add_empty_arrays
+  test_sqrt_empty
+  test_neg_empty
+TestScalar0D:
+  test_scalar_creation
+  test_scalar_get_roundtrip
+TestScalar0DArithmetic:
+  test_scalar_add
+  test_scalar_mul
+TestScalar0DReduction:
+  test_sum_0d
+  test_max_0d
+  test_min_0d
+  test_mean_0d
+TestSingleElementReductions:
+  test_sum_single
+  test_max_single
+  test_min_single
+TestShapeDifferences:
+  test_shape_1_tuple
+  test_shape_1_1_tuple
+  test_shape_scalar
+  test_squeeze_1_1_to_scalar
+  test_reshape_scalar_to_1
+  test_size_comparison
+  test_strides_size1
+TestLargeArray:
+  test_large_creation
+  test_large_sum
+  test_large_elementwise
+
+=== tests/test_elementwise.py ===
+TestArithmeticFloat:
+  test_add
+  test_sub
+  test_mul
+  test_div
+  test_pow
+TestArithmeticScalar:
+  test_add_scalar
+  test_sub_scalar
+  test_mul_scalar
+  test_div_scalar
+  test_pow_scalar
+TestReverseOperators:
+  test_radd
+  test_rsub
+  test_rmul
+  test_rtruediv
+  test_rpow
+TestUnaryOperators:
+  test_neg
+  test_abs
+TestMathFunctions:
+  test_sqrt
+  test_exp
+  test_log
+  test_abs_function
+  test_power
+TestArithmeticInt:
+  test_add_int
+  test_sub_int
+  test_mul_int
+
+=== tests/test_error_handling.py ===
+TestCreationErrors:
+  test_arange_step_zero
+  test_array_unsupported_dtype
+  test_array_unsupported_dtype_uint8
+TestReshapeErrors:
+  test_reshape_incompatible_size
+  test_reshape_two_negative_ones
+  test_reshape_incompatible_with_neg1
+  test_reshape_zero_size_incompatible
+TestSqueezeErrors:
+  test_squeeze_non_size1_axis
+  test_squeeze_non_size1_axis_negative
+TestMatmulErrors:
+  test_matmul_shape_mismatch
+  test_matmul_1d_inner_product
+  test_matmul_3d_raises
+TestLinalgErrors:
+  test_inv_non_square
+  test_inv_singular
+  test_det_non_square
+  test_solve_singular
+  test_cholesky_non_positive_definite
+  test_cholesky_non_square
+TestBroadcastErrors:
+  test_incompatible_shapes_add
+  test_incompatible_shapes_mul
+  test_broadcast_to_incompatible
+TestConcatStackErrors:
+  test_concatenate_shape_mismatch
+  test_stack_shape_mismatch
+  test_concatenate_empty_list
+TestIndexErrors:
+  test_getitem_out_of_bounds_positive
+  test_getitem_out_of_bounds_negative
+TestScalarConversionErrors:
+  test_float_on_multi_element
+  test_int_on_multi_element
+  test_len_on_0d
+  test_float_on_size1_ok
+  test_int_on_size1_ok
+TestSplitErrors:
+  test_split_uneven
+  test_split_too_many_sections
+TestInvalidAxisErrors:
+  test_sum_invalid_axis
+  test_concatenate_invalid_axis
+TestRawKernelErrors:
+  test_bad_grid_tuple_4_elements
+  test_bad_grid_tuple_5_elements
+
+=== tests/test_extra.py ===
+TestLinspace:
+  test_basic
+  test_dtype
+  test_single_element
+  test_many_elements
+TestEye:
+  test_basic
+  test_non_square
+  test_dtype
+TestDot:
+  test_dot_2d
+  test_dot_1d
+TestWhere:
+  test_basic
+  test_scalar_values
+TestClip:
+  test_basic
+  test_no_clip_needed
+TestConcatenate:
+  test_basic
+  test_three_arrays
+  test_2d_axis0
+TestStack:
+  test_basic
+  test_axis1
+TestVstackHstack:
+  test_vstack
+  test_hstack
+
+=== tests/test_fft.py ===
+TestFft:
+  test_power_of_2
+  test_prime_length
+  test_odd_length
+  test_with_n
+  test_single_element
+  test_axis
+TestIfft:
+  test_basic
+  test_roundtrip_power_of_2
+  test_roundtrip_prime
+  test_roundtrip_odd
+TestFft2:
+  test_basic
+  test_with_s
+  test_roundtrip
+TestIfft2:
+  test_basic
+TestFftn:
+  test_basic
+  test_with_s
+  test_roundtrip
+TestIfftn:
+  test_basic
+TestRfft:
+  test_basic
+  test_with_n
+  test_roundtrip
+TestIrfft:
+  test_basic
+TestRfft2:
+  test_basic
+  test_roundtrip
+TestIrfft2:
+  test_basic
+TestRfftn:
+  test_basic
+  test_roundtrip
+TestIrfftn:
+  test_basic
+TestHfft:
+  test_basic
+  test_roundtrip
+TestIhfft:
+  test_basic
+TestFftfreq:
+  test_basic
+  test_with_d
+  test_values_check
+  test_odd_n
+TestRfftfreq:
+  test_basic
+  test_with_d
+  test_values_check
+TestFftshift:
+  test_1d
+  test_2d
+  test_axes
+TestIfftshift:
+  test_1d
+  test_2d
+  test_roundtrip
+  test_axes
+
+=== tests/test_fft_sort_idx_params.py ===
+TestFftNorm:
+  test_fft_norm
+  test_ifft_norm
+  test_fft2_norm
+  test_ifft2_norm
+  test_fftn_norm
+  test_ifftn_norm
+  test_rfft_norm
+  test_irfft_norm
+  test_rfft2_norm
+  test_irfft2_norm
+  test_rfftn_norm
+  test_irfftn_norm
+  test_hfft_norm
+  test_ihfft_norm
+  test_fft_norm_default_matches_none
+TestSortParams:
+  test_sort_kind
+  test_sort_kind_default_unchanged
+  test_argsort_kind
+  test_argsort_kind_default_unchanged
+  test_partition_kind
+  test_partition_default_unchanged
+  test_argpartition_kind
+  test_argpartition_default_unchanged
+  test_sort_order_param_accepted
+  test_argsort_order_param_accepted
+TestSearchsortedParams:
+  test_sorter
+  test_sorter_none_default
+  test_sorter_with_side
+TestTakeParams:
+  test_take_mode
+  test_take_mode_default_is_raise
+  test_take_out
+  test_take_out_with_axis
+TestChooseParams:
+  test_choose_mode
+  test_choose_out
+  test_choose_default_mode_is_raise
+TestCompressParams:
+  test_compress_out
+  test_compress_out_with_axis
+  test_compress_default_no_out
+TestPutParams:
+  test_put_mode
+  test_put_default_mode_is_raise
+
+=== tests/test_final_param_gaps.py ===
+TestFixOut:
+  test_fix_basic
+  test_fix_out
+TestGradientAxis:
+  test_gradient_1d
+  test_gradient_2d_axis0
+  test_gradient_2d_axis1
+  test_gradient_edge_order
+TestAllWhere:
+  test_all_basic
+  test_all_where_mask
+  test_all_where_axis
+TestAnyWhere:
+  test_any_basic
+  test_any_where_mask
+  test_any_where_axis
+TestAmaxInitialWhere:
+  test_amax_initial
+  test_amax_initial_smaller
+  test_amax_where
+  test_amax_where_axis
+TestAminInitialWhere:
+  test_amin_initial
+  test_amin_initial_larger
+  test_amin_where
+  test_amin_where_axis
+
+=== tests/test_functional.py ===
+TestVectorize:
+  test_basic_scalar_function
+  test_two_arguments
+  test_otypes
+  test_excluded
+  test_2d_input
+  test_preserves_shape
+  test_with_numpy_array_input
+TestApplyAlongAxis:
+  test_1d_function_axis0
+  test_1d_function_axis1
+  test_sorted_along_axis
+  test_custom_function
+  test_3d_input
+TestApplyOverAxes:
+  test_sum_over_single_axis
+  test_sum_over_two_axes
+  test_preserves_ndim
+
+=== tests/test_index_tricks.py ===
+TestC:
+  test_basic_arrays
+  test_slice_range
+  test_same_length_arrays
+  test_single_element_arrays
+  test_2d_arrays
+TestR:
+  test_basic_arrays
+  test_slice_range
+  test_multiple_slices
+  test_with_step
+  test_scalar
+  test_string_directive
+TestS:
+  test_single_slice
+  test_multi_dim_slice
+  test_integer_index
+  test_ellipsis
+  test_step
+  test_newaxis
+TestMgrid:
+  test_basic_2d
+  test_1d
+  test_with_step
+  test_float_step
+  test_complex_step
+TestOgrid:
+  test_basic_2d
+  test_1d
+  test_with_step
+  test_shape_2d
+  test_complex_step
+
+=== tests/test_indexing.py ===
+TestTake:
+  test_basic
+  test_axis0
+  test_axis1
+  test_negative_idx
+  test_ndarray_indices
+TestTakeAlongAxis:
+  test_axis0
+  test_axis1
+  test_argmax_usage
+TestPut:
+  test_basic
+  test_returns_none
+  test_ndarray_indices
+TestPutAlongAxis:
+  test_basic
+TestPutmask:
+  test_basic
+  test_returns_none
+  test_2d
+TestPlace:
+  test_basic
+  test_returns_none
+TestChoose:
+  test_basic
+  test_two_choices
+TestCompress:
+  test_basic
+  test_with_axis
+TestSelect:
+  test_basic
+TestExtract:
+  test_basic
+  test_2d
+TestDiagIndices:
+  test_basic
+  test_ndim3
+TestDiagIndicesFrom:
+  test_basic
+TestTrilIndices:
+  test_basic
+  test_with_k
+  test_with_m
+TestTrilIndicesFrom:
+  test_basic
+  test_with_k
+TestTriuIndices:
+  test_basic
+  test_with_k
+  test_with_m
+TestTriuIndicesFrom:
+  test_basic
+  test_with_k
+TestRavelMultiIndex:
+  test_2d
+  test_3d
+  test_plain_lists
+TestUnravelIndex:
+  test_2d
+  test_3d
+  test_plain_indices
+TestFillDiagonal:
+  test_square
+  test_rectangular
+  test_returns_none
+TestNonzero:
+  test_basic
+  test_all_zero
+  test_all_nonzero
+TestFlatnonzero:
+  test_basic
+  test_all_zero
+  test_all_nonzero
+TestArgwhere:
+  test_basic
+  test_all_zero
+  test_all_nonzero
+TestIx:
+  test_2d
+  test_3d
+  test_plain_arrays
+  test_single_arg
+
+=== tests/test_indexing_funcs.py ===
+TestTake:
+  test_take_1d
+  test_take_axis
+  test_take_plain_indices
+TestTakeAlongAxis:
+  test_basic
+TestPut:
+  test_put_basic
+  test_put_returns_none
+  test_put_ndarray_indices
+TestPutAlongAxis:
+  test_basic
+TestPutmask:
+  test_basic
+  test_returns_none
+TestPlace:
+  test_basic
+  test_returns_none
+TestChoose:
+  test_basic
+TestCompress:
+  test_basic
+  test_with_axis
+TestSelect:
+  test_basic
+TestExtract:
+  test_basic
+TestDiagIndices:
+  test_basic
+  test_ndim3
+TestDiagIndicesFrom:
+  test_basic
+TestTrilIndices:
+  test_basic
+  test_with_k
+  test_with_m
+TestTrilIndicesFrom:
+  test_basic
+TestTriuIndices:
+  test_basic
+  test_with_k
+  test_with_m
+TestTriuIndicesFrom:
+  test_basic
+  test_with_k
+TestRavelMultiIndex:
+  test_basic
+TestUnravelIndex:
+  test_basic
+  test_plain_indices
+TestFillDiagonal:
+  test_basic
+  test_returns_none
+  test_rectangular
+TestNonzero:
+  test_basic
+  test_2d
+TestFlatnonzero:
+  test_basic
+TestArgwhere:
+  test_basic
+  test_2d
+TestIx:
+  test_basic
+  test_plain_arrays
+
+=== tests/test_inplace_ops.py ===
+TestInplaceArrayArray:
+  test_array_array
+TestInplaceScalar:
+  test_scalar_rhs
+TestInplaceBroadcast:
+  test_broadcast_rhs
+TestInplacePreservesDtype:
+  test_dtype_preserved
+TestInplaceBool:
+  test_ior_bool
+  test_iand_bool
+TestInplaceOnView:
+  test_reshape_view_iadd
+  test_slice_view_iadd
+
+=== tests/test_interop.py ===
+TestLen:
+  test_len_1d
+  test_len_2d
+  test_len_0d_error
+TestFloat:
+  test_float_size1_ok
+  test_float_sizeN_error
+TestInt:
+  test_int_size1_ok
+  test_int_sizeN_error
+TestReprStr:
+  test_repr_includes_values
+  test_str_matches_values
+  test_repr_scalar
+  test_str_scalar
+
+=== tests/test_io_gaps.py ===
+TestSaveLoad:
+  test_roundtrip_1d
+  test_roundtrip_2d
+  test_roundtrip_float16
+  test_auto_npy_extension
+TestSavezLoad:
+  test_roundtrip_positional
+  test_roundtrip_keyword
+TestSavezCompressed:
+  test_roundtrip
+  test_compressed_smaller
+
+=== tests/test_linalg.py ===
+TestNorm:
+  test_vector_norm_default
+  test_vector_norm_ord
+  test_matrix_frobenius
+  test_matrix_norm_ord
+  test_norm_axis
+TestInv:
+  test_basic
+  test_1x1
+  test_identity
+  test_singular_error
+  test_non_square_error
+TestDet:
+  test_basic
+  test_identity_equals_one
+  test_singular_equals_zero
+  test_1x1
+TestSolve:
+  test_basic
+  test_identity
+  test_singular_error
+TestEigh:
+  test_basic
+  test_identity
+  test_diagonal
+TestSVD:
+  test_basic
+  test_full_matrices_false
+  test_full_matrices_true
+TestCholesky:
+  test_basic
+  test_non_pd_error
+TestMatrixPower:
+  test_powers
+  test_inverse_power
+TestQR:
+  test_reduced
+  test_tall
+  test_wide
+  test_mode_r
+TestEig:
+  test_basic
+  test_diagonal
+  test_symmetric
+TestEigvals:
+  test_basic
+  test_diagonal
+TestEigvalsh:
+  test_symmetric
+  test_diagonal
+TestCond:
+  test_basic
+  test_identity
+TestMatrixRank:
+  test_full_rank
+  test_rank_deficient
+  test_singular
+TestSlogdet:
+  test_basic
+  test_singular
+TestLstsq:
+  test_overdetermined
+  test_underdetermined
+TestPinv:
+  test_basic
+  test_non_square
+TestVdot:
+  test_basic
+  test_2d
+TestInner:
+  test_1d
+  test_2d
+TestOuter:
+  test_basic
+  test_large
+TestTensordot:
+  test_basic
+  test_axes_tuple
+TestEinsum:
+  test_matrix_multiply
+  test_trace
+  test_diagonal
+TestKron:
+  test_basic
+  test_1d
+TestMatmul:
+  test_basic
+  test_vector_matrix
+  test_square
+TestCross:
+  test_3d
+  test_2d
+
+=== tests/test_linalg_gaps.py ===
+TestLinAlgError:
+  test_is_exception
+  test_can_raise
+  test_message
+TestMultiDot:
+  test_two_matrices
+  test_three_matrices
+  test_four_matrices
+  test_with_out
+TestTensorsolve:
+  test_basic
+  test_2x2_identity
+TestTensorinv:
+  test_ind1
+  test_identity_like
+
+=== tests/test_linalg_logic_params.py ===
+TestOuterOut:
+  test_outer_default_no_out
+  test_outer_with_out
+TestEinsumParams:
+  test_einsum_default
+  test_einsum_with_out
+  test_einsum_with_optimize
+  test_einsum_out_and_optimize
+TestIn1dKind:
+  test_in1d_default
+  test_in1d_with_kind_none
+  test_in1d_with_kind_sort
+  test_in1d_with_invert_and_kind
+TestIsinKind:
+  test_isin_default
+  test_isin_with_kind_none
+  test_isin_with_kind_sort
+  test_isin_with_invert_and_kind
+TestSvdParams:
+  test_svd_default
+  test_svd_compute_uv_false
+  test_svd_hermitian
+TestNormKeepdims:
+  test_norm_default
+  test_norm_keepdims_false
+  test_norm_keepdims_true
+TestEighUplo:
+  test_eigh_default
+  test_eigh_uplo_L
+  test_eigh_uplo_U
+TestEigvalshUplo:
+  test_eigvalsh_default
+  test_eigvalsh_uplo_L
+  test_eigvalsh_uplo_U
+
+=== tests/test_logic_bitwise.py ===
+TestLogicalAnd:
+  test_basic
+  test_mixed_truthy
+TestLogicalOr:
+  test_basic
+  test_mixed_truthy
+TestLogicalNot:
+  test_basic
+  test_zeros
+TestLogicalXor:
+  test_basic
+TestComparisonDtypePairs:
+  test_dtype_pair
+TestComparisonEdgeCases:
+  test_nan
+  test_inf
+TestIsneginf:
+  test_special_values
+TestIsposinf:
+  test_special_values
+TestIscomplex:
+  test_real_array
+  test_complex_array
+TestIsreal:
+  test_real_array
+  test_complex_array
+TestIsscalar:
+  test_python_scalar
+  test_array_not_scalar
+  test_0d_array
+TestArrayEquiv:
+  test_equal
+  test_not_equal
+  test_broadcast_equiv
+TestBitwiseAnd:
+  test_basic
+TestBitwiseOr:
+  test_basic
+TestBitwiseXor:
+  test_basic
+TestInvert:
+  test_basic
+  test_specific_values
+TestLeftShift:
+  test_basic
+  test_shift_amounts
+TestRightShift:
+  test_basic
+  test_shift_amounts
+TestPackbits:
+  test_basic
+  test_all_ones
+  test_all_zeros
+TestUnpackbits:
+  test_basic
+  test_roundtrip
+TestGcd:
+  test_basic
+  test_zero
+  test_negative
+TestLcm:
+  test_basic
+  test_zero
+  test_negative
+
+=== tests/test_logic_gaps.py ===
+TestIscomplexobj:
+  test_real_array_is_not_complex
+  test_int_array_is_not_complex
+  test_complex_array_is_complex
+  test_bool_array_is_not_complex
+  test_python_float
+  test_python_complex
+  test_python_int
+  test_numpy_complex_array
+  test_numpy_real_array
+TestIsrealobj:
+  test_real_array_is_real
+  test_int_array_is_real
+  test_complex_array_is_not_real
+  test_bool_array_is_real
+  test_python_float
+  test_python_complex
+  test_python_int
+  test_numpy_complex_array
+  test_numpy_real_array
+TestIsfortran:
+  test_c_contiguous_array
+  test_1d_array
+  test_scalar_array
+  test_always_false
+  test_3d_array
+
+=== tests/test_manip_ext.py ===
+(standalone functions):
+  test_reshape
+  test_reshape_plain
+  test_transpose
+  test_transpose_axes
+  test_rollaxis
+  test_atleast_1d_scalar
+  test_atleast_1d_multi
+  test_atleast_2d
+  test_atleast_3d
+  test_dstack
+  test_column_stack
+  test_concat
+  test_concat_axis1
+  test_dsplit
+  test_hsplit
+  test_vsplit
+  test_delete
+  test_delete_axis
+  test_append
+  test_append_axis
+  test_resize
+  test_trim_zeros
+  test_trim_zeros_front
+  test_fliplr
+  test_flipud
+  test_rot90
+  test_rot90_k2
+  test_broadcast_arrays
+  test_copyto
+  test_pad_constant
+  test_pad_2d
+
+=== tests/test_manipulation.py ===
+TestReshape:
+  test_1d_to_2d
+  test_2d_to_1d
+  test_infer_dim
+  test_3d_reshape
+TestTranspose:
+  test_default_2d
+  test_axes_3d
+  test_reverse_axes
+TestRavel:
+  test_basic
+TestSqueeze:
+  test_all_dims
+  test_specific_axis
+  test_no_squeeze_needed
+TestTile:
+  test_scalar_reps_1d
+  test_tuple_reps_2d
+  test_1d_to_2d_reps
+  test_3d
+TestRepeat:
+  test_flat
+  test_axis0
+  test_axis1
+  test_no_axis_2d
+TestFlip:
+  test_1d
+  test_2d_no_axis
+  test_2d_axis0
+  test_2d_axis1
+TestFliplr:
+  test_basic
+TestFlipud:
+  test_basic
+TestRot90:
+  test_k1
+  test_k_values
+TestRoll:
+  test_int_shift
+  test_negative_shift
+  test_with_axis
+TestSplit:
+  test_equal_1d
+  test_indices_1d
+  test_2d_axis0
+TestArraySplit:
+  test_unequal
+  test_equal
+TestHsplit:
+  test_basic
+TestVsplit:
+  test_basic
+TestDsplit:
+  test_basic
+TestConcatenate:
+  test_1d
+  test_2d_axis0
+  test_2d_axis1
+  test_three_arrays
+TestStack:
+  test_1d
+  test_axis1
+TestVstack:
+  test_1d
+  test_2d
+TestHstack:
+  test_1d
+  test_2d
+TestDstack:
+  test_1d
+  test_2d
+TestColumnStack:
+  test_1d
+  test_2d
+TestConcat:
+  test_1d
+  test_axis1
+TestMoveaxis:
+  test_basic
+  test_swap
+  test_noop
+TestSwapaxes:
+  test_2d
+  test_3d
+  test_noop
+TestRollaxis:
+  test_basic
+  test_to_end
+TestBroadcastTo:
+  test_basic
+  test_1d_to_2d
+  test_scalar_like
+TestBroadcastArrays:
+  test_basic
+  test_same_shape
+TestAtleast1d:
+  test_scalar
+  test_1d
+  test_2d
+  test_multi
+TestAtleast2d:
+  test_1d
+  test_2d_noop
+  test_3d_noop
+TestAtleast3d:
+  test_1d
+  test_2d
+  test_3d_noop
+TestDelete:
+  test_1d
+  test_axis0
+  test_single_index
+TestAppend:
+  test_1d
+  test_axis0
+TestResize:
+  test_basic
+  test_larger
+TestTrimZeros:
+  test_both
+  test_front
+  test_back
+TestCopyto:
+  test_basic
+  test_2d
+TestPad:
+  test_constant_1d
+  test_constant_2d
+  test_edge_1d
+
+=== tests/test_manipulation_gaps.py ===
+TestBlock:
+  test_1d_list
+  test_2d_blocks
+  test_single_array
+  test_nested_2x2
+  test_mixed_numpy_macmetalpy
+TestInsert:
+  test_1d_single
+  test_1d_multiple_values
+  test_at_beginning
+  test_at_end
+  test_2d_axis0
+  test_2d_axis1
+  test_no_axis_flattens
+TestBroadcastShapes:
+  test_simple
+  test_1d_broadcast
+  test_2d_broadcast
+  test_different_ndim
+  test_three_shapes
+  test_scalar
+  test_incompatible
+  test_3d_broadcast
+TestAsfortranarray:
+  test_basic
+  test_1d
+  test_dtype_override
+  test_from_numpy_input
+
+=== tests/test_manipulation_gpu.py ===
+TestManipulationGPU:
+  test_flip_1d
+  test_flip_2d_axis0
+  test_fliplr
+  test_flipud
+  test_roll_1d
+  test_roll_negative
+  test_tile_1d
+  test_repeat_1d
+  test_rot90_k1
+  test_rot90_k2
+  test_rot90_k3
+  test_broadcast_to_scalar
+  test_broadcast_to_1d
+  test_pad_1d_constant
+  test_pad_1d_nonzero_fill
+
+=== tests/test_math_ext.py ===
+TestSign:
+  test_sign_positive
+  test_sign_negative
+  test_sign_zero
+  test_sign_mixed
+TestFloor:
+  test_floor_positive
+  test_floor_negative
+  test_floor_mixed
+TestCeil:
+  test_ceil_positive
+  test_ceil_negative
+  test_ceil_mixed
+TestSin:
+  test_sin_basic
+  test_sin_zero
+TestCos:
+  test_cos_basic
+  test_cos_zero
+TestTan:
+  test_tan_basic
+TestArcsin:
+  test_arcsin_basic
+  test_arcsin_zero
+TestArccos:
+  test_arccos_basic
+  test_arccos_one
+TestArctan:
+  test_arctan_basic
+  test_arctan_zero
+TestSinh:
+  test_sinh_basic
+TestCosh:
+  test_cosh_basic
+TestTanh:
+  test_tanh_basic
+  test_tanh_zero
+TestLog2:
+  test_log2_basic
+  test_log2_powers_of_two
+TestLog10:
+  test_log10_basic
+  test_log10_powers_of_ten
+TestSquare:
+  test_square_positive
+  test_square_negative
+  test_square_zero
+TestNegative:
+  test_negative_basic
+  test_negative_zero
+TestAround:
+  test_around_default
+  test_around_decimals
+  test_around_negative_decimals
+TestRound:
+  test_round_alias
+TestMod:
+  test_mod_basic
+  test_mod_negative
+TestRemainder:
+  test_remainder_alias
+
+=== tests/test_math_ops.py ===
+TestSqrt:
+  test_basic
+  test_zero
+  test_one
+TestExp:
+  test_basic
+  test_zero
+TestLog:
+  test_basic
+  test_one
+TestSign:
+  test_basic
+  test_zero
+TestFloor:
+  test_basic
+  test_negative
+TestCeil:
+  test_basic
+  test_negative
+TestSin:
+  test_basic
+  test_zero
+TestCos:
+  test_basic
+  test_zero
+TestTan:
+  test_basic
+  test_zero
+TestArcsin:
+  test_basic
+  test_zero
+  test_boundary
+TestArccos:
+  test_basic
+  test_boundary
+TestArctan:
+  test_basic
+  test_zero
+TestSinh:
+  test_basic
+  test_zero
+TestCosh:
+  test_basic
+  test_zero
+TestTanh:
+  test_basic
+  test_zero
+TestLog2:
+  test_basic
+  test_powers_of_two
+TestLog10:
+  test_basic
+  test_powers_of_ten
+TestSquare:
+  test_basic
+  test_zero
+  test_negative
+TestNegative:
+  test_basic
+  test_zero
+TestAbs:
+  test_basic
+  test_zero
+TestPower:
+  test_basic
+  test_scalar
+  test_zero_exponent
+TestDot:
+  test_1d
+  test_2d
+TestMod:
+  test_basic
+  test_negative
+TestRemainder:
+  test_alias
+TestAround:
+  test_basic
+  test_decimals
+  test_negative_decimals
+  test_round_alias
+TestWhere:
+  test_basic
+  test_scalar_condition
+TestClip:
+  test_basic
+  test_float_bounds
+TestConcatenate:
+  test_basic
+  test_multiple_arrays
+TestStack:
+  test_basic
+  test_axis1
+TestVstack:
+  test_basic
+TestHstack:
+  test_basic
+TestIsnan:
+  test_basic
+  test_no_nan
+  test_all_nan
+TestIsinf:
+  test_basic
+  test_no_inf
+TestIsfinite:
+  test_basic
+  test_all_finite
+TestIsclose:
+  test_basic
+  test_nan_not_close
+TestAllclose:
+  test_close
+  test_not_close
+TestNanToNum:
+  test_basic
+  test_custom_values
+TestArrayEqual:
+  test_equal
+  test_not_equal
+TestCountNonzero:
+  test_basic
+  test_with_zeros
+TestCopy:
+  test_basic
+TestAscontiguousarray:
+  test_basic
+TestTrace:
+  test_basic
+  test_offset
+TestDiagonal:
+  test_basic
+  test_offset
+TestSinc:
+  test_basic
+  test_zero
+TestI0:
+  test_basic
+TestConvolve:
+  test_full
+  test_same
+  test_valid
+TestInterp:
+  test_basic
+  test_boundary
+TestFix:
+  test_basic
+  test_negative
+TestUnwrap:
+  test_basic
+  test_phase_wrap
+TestTrapezoid:
+  test_basic
+  test_with_x
+  test_dx
+
+=== tests/test_mathops_gpu.py ===
+TestMathOpsGPU:
+  test_around_decimals0
+  test_around_decimals2
+  test_nan_to_num
+  test_nan_to_num_custom
+  test_copy
+  test_count_nonzero
+  test_isclose
+  test_allclose
+  test_array_equal
+  test_trace_2d
+  test_diagonal_2d
+  test_concatenate_1d
+
+=== tests/test_misc_params.py ===
+TestAroundOut:
+  test_around_out_basic
+  test_around_no_out_unchanged
+TestRound_Out:
+  test_round__out_basic
+TestClipOut:
+  test_clip_out_basic
+  test_clip_no_out_unchanged
+TestTraceDtypeOut:
+  test_trace_dtype
+  test_trace_out
+  test_trace_no_extra_params_unchanged
+TestNanToNumCopy:
+  test_nan_to_num_copy_true
+  test_nan_to_num_copy_false
+  test_nan_to_num_default_copy
+TestIsNegInfOut:
+  test_isneginf_out
+  test_isneginf_no_out
+TestIsPosInfOut:
+  test_isposinf_out
+  test_isposinf_no_out
+TestCopyOrder:
+  test_copy_order_param_accepted
+  test_copy_order_K_accepted
+  test_copy_default_unchanged
+TestAllcloseEqualNan:
+  test_allclose_equal_nan_true
+  test_allclose_equal_nan_false
+  test_allclose_default_equal_nan
+TestIscloseEqualNan:
+  test_isclose_equal_nan_true
+  test_isclose_equal_nan_false
+  test_isclose_default
+TestArrayEqualEqualNan:
+  test_array_equal_equal_nan_true
+  test_array_equal_equal_nan_false
+  test_array_equal_default
+TestGeomspaceEndpointAxis:
+  test_geomspace_endpoint_false
+  test_geomspace_endpoint_true_default
+  test_geomspace_axis
+TestLinspaceAxis:
+  test_linspace_axis_0
+  test_linspace_axis_1
+  test_linspace_default_axis
+TestLogspaceBaseEndpointAxis:
+  test_logspace_base
+  test_logspace_endpoint_false
+  test_logspace_axis
+  test_logspace_default_unchanged
+TestMeshgridCopySparse:
+  test_meshgrid_copy_false
+  test_meshgrid_sparse_true
+  test_meshgrid_default_unchanged
+TestEyeOrder:
+  test_eye_k_and_order
+  test_eye_default_unchanged
+TestFullOrder:
+  test_full_order
+TestFullLikeOrder:
+  test_full_like_order
+TestOnesOrder:
+  test_ones_order
+TestOnesLikeOrder:
+  test_ones_like_order
+TestZerosLikeOrder:
+  test_zeros_like_order
+TestStackOutDtype:
+  test_stack_out
+  test_stack_dtype
+  test_stack_default_unchanged
+TestHstackDtype:
+  test_hstack_dtype
+  test_hstack_default_unchanged
+TestVstackDtype:
+  test_vstack_dtype
+  test_vstack_default_unchanged
+TestStackCasting:
+  test_stack_casting_param_accepted
+TestHstackCasting:
+  test_hstack_casting_param_accepted
+TestVstackCasting:
+  test_vstack_casting_param_accepted
+TestReshapeOrder:
+  test_reshape_order
+  test_reshape_default_unchanged
+TestRavelOrder:
+  test_ravel_order
+  test_ravel_default_unchanged
+
+=== tests/test_missing_apis.py ===
+TestTopLevelMathNewNames:
+  test_acos
+  test_acosh
+  test_asin
+  test_asinh
+  test_atan
+  test_atan2
+  test_atanh
+  test_pow
+TestTopLevelArrayManip:
+  test_astype
+  test_matrix_transpose
+  test_permute_dims
+  test_unstack
+  test_row_stack
+TestTopLevelCumulativeBitwise:
+  test_cumulative_sum
+  test_cumulative_prod
+  test_bitwise_count
+TestTopLevelUniqueVariants:
+  test_unique_all
+  test_unique_counts
+  test_unique_inverse
+  test_unique_values
+TestTopLevelLinalgShortcuts:
+  test_matvec
+  test_vecmat
+  test_vecdot
+TestTopLevelIO:
+  test_loadtxt
+  test_savetxt
+  test_fromfile
+  test_genfromtxt
+  test_fromregex
+  test_from_dlpack
+TestTopLevelPoly:
+  test_poly
+  test_polyval
+  test_polyfit
+  test_polyadd
+  test_polysub
+  test_polymul
+  test_polydiv
+  test_polyder
+  test_polyint
+  test_roots
+TestTopLevelUtility:
+  test_frompyfunc
+  test_require
+  test_iterable
+  test_may_share_memory
+  test_shares_memory
+  test_isdtype
+  test_info
+  test_show_config
+  test_show_runtime
+TestTopLevelPrintConfig:
+  test_get_printoptions
+  test_set_printoptions
+  test_printoptions_context
+  test_getbufsize
+  test_setbufsize
+  test_geterr
+  test_seterr
+  test_geterrcall
+  test_seterrcall
+  test_get_include
+TestTopLevelClasses:
+  test_errstate
+  test_ndenumerate
+  test_ndindex
+  test_poly1d
+TestTopLevelConstants:
+  test_false_
+  test_true_
+  test_scalar_type
+  test_index_exp
+  test_little_endian
+  test_typecodes
+TestLinalgFunctions:
+  test_linalg_cross
+  test_linalg_diagonal
+  test_linalg_matmul
+  test_linalg_matrix_norm
+  test_linalg_matrix_transpose
+  test_linalg_outer
+  test_linalg_svdvals
+  test_linalg_tensordot
+  test_linalg_trace
+  test_linalg_vecdot
+  test_linalg_vector_norm
+TestRandomFunctions:
+  test_random_bytes
+  test_random_get_state
+  test_random_set_state
+TestRandomClasses:
+  test_bit_generator
+  test_mt19937
+  test_pcg64
+  test_pcg64dxsm
+  test_philox
+  test_random_state
+  test_sfc64
+  test_seed_sequence
+
+=== tests/test_nan_ops.py ===
+TestNanSum:
+  test_basic
+  test_no_nan
+  test_all_nan
+  test_axis
+TestNanProd:
+  test_basic
+  test_all_nan
+  test_axis
+TestNanMax:
+  test_basic
+  test_no_nan
+  test_axis
+TestNanMin:
+  test_basic
+  test_axis
+TestNanMean:
+  test_basic
+  test_no_nan
+  test_axis
+TestNanMedian:
+  test_basic
+  test_no_nan
+TestNanStd:
+  test_basic
+  test_axis
+TestNanVar:
+  test_basic
+  test_axis
+TestNanArgmax:
+  test_basic
+  test_axis
+TestNanArgmin:
+  test_basic
+  test_axis
+TestNanCumsum:
+  test_basic
+  test_axis
+TestNanCumprod:
+  test_basic
+TestHistogram:
+  test_basic
+  test_with_bins
+  test_with_range
+TestHistogram2d:
+  test_basic
+  test_with_bins
+TestHistogramdd:
+  test_basic
+  test_with_bins
+TestBincount:
+  test_basic
+  test_with_weights
+  test_empty
+TestDigitize:
+  test_basic
+  test_right
+TestCorrcoef:
+  test_single
+  test_xy
+TestCov:
+  test_single
+  test_xy
+TestCorrelate:
+  test_valid
+  test_full
+  test_same
+TestEdiff1d:
+  test_basic
+  test_with_endpoints
+TestGradient:
+  test_1d
+  test_2d
+  test_with_spacing
+
+=== tests/test_nan_ops_gaps.py ===
+TestNanpercentile:
+  test_basic
+  test_no_nan
+  test_axis0
+  test_axis1
+  test_multiple_q
+  test_keepdims
+TestNanquantile:
+  test_basic
+  test_no_nan
+  test_axis0
+  test_axis1
+  test_multiple_q
+  test_keepdims
+TestHistogramBinEdges:
+  test_basic
+  test_custom_bins
+  test_with_range
+  test_random_data
+  test_string_bins
+
+=== tests/test_nan_stats.py ===
+TestNanSum:
+  test_1d
+  test_2d_axis
+  test_2d_full
+TestNanProd:
+  test_1d
+  test_2d_axis
+TestNanCumsum:
+  test_1d
+  test_2d_axis
+TestNanCumprod:
+  test_1d
+TestNanMax:
+  test_1d
+  test_2d_axis
+TestNanMin:
+  test_1d
+  test_2d_axis
+TestNanMean:
+  test_1d
+  test_2d_axis
+TestNanMedian:
+  test_1d
+TestNanStd:
+  test_1d
+TestNanVar:
+  test_1d
+TestNanArgmax:
+  test_1d
+  test_2d_axis
+TestNanArgmin:
+  test_1d
+  test_2d_axis
+TestPtp:
+  test_1d
+  test_2d_axis
+TestQuantile:
+  test_scalar_q
+  test_array_q
+TestAverage:
+  test_unweighted
+  test_weighted
+TestCorrcoef:
+  test_single
+  test_xy
+TestCorrelate:
+  test_valid
+  test_full
+TestCov:
+  test_single
+  test_xy
+TestHistogram:
+  test_basic
+TestHistogram2d:
+  test_basic
+TestHistogramdd:
+  test_basic
+TestBincount:
+  test_basic
+  test_with_weights
+TestDigitize:
+  test_basic
+TestEdiff1d:
+  test_basic
+  test_with_endpoints
+TestGradient:
+  test_1d
+  test_2d
+
+=== tests/test_nanops_gpu.py ===
+TestNanOpsGPU:
+  test_nansum
+  test_nansum_axis
+  test_nanprod
+  test_nanmax
+  test_nanmin
+  test_nanmean
+  test_nancumsum
+  test_nancumprod
+  test_nanargmax
+  test_nanargmin
+  test_nanstd
+  test_nanvar
+  test_nansum_no_nan
+  test_nansum_all_nan
+  test_nansum_int
+  test_nanmean_axis
+
+=== tests/test_nanops_params.py ===
+TestNansumParams:
+  test_keepdims
+  test_dtype
+  test_out
+  test_initial
+  test_where
+  test_default_behavior_unchanged
+TestNanprodParams:
+  test_keepdims
+  test_dtype
+  test_out
+  test_initial
+  test_where
+  test_default_behavior_unchanged
+TestNanmaxParams:
+  test_keepdims
+  test_out
+  test_initial
+  test_where
+  test_default_behavior_unchanged
+TestNanminParams:
+  test_keepdims
+  test_out
+  test_initial
+  test_where
+  test_default_behavior_unchanged
+TestNanmeanParams:
+  test_keepdims
+  test_dtype
+  test_out
+  test_where
+  test_default_behavior_unchanged
+TestNanmedianParams:
+  test_keepdims
+  test_out
+  test_default_behavior_unchanged
+TestNanstdParams:
+  test_keepdims
+  test_ddof
+  test_dtype
+  test_out
+  test_where
+  test_default_behavior_unchanged
+TestNanvarParams:
+  test_keepdims
+  test_ddof
+  test_dtype
+  test_out
+  test_where
+  test_default_behavior_unchanged
+TestNanargmaxParams:
+  test_keepdims
+  test_out
+  test_default_behavior_unchanged
+TestNanargminParams:
+  test_keepdims
+  test_out
+  test_default_behavior_unchanged
+TestNancumsumParams:
+  test_dtype
+  test_out
+  test_default_behavior_unchanged
+TestNancumprodParams:
+  test_dtype
+  test_out
+  test_default_behavior_unchanged
+TestCorrcoefParams:
+  test_rowvar_true
+  test_rowvar_false
+  test_dtype
+  test_default_behavior_unchanged
+TestCovParams:
+  test_rowvar_true
+  test_rowvar_false
+  test_bias
+  test_fweights
+  test_aweights
+  test_dtype
+  test_default_behavior_unchanged
+
+=== tests/test_ndarray.py ===
+TestProperties:
+  test_shape
+  test_ndim
+  test_size
+  test_nbytes
+  test_itemsize
+  test_dtype_matches
+  test_strides
+  test_T
+TestDataTransfer:
+  test_get_roundtrip
+  test_get_transposed
+  test_get_sliced
+  test_set_roundtrip
+TestReshape:
+  test_reshape_compatible
+  test_reshape_minus1
+  test_reshape_error_two_minus1
+  test_reshape_error_bad_size
+TestTranspose:
+  test_transpose_default_2d
+  test_transpose_explicit_axes_3d
+TestFlatten:
+  test_flatten_contiguous
+  test_flatten_noncontiguous
+TestRavel:
+  test_ravel_contiguous
+  test_ravel_noncontiguous
+TestSqueeze:
+  test_squeeze_all
+  test_squeeze_specific_axis
+  test_squeeze_no_change
+  test_squeeze_error_nonsize1
+TestExpandDims:
+  test_expand_dims_axis0
+  test_expand_dims_negative
+TestAstype:
+  test_astype_pairs
+TestCopy:
+  test_copy_independence
+TestArithmeticBinary:
+  test_array_array
+  test_array_scalar
+  test_scalar_array
+TestArithmeticCrossDtype:
+  test_cross_dtype_basic
+  test_cross_dtype_div
+  test_cross_dtype_pow
+TestArithmeticReverse:
+  test_radd
+  test_rsub
+  test_rtruediv
+  test_rpow
+TestArithmeticUnary:
+  test_neg
+  test_abs
+TestMatmul:
+  test_matmul_basic
+  test_matmul_square
+  test_matmul_shape_error
+TestArithmeticBroadcast:
+  test_broadcast_binary
+TestComparison:
+  test_array_array
+  test_array_scalar
+TestComparisonCrossDtype:
+  test_cross_dtype
+TestComparisonSpecial:
+  test_nan
+  test_inf
+TestBooleanOps:
+  test_and_bool
+  test_or_bool
+  test_invert_bool
+  test_and_int
+  test_or_int
+TestReductions:
+  test_axis_none
+  test_axis_0
+  test_axis_neg1
+  test_keepdims
+TestReductionStdVar:
+  test_axis_none
+  test_axis_0
+  test_keepdims
+TestReductionProd:
+  test_prod_axis_none
+  test_prod_axis_0
+  test_prod_keepdims
+TestReductionCumsumCumprod:
+  test_axis_none
+  test_axis_0
+  test_axis_neg1
+TestReductionAnyAll:
+  test_any_mixed
+  test_any_all_false
+  test_all_true
+  test_all_mixed
+TestGetitem:
+  test_int_index
+  test_neg_index
+  test_slice
+  test_step_slice
+  test_2d_int
+  test_2d_slice
+  test_ellipsis
+  test_newaxis
+  test_bool_mask
+  test_fancy_index
+  test_3d_int
+  test_3d_slice
+  test_negative_step
+  test_2d_bool_mask
+  test_2d_fancy
+  test_scalar_result
+TestSetitem:
+  test_int_setitem
+  test_slice_setitem
+  test_bool_mask_setitem
+  test_scalar_setitem
+  test_broadcast_setitem
+  test_2d_row_setitem
+  test_fancy_setitem
+  test_step_setitem
+TestDunderFloat:
+  test_float_size1
+  test_float_sizeN_error
+TestDunderInt:
+  test_int_size1
+  test_int_sizeN_error
+TestDunderLen:
+  test_len_1d
+  test_len_2d
+  test_len_0d_error
+TestReprStr:
+  test_repr
+  test_str
+
+=== tests/test_ndarray_final.py ===
+TestConjugate:
+  test_conjugate_complex
+  test_conjugate_real
+TestDot:
+  test_dot_1d
+  test_dot_2d
+  test_dot_with_numpy_array
+TestSwapaxes:
+  test_swapaxes_2d
+  test_swapaxes_3d
+TestByteswap:
+  test_byteswap_int32
+  test_byteswap_returns_new_array
+TestItemset:
+  test_itemset_flat_index
+  test_itemset_multi_index
+TestDump:
+  test_dump_load
+TestDumps:
+  test_dumps_roundtrip
+TestTofile:
+  test_tofile_binary
+  test_tofile_text
+TestTostring:
+  test_tostring_matches_tobytes
+  test_tostring_with_order
+TestNewbyteorder:
+  test_newbyteorder
+TestGetfield:
+  test_getfield_basic
+TestSetfield:
+  test_setfield_basic
+TestSetflags:
+  test_setflags_no_error
+TestResize:
+  test_resize_grow
+  test_resize_shrink
+  test_resize_2d
+TestIlshift:
+  test_ilshift_basic
+  test_ilshift_array
+TestIrshift:
+  test_irshift_basic
+  test_irshift_array
+TestRand:
+  test_rand_direct_call
+  test_rand_both_gpu
+TestRor:
+  test_ror_direct_call
+  test_ror_both_gpu
+TestRxor:
+  test_rxor_direct_call
+  test_rxor_both_gpu
+TestRdivmod:
+  test_rdivmod
+TestIter:
+  test_iter_1d
+  test_iter_2d
+TestCopy:
+  test_copy
+  test_deepcopy
+
+=== tests/test_ndarray_gaps.py ===
+TestPropertyReal:
+  test_real_non_complex
+  test_real_complex
+  test_real_scalar
+TestPropertyImag:
+  test_imag_non_complex
+  test_imag_complex
+TestPropertyFlat:
+  test_flat_1d
+  test_flat_2d
+TestPropertyBase:
+  test_base_original
+  test_base_view
+TestItem:
+  test_item_0d
+  test_item_1d
+  test_item_2d
+  test_item_error_multi_element
+TestTolist:
+  test_tolist_1d
+  test_tolist_2d
+  test_tolist_0d
+TestFill:
+  test_fill_basic
+  test_fill_2d
+TestRound:
+  test_round_default
+  test_round_decimals
+TestClipMethod:
+  test_clip_basic
+TestConj:
+  test_conj_complex
+  test_conj_real
+TestDiagonalMethod:
+  test_diagonal_basic
+  test_diagonal_offset
+TestTraceMethod:
+  test_trace_basic
+  test_trace_offset
+TestRepeatMethod:
+  test_repeat_flat
+  test_repeat_axis
+TestTakeMethod:
+  test_take_flat
+  test_take_axis
+TestPutMethod:
+  test_put_basic
+TestChooseMethod:
+  test_choose_basic
+TestCompressMethod:
+  test_compress_basic
+  test_compress_axis
+TestSearchsortedMethod:
+  test_searchsorted_left
+  test_searchsorted_right
+TestNonzeroMethod:
+  test_nonzero_1d
+  test_nonzero_2d
+TestSortMethod:
+  test_sort_1d
+  test_sort_2d_axis
+TestArgsortMethod:
+  test_argsort_1d
+  test_argsort_axis0
+TestArgmaxMethod:
+  test_argmax_flat
+  test_argmax_axis
+TestArgminMethod:
+  test_argmin_flat
+  test_argmin_axis
+TestPtpMethod:
+  test_ptp_flat
+  test_ptp_axis
+TestPartitionMethod:
+  test_partition_basic
+TestArgpartitionMethod:
+  test_argpartition_basic
+TestTobytes:
+  test_tobytes_float32
+  test_tobytes_int32
+TestView:
+  test_view_float32_to_int32
+  test_view_int32_to_float32
+TestBoolOperator:
+  test_bool_true
+  test_bool_false
+  test_bool_multi_element_error
+TestPosOperator:
+  test_pos_float
+  test_pos_int
+TestComplexOperator:
+  test_complex_0d
+  test_complex_multi_error
+TestIndexOperator:
+  test_index_int
+  test_index_float_error
+  test_index_multi_error
+TestContainsOperator:
+  test_contains_present
+  test_contains_absent
+TestFloorDivOperator:
+  test_floordiv_basic
+  test_rfloordiv
+  test_ifloordiv
+TestModOperator:
+  test_mod_basic
+  test_rmod
+  test_imod
+TestShiftOperators:
+  test_lshift
+  test_rshift
+  test_rlshift
+  test_rrshift
+TestInplaceBoolOps:
+  test_iand
+  test_ixor
+TestRmatmul:
+  test_rmatmul
+TestImatmul:
+  test_imatmul
+TestDivmod:
+  test_divmod_basic
+TestXorOperator:
+  test_xor
+
+=== tests/test_numeric_edges.py ===
+TestFloat32SpecialsUnary:
+  test_unary_special
+TestFloat32SpecialsBinary:
+  test_binary_special
+TestFloat16Precision:
+  test_f16_near_epsilon_add
+  test_f16_near_epsilon_sub
+  test_f16_overflow_to_inf
+  test_f16_large_multiply_overflow
+  test_f16_underflow_to_zero
+  test_f16_smallest_subnormal
+TestInt32Overflow:
+  test_int32_max_plus_one
+  test_int32_min_minus_one
+  test_int16_overflow
+  test_uint16_overflow
+  test_uint32_overflow
+TestPredicatesOnSpecials:
+  test_isnan
+  test_isinf
+  test_isfinite
+TestSignbit:
+  test_signbit
+TestCopysignNextafter:
+  test_copysign
+  test_nextafter
+TestNanToNum:
+  test_nan_to_num_defaults
+  test_nan_to_num_custom_nan
+  test_nan_to_num_custom_posinf
+  test_nan_to_num_custom_neginf
+  test_nan_to_num_all_custom
+TestNanPropagation:
+  test_nan_plus_one
+  test_nan_times_zero
+  test_nan_eq_nan
+  test_nan_ne_nan
+  test_nan_gt_one
+  test_nan_lt_one
+  test_nan_sub_nan
+  test_nan_div_one
+TestInfArithmetic:
+  test_inf_plus_one
+  test_inf_minus_inf
+  test_inf_times_zero
+  test_one_div_zero
+  test_neg_one_div_zero
+  test_zero_div_zero
+  test_inf_times_inf
+  test_inf_div_inf
+TestNegativeZero:
+  test_neg_zero_eq_pos_zero
+  test_neg_zero_ne_pos_zero
+  test_neg_zero_roundtrip
+TestMixedSpecials:
+  test_isnan_mixed
+  test_isinf_mixed
+  test_isfinite_mixed
+  test_add_with_nan_positions
+  test_sum_with_nan
+  test_max_with_nan
+
+=== tests/test_params_final.py ===
+TestHistogramParams:
+  test_histogram_range
+  test_histogram_density
+  test_histogram_weights
+  test_histogram_range_density_weights
+TestHistogram2dParams:
+  test_histogram2d_range
+  test_histogram2d_density
+  test_histogram2d_weights
+TestHistogramddParams:
+  test_histogramdd_range
+  test_histogramdd_density
+  test_histogramdd_weights
+TestDiffParams:
+  test_diff_prepend
+  test_diff_append
+  test_diff_prepend_and_append
+  test_diff_prepend_scalar
+TestDiagonalParams:
+  test_diagonal_axis1_axis2
+  test_diagonal_different_axes
+  test_diagonal_2d_default
+TestFillDiagonalParams:
+  test_fill_diagonal_wrap_false
+  test_fill_diagonal_wrap_true
+TestMatrixRankHermitian:
+  test_matrix_rank_hermitian
+  test_matrix_rank_hermitian_false
+TestPinvHermitian:
+  test_pinv_hermitian
+  test_pinv_hermitian_false
+TestEinsumPath:
+  test_einsum_path_basic
+  test_einsum_path_optimize
+TestDivmod:
+  test_divmod_basic
+TestBitwiseNot:
+  test_bitwise_not_exists
+TestMaskIndices:
+  test_mask_indices_triu
+  test_mask_indices_triu_k
+
+=== tests/test_random.py ===
+TestSeed:
+  test_reproducible
+  test_different_seeds
+TestRand:
+  test_shape_1d
+  test_shape_2d
+  test_range
+  test_dtype
+  test_moments
+TestRandn:
+  test_shape
+  test_dtype
+  test_moments
+TestRandint:
+  test_shape
+  test_range
+  test_dtype
+TestRandom:
+  test_shape
+  test_range
+  test_dtype
+TestShuffle:
+  test_modifies
+  test_preserves_elements
+TestPermutation:
+  test_int_input
+  test_dtype_int
+TestChoice:
+  test_from_int
+  test_no_replace
+TestNormal:
+  test_shape
+  test_dtype
+  test_moments
+TestUniform:
+  test_shape
+  test_range
+  test_dtype
+  test_moments
+TestBeta:
+  test_shape
+  test_range
+  test_dtype
+  test_moments
+TestExponential:
+  test_shape
+  test_positive
+  test_dtype
+  test_moments
+TestGamma:
+  test_shape
+  test_positive
+  test_dtype
+  test_moments
+TestLognormal:
+  test_shape
+  test_positive
+  test_dtype
+TestStandardNormal:
+  test_shape
+  test_dtype
+TestStandardCauchy:
+  test_shape
+  test_dtype
+TestStandardExponential:
+  test_shape
+  test_dtype
+TestStandardGamma:
+  test_shape
+  test_dtype
+TestStandardT:
+  test_shape
+  test_dtype
+TestChisquare:
+  test_shape
+  test_positive
+  test_dtype
+  test_moments
+TestLaplace:
+  test_shape
+  test_dtype
+TestLogistic:
+  test_shape
+  test_dtype
+TestGumbel:
+  test_shape
+  test_dtype
+TestRayleigh:
+  test_shape
+  test_positive
+  test_dtype
+TestTriangular:
+  test_shape
+  test_range
+  test_dtype
+TestWeibull:
+  test_shape
+  test_positive
+  test_dtype
+TestVonmises:
+  test_shape
+  test_dtype
+TestWald:
+  test_shape
+  test_positive
+  test_dtype
+TestPareto:
+  test_shape
+  test_positive
+  test_dtype
+TestBinomial:
+  test_shape
+  test_range
+  test_dtype
+  test_moments
+TestPoisson:
+  test_shape
+  test_non_negative
+  test_dtype
+  test_moments
+TestGeometric:
+  test_shape
+  test_positive
+  test_dtype
+TestZipf:
+  test_shape
+  test_positive
+  test_dtype
+TestLogseries:
+  test_shape
+  test_positive
+  test_dtype
+TestNegativeBinomial:
+  test_shape
+  test_non_negative
+  test_dtype
+TestHypergeometric:
+  test_shape
+  test_range
+  test_dtype
+TestF:
+  test_shape
+  test_positive
+  test_dtype
+TestMultinomial:
+  test_shape
+  test_shape_with_size
+  test_sum
+  test_dtype
+TestMultivariateNormal:
+  test_shape
+  test_dtype
+  test_moments
+TestDirichlet:
+  test_shape
+  test_sums_to_one
+  test_dtype
+
+=== tests/test_random_gaps.py ===
+TestRandomSample:
+  test_shape
+  test_range
+  test_dtype
+  test_scalar
+TestRanf:
+  test_is_callable
+TestSample:
+  test_is_callable
+TestPower:
+  test_shape
+  test_range
+  test_dtype
+  test_moments
+TestNoncentralChisquare:
+  test_shape
+  test_positive
+  test_dtype
+  test_moments
+TestNoncentralF:
+  test_shape
+  test_positive
+  test_dtype
+TestPermuted:
+  test_returns_new_array
+  test_shape
+  test_dtype
+TestDefaultRng:
+  test_returns_generator
+  test_random
+  test_integers
+  test_normal
+  test_uniform
+  test_seed_reproducibility
+  test_has_distribution_methods
+
+=== tests/test_random_mod.py ===
+TestSeed:
+  test_reproducible
+TestRand:
+  test_shape
+  test_range
+  test_dtype
+TestRandn:
+  test_shape
+  test_dtype
+TestRandint:
+  test_shape
+  test_range
+  test_dtype
+TestRandom:
+  test_shape
+  test_range
+  test_dtype
+TestShuffle:
+  test_modifies_in_place
+TestPermutation:
+  test_int_input
+  test_dtype_int
+TestChoice:
+  test_from_int
+  test_no_replace
+TestNormal:
+  test_shape
+  test_dtype
+TestUniform:
+  test_shape
+  test_range
+  test_dtype
+TestBeta:
+  test_shape
+  test_range
+  test_dtype
+TestBinomial:
+  test_shape
+  test_range
+  test_dtype
+TestExponential:
+  test_shape
+  test_positive
+  test_dtype
+TestGamma:
+  test_shape
+  test_positive
+  test_dtype
+TestPoisson:
+  test_shape
+  test_non_negative
+  test_dtype
+TestStandardNormal:
+  test_shape
+  test_dtype
+TestStandardCauchy:
+  test_shape
+  test_dtype
+TestStandardExponential:
+  test_shape
+  test_dtype
+TestStandardGamma:
+  test_shape
+  test_dtype
+TestStandardT:
+  test_shape
+  test_dtype
+TestChisquare:
+  test_shape
+  test_positive
+  test_dtype
+TestGeometric:
+  test_shape
+  test_positive
+  test_dtype
+TestLaplace:
+  test_shape
+  test_dtype
+TestLogistic:
+  test_shape
+  test_dtype
+TestLognormal:
+  test_shape
+  test_positive
+  test_dtype
+TestGumbel:
+  test_shape
+  test_dtype
+TestRayleigh:
+  test_shape
+  test_positive
+  test_dtype
+TestTriangular:
+  test_shape
+  test_range
+  test_dtype
+TestWeibull:
+  test_shape
+  test_positive
+  test_dtype
+TestVonmises:
+  test_shape
+  test_dtype
+TestWald:
+  test_shape
+  test_positive
+  test_dtype
+TestZipf:
+  test_shape
+  test_positive
+  test_dtype
+TestPareto:
+  test_shape
+  test_positive
+  test_dtype
+TestLogseries:
+  test_shape
+  test_positive
+  test_dtype
+TestMultinomial:
+  test_shape
+  test_shape_with_size
+  test_sum
+  test_dtype
+TestMultivariateNormal:
+  test_shape
+  test_dtype
+TestDirichlet:
+  test_shape
+  test_sums_to_one
+  test_dtype
+TestF:
+  test_shape
+  test_positive
+  test_dtype
+TestHypergeometric:
+  test_shape
+  test_range
+  test_dtype
+TestNegativeBinomial:
+  test_shape
+  test_non_negative
+  test_dtype
+
+=== tests/test_rawkernel.py ===
+TestRawKernelBasic:
+  test_float32
+  test_int32
+  test_float16
+  test_uint32
+TestRawKernelGrid:
+  test_int_grid
+  test_1_tuple
+  test_2_tuple
+  test_3_tuple
+  test_4_tuple_raises
+TestRawKernelSync:
+  test_auto_append_sync
+  test_source_already_has_sync
+TestRawKernelAdvanced:
+  test_eight_buffers
+  test_reuse_kernel
+  test_two_different_kernels
+  test_large_grid
+
+=== tests/test_reduction_gpu.py ===
+TestReductionGPU:
+  test_std_ddof1
+  test_std_ddof1_axis
+  test_var_ddof1
+  test_ptp
+  test_ptp_axis
+  test_diff_1d
+  test_diff_2d
+  test_divmod_gpu
+  test_apply_where_sum
+
+=== tests/test_reduction_params.py ===
+TestAllOut:
+  test_out_axis_none
+  test_out_axis0
+TestAnyOut:
+  test_out_axis_none
+  test_out_axis0
+TestAmaxKeepdims:
+  test_keepdims_axis0
+  test_keepdims_axis_none
+TestAmaxOut:
+  test_out_axis_none
+  test_out_axis0
+TestAminKeepdims:
+  test_keepdims_axis0
+  test_keepdims_axis_none
+TestAminOut:
+  test_out_axis_none
+  test_out_axis0
+TestArgmaxKeepdims:
+  test_keepdims_axis0
+  test_keepdims_axis_none
+TestArgmaxOut:
+  test_out_axis_none
+  test_out_axis0
+TestArgminKeepdims:
+  test_keepdims_axis0
+  test_keepdims_axis_none
+TestArgminOut:
+  test_out_axis_none
+  test_out_axis0
+TestMedianKeepdims:
+  test_keepdims_axis0
+  test_keepdims_axis_none
+TestMedianOut:
+  test_out_axis_none
+  test_out_axis0
+TestPercentileKeepdims:
+  test_keepdims_axis0
+  test_keepdims_axis_none
+TestPercentileOut:
+  test_out_axis_none
+  test_out_axis0
+TestQuantileKeepdims:
+  test_keepdims_axis0
+  test_keepdims_axis_none
+TestQuantileOut:
+  test_out_axis_none
+  test_out_axis0
+TestPtpKeepdims:
+  test_keepdims_axis0
+  test_keepdims_axis_none
+TestPtpOut:
+  test_out_axis_none
+  test_out_axis0
+TestAverageKeepdims:
+  test_keepdims_axis0
+  test_keepdims_axis_none
+TestCountNonzeroKeepdims:
+  test_keepdims_axis0
+  test_keepdims_axis_none
+TestCumsumDtype:
+  test_int_to_float
+  test_float32_dtype
+TestCumsumOut:
+  test_out_axis_none
+  test_out_axis0
+TestCumprodDtype:
+  test_int_to_float
+  test_float32_dtype
+TestCumprodOut:
+  test_out_axis_none
+  test_out_axis0
+TestSumInitial:
+  test_initial_scalar
+  test_initial_with_axis
+TestSumWhere:
+  test_where_mask
+  test_where_with_axis
+TestProdInitial:
+  test_initial_scalar
+  test_initial_with_axis
+TestProdWhere:
+  test_where_mask
+TestMeanWhere:
+  test_where_mask
+  test_where_with_axis
+TestStdWhere:
+  test_where_mask
+TestVarWhere:
+  test_where_mask
+TestMaxInitial:
+  test_initial_scalar
+  test_initial_with_axis
+TestMaxWhere:
+  test_where_mask
+TestMinInitial:
+  test_initial_scalar
+  test_initial_with_axis
+TestMinWhere:
+  test_where_mask
+TestBackwardCompatParams:
+  test_all_no_out
+  test_any_no_out
+  test_amax_no_new_params
+  test_amin_no_new_params
+  test_argmax_no_new_params
+  test_argmin_no_new_params
+  test_median_no_new_params
+  test_percentile_no_new_params
+  test_quantile_no_new_params
+  test_ptp_no_new_params
+  test_average_no_new_params
+  test_count_nonzero_no_keepdims
+  test_cumsum_no_new_params
+  test_cumprod_no_new_params
+  test_sum_no_initial_or_where
+  test_prod_no_initial_or_where
+  test_mean_no_where
+  test_std_no_where
+  test_var_no_where
+  test_max_no_initial_or_where
+  test_min_no_initial_or_where
+
+=== tests/test_reductions.py ===
+TestSum:
+  test_axis_none
+  test_axis0
+  test_axis1
+  test_axis_neg1
+  test_keepdims
+  test_axis_neg2_3d
+TestMean:
+  test_axis_none
+  test_axis0
+  test_axis1
+  test_axis_neg1
+  test_keepdims
+TestMax:
+  test_axis_none
+  test_axis0
+  test_axis1
+  test_axis_neg1
+  test_keepdims
+TestMin:
+  test_axis_none
+  test_axis0
+  test_axis1
+  test_axis_neg1
+  test_keepdims
+TestStd:
+  test_axis_none
+  test_axis0
+  test_keepdims
+TestVar:
+  test_axis_none
+  test_axis0
+  test_keepdims
+TestProd:
+  test_axis_none
+  test_axis0
+  test_keepdims
+  test_overflow_small_values
+TestArgmax:
+  test_axis_none
+  test_axis0
+  test_axis1
+  test_ties
+  test_all_equal
+TestArgmin:
+  test_axis_none
+  test_axis0
+  test_ties
+  test_all_equal
+TestAny:
+  test_all_true
+  test_all_false
+  test_mixed
+  test_axis0
+  test_axis_neg1
+  test_bool_input
+  test_int_input
+TestAll:
+  test_all_true
+  test_all_false
+  test_mixed
+  test_axis0
+  test_axis_neg1
+  test_bool_input
+  test_int_input_has_zero
+TestCumsum:
+  test_axis_none
+  test_axis0
+  test_axis_neg1
+TestCumprod:
+  test_axis_none
+  test_axis0
+  test_axis_neg1
+TestDiff:
+  test_n1
+  test_n2
+  test_axis0
+  test_axis_neg1
+TestMedian:
+  test_odd_count
+  test_even_count
+  test_basic
+  test_axis0
+  test_axis_neg1
+TestPercentile:
+  test_basic
+  test_axis0
+TestQuantile:
+  test_basic
+  test_axis0
+TestPtp:
+  test_axis_none
+  test_axis0
+TestAverage:
+  test_basic
+  test_axis0
+  test_weights_1d
+  test_weights_axis
+
+=== tests/test_reductions_gaps.py ===
+TestStdDdof:
+  test_ddof0_matches_default
+  test_ddof1_axis_none
+  test_ddof1_axis0
+  test_ddof1_axis_neg1
+  test_ddof1_keepdims
+  test_ddof2
+TestVarDdof:
+  test_ddof0_matches_default
+  test_ddof1_axis_none
+  test_ddof1_axis0
+  test_ddof1_axis_neg1
+  test_ddof1_keepdims
+  test_ddof2
+TestSumOut:
+  test_out_axis_none
+  test_out_axis0
+TestMeanOut:
+  test_out_axis_none
+  test_out_axis0
+TestMaxOut:
+  test_out_axis_none
+  test_out_axis0
+TestMinOut:
+  test_out_axis_none
+  test_out_axis0
+TestProdOut:
+  test_out_axis_none
+  test_out_axis0
+TestSumDtype:
+  test_int_to_float
+  test_float_dtype
+  test_dtype_with_axis
+TestProdDtype:
+  test_int_to_float
+  test_float_dtype
+TestBackwardCompat:
+  test_std_no_ddof
+  test_var_no_ddof
+  test_sum_no_out
+  test_mean_no_out
+
+=== tests/test_search.py ===
+TestAny:
+  test_any_true
+  test_any_false
+  test_any_all_true
+  test_any_module_level
+  test_any_numeric
+  test_any_numeric_false
+TestAll:
+  test_all_true
+  test_all_false
+  test_all_module_level
+TestArgmax:
+  test_argmax_basic
+  test_argmax_first_occurrence
+  test_argmax_bool_first_true
+  test_argmax_int
+TestArgmin:
+  test_argmin_basic
+  test_argmin_first_occurrence
+  test_argmin_int
+
+=== tests/test_set_ops.py ===
+TestUnion1d:
+  test_basic
+  test_disjoint
+  test_identical
+  test_empty
+  test_from_list
+TestIntersect1d:
+  test_basic
+  test_disjoint
+  test_identical
+  test_empty
+  test_return_indices
+TestSetdiff1d:
+  test_basic
+  test_disjoint
+  test_identical
+  test_empty_b
+TestSetxor1d:
+  test_basic
+  test_disjoint
+  test_identical
+  test_empty
+TestIn1d:
+  test_basic
+  test_invert
+  test_assume_unique
+TestIsin:
+  test_basic
+  test_invert
+  test_2d
+  test_assume_unique
+
+=== tests/test_sort_manip.py ===
+TestSort:
+  test_sort_1d
+  test_sort_2d_default_axis
+  test_sort_2d_axis0
+  test_sort_already_sorted
+  test_sort_from_list
+TestArgsort:
+  test_argsort_1d
+  test_argsort_2d_default_axis
+  test_argsort_2d_axis0
+  test_argsort_from_list
+TestUnique:
+  test_unique_with_duplicates
+  test_unique_already_unique
+  test_unique_single_element
+  test_unique_from_list
+TestSearchsorted:
+  test_searchsorted_left
+  test_searchsorted_right
+  test_searchsorted_scalar
+  test_searchsorted_from_list
+TestTile:
+  test_tile_1d
+  test_tile_2d
+  test_tile_from_list
+TestRepeat:
+  test_repeat_1d
+  test_repeat_with_axis
+  test_repeat_no_axis_2d
+  test_repeat_from_list
+TestFlip:
+  test_flip_1d
+  test_flip_2d_no_axis
+  test_flip_2d_axis0
+  test_flip_2d_axis1
+  test_flip_from_list
+TestRoll:
+  test_roll_1d_positive
+  test_roll_1d_negative
+  test_roll_2d_with_axis
+  test_roll_from_list
+TestSplit:
+  test_split_equal
+  test_split_indices
+  test_split_2d_axis0
+  test_split_from_list
+TestArraySplit:
+  test_array_split_unequal
+  test_array_split_equal
+  test_array_split_from_list
+TestSqueeze:
+  test_squeeze_all
+  test_squeeze_specific_axis
+  test_squeeze_invalid_axis
+  test_squeeze_from_list
+TestRavel:
+  test_ravel_2d
+  test_ravel_3d
+  test_ravel_from_list
+TestMoveaxis:
+  test_moveaxis_3d
+  test_moveaxis_swap
+  test_moveaxis_from_list
+TestSwapaxes:
+  test_swapaxes_2d
+  test_swapaxes_3d
+  test_swapaxes_from_list
+TestBroadcastTo:
+  test_broadcast_to_1d
+  test_broadcast_to_scalar
+  test_broadcast_to_2d
+  test_broadcast_to_from_list
+
+=== tests/test_sort_set.py ===
+TestLexsort:
+  test_lexsort_two_keys_int32
+  test_lexsort_two_keys_float32
+  test_lexsort_single_key
+  test_lexsort_from_lists
+TestPartition:
+  test_partition_1d_int32
+  test_partition_1d_float32
+  test_partition_2d
+  test_partition_from_list
+TestArgpartition:
+  test_argpartition_1d_int32
+  test_argpartition_1d_float32
+  test_argpartition_2d
+  test_argpartition_from_list
+TestMsort:
+  test_msort_1d_int32
+  test_msort_1d_float32
+  test_msort_2d
+  test_msort_from_list
+TestSortComplex:
+  test_sort_complex_real_int32
+  test_sort_complex_real_float32
+  test_sort_complex_preserves_order
+  test_sort_complex_from_list
+TestUnion1d:
+  test_union1d_int32
+  test_union1d_float32
+  test_union1d_no_overlap
+  test_union1d_from_list
+TestIntersect1d:
+  test_intersect1d_int32
+  test_intersect1d_float32
+  test_intersect1d_return_indices
+  test_intersect1d_no_overlap
+TestSetdiff1d:
+  test_setdiff1d_int32
+  test_setdiff1d_float32
+  test_setdiff1d_all_common
+  test_setdiff1d_from_list
+TestSetxor1d:
+  test_setxor1d_int32
+  test_setxor1d_float32
+  test_setxor1d_no_overlap
+  test_setxor1d_from_list
+TestIn1d:
+  test_in1d_int32
+  test_in1d_float32
+  test_in1d_invert
+  test_in1d_from_list
+TestIsin:
+  test_isin_int32
+  test_isin_float32
+  test_isin_invert
+  test_isin_from_list
+  test_isin_2d
+
+=== tests/test_sorting.py ===
+TestSort:
+  test_basic
+  test_axis_0
+  test_already_sorted
+  test_reverse
+TestArgsort:
+  test_basic
+  test_axis_0
+TestUnique:
+  test_basic
+  test_all_same
+  test_all_unique
+  test_empty
+TestSearchsorted:
+  test_left
+  test_right
+  test_scalar
+TestLexsort:
+  test_two_keys
+  test_three_keys
+TestPartition:
+  test_basic
+  test_kth_0
+  test_2d_axis
+TestArgpartition:
+  test_basic
+  test_2d_axis
+TestMsort:
+  test_1d
+  test_2d
+  test_from_list
+TestSortComplex:
+  test_basic
+  test_preserves_order
+
+=== tests/test_sorting_gaps.py ===
+TestUniqueReturnIndex:
+  test_basic
+  test_all_same
+  test_already_sorted
+TestUniqueReturnInverse:
+  test_basic
+  test_reconstruction
+TestUniqueReturnCounts:
+  test_basic
+  test_all_same
+TestUniqueMultiReturn:
+  test_index_and_inverse
+  test_index_and_counts
+  test_all_three
+TestUniqueAxis:
+  test_axis0_2d
+  test_axis1_2d
+  test_axis0_with_counts
+TestUniqueEqualNan:
+  test_equal_nan_true
+  test_equal_nan_false
+  test_equal_nan_with_counts
+TestUniqueBackwardCompat:
+  test_single_arg_still_works
+  test_empty
+
+=== tests/test_sorting_gpu.py ===
+TestSortingGPU:
+  test_sort_1d_float
+  test_sort_1d_int
+  test_argsort_1d
+  test_sort_already_sorted
+  test_sort_reverse
+  test_sort_single_element
+TestIndexingGPU:
+  test_take_1d
+  test_take_wrap
+  test_fill_diagonal
+  test_searchsorted
+  test_flatnonzero
+
+=== tests/test_stats_cum.py ===
+TestStd:
+  test_std_1d_full
+  test_std_2d_full
+  test_std_axis0
+  test_std_axis1
+  test_std_keepdims
+  test_std_module_level
+TestVar:
+  test_var_1d_full
+  test_var_2d_full
+  test_var_axis0
+  test_var_axis1
+  test_var_keepdims
+  test_var_module_level
+TestProd:
+  test_prod_1d
+  test_prod_2d_full
+  test_prod_axis0
+  test_prod_axis1
+  test_prod_keepdims
+  test_prod_module_level
+TestMedian:
+  test_median_1d
+  test_median_2d_full
+  test_median_axis0
+  test_median_axis1
+  test_median_even_count
+TestPercentile:
+  test_percentile_50
+  test_percentile_25_75
+  test_percentile_axis0
+  test_percentile_0_and_100
+TestCumsum:
+  test_cumsum_1d
+  test_cumsum_2d_flat
+  test_cumsum_axis0
+  test_cumsum_axis1
+  test_cumsum_module_level
+TestCumprod:
+  test_cumprod_1d
+  test_cumprod_2d_flat
+  test_cumprod_axis0
+  test_cumprod_axis1
+  test_cumprod_module_level
+TestDiff:
+  test_diff_1d
+  test_diff_n2
+  test_diff_2d_axis0
+  test_diff_2d_axis1
+TestNanInfChecks:
+  test_isnan
+  test_isinf
+  test_isfinite
+  test_isnan_no_nans
+TestNanToNum:
+  test_nan_to_num_defaults
+  test_nan_to_num_custom
+TestCloseComparisons:
+  test_isclose_exact
+  test_isclose_with_tolerance
+  test_allclose_true
+  test_allclose_false
+TestArrayEqual:
+  test_equal_arrays
+  test_unequal_arrays
+TestCountNonzero:
+  test_count_nonzero_1d
+  test_count_nonzero_all
+  test_count_nonzero_axis
+  test_count_nonzero_returns_int
+TestPlainArrayInput:
+  test_std_from_list
+  test_median_from_numpy
+  test_isnan_from_list
+  test_count_nonzero_from_list
+
+=== tests/test_strides_views.py ===
+TestReshapeView:
+  test_reshape_shares_buffer
+  test_reshape_flat_to_2d
+  test_reshape_infer_dim
+TestTransposeView:
+  test_transpose_shares_buffer
+  test_transpose_values
+  test_transpose_3d
+TestRavelViewCopy:
+  test_ravel_contiguous_is_view
+  test_ravel_noncontiguous_is_copy
+  test_ravel_values_contiguous
+TestSliceKernelInput:
+  test_slice_stride2_sqrt
+  test_slice_offset_values
+  test_transposed_as_kernel_input
+TestIsContiguous:
+  test_fresh_array_is_contiguous
+  test_transposed_not_contiguous
+  test_scalar_is_contiguous
+  test_1d_array_is_contiguous
+TestStrides:
+  test_strides_c_contiguous
+  test_strides_after_transpose
+TestAscontiguousarray:
+  test_already_contiguous_values_preserved
+  test_noncontiguous_becomes_contiguous
+  test_1d_contiguous
+TestFlatten:
+  test_flatten_2d
+  test_flatten_transposed
+TestTProperty:
+  test_T_values
+  test_T_1d_is_noop
+
+=== tests/test_synchronize.py ===
+TestSynchronize:
+  test_no_pending_noop
+  test_after_single_op
+  test_after_chained_ops
+  test_get_implicit_sync
+  test_set_implicit_sync
+  test_multiple_arrays_one_sync
+  test_back_to_back_sync
+  test_has_pending_false_after_sync
+  test_has_pending_false_initially
+  test_explicit_sync_then_get
+
+=== tests/test_ufunc.py ===
+TestMaximumElementwise:
+  test_maximum_basic
+  test_maximum_int
+  test_maximum_same_values
+TestMinimumElementwise:
+  test_minimum_basic
+  test_minimum_int
+TestMaximumAccumulate:
+  test_accumulate_basic
+  test_accumulate_decreasing
+  test_accumulate_increasing
+  test_accumulate_int
+  test_accumulate_2d
+TestMinimumAccumulate:
+  test_accumulate_basic
+  test_accumulate_increasing
+
+=== tests/test_ufunc_ops.py ===
+TestBinaryArithArrayArray:
+  test_array_array
+TestBinaryArithArrayScalar:
+  test_array_scalar
+TestBinaryArithEdgeCases:
+  test_divide_by_zero
+  test_add_nan
+  test_multiply_inf
+TestExp2:
+  test_basic
+  test_zero
+TestExpm1:
+  test_basic
+  test_zero
+TestLog1p:
+  test_basic
+  test_zero
+TestCbrt:
+  test_basic
+  test_negative
+TestReciprocal:
+  test_basic
+  test_one
+TestRint:
+  test_basic
+TestTrunc:
+  test_basic
+  test_negative
+TestAbsolute:
+  test_basic
+TestFabs:
+  test_basic
+TestPositive:
+  test_basic
+TestArcsinh:
+  test_basic
+  test_zero
+TestArccosh:
+  test_basic
+  test_one
+TestArctanh:
+  test_basic
+  test_zero
+TestArctan2:
+  test_basic
+  test_zeros
+TestHypot:
+  test_basic
+  test_pythagorean
+TestLogaddexp:
+  test_basic
+TestLogaddexp2:
+  test_basic
+TestHeaviside:
+  test_basic
+  test_zeros
+TestCopysign:
+  test_basic
+TestNextafter:
+  test_basic
+  test_toward_zero
+TestDegrees:
+  test_basic
+TestRadians:
+  test_basic
+TestDeg2rad:
+  test_basic
+  test_zero
+TestRad2deg:
+  test_basic
+  test_zero
+TestSignbit:
+  test_basic
+  test_special_values
+TestModf:
+  test_basic
+  test_negative
+TestLdexp:
+  test_basic
+TestFrexp:
+  test_basic
+TestAmax:
+  test_basic
+  test_axis
+  test_axis1
+  test_nan
+TestAmin:
+  test_basic
+  test_axis
+  test_axis1
+TestFmax:
+  test_basic
+  test_nan
+TestFmin:
+  test_basic
+  test_nan
+TestMaximumUfunc:
+  test_basic
+  test_nan
+  test_2d
+  test_accumulate
+  test_accumulate_2d
+TestMinimumUfunc:
+  test_basic
+  test_nan
+  test_2d
+  test_accumulate
+  test_accumulate_2d
+
+=== tests/test_untested_creation.py ===
+TestEmptyLike:
+  test_shape_and_dtype
+  test_1d
+  test_3d
+TestAsarray:
+  test_from_list
+  test_from_numpy
+  test_from_macmetalpy_array
+TestAsanyarray:
+  test_from_list
+  test_from_numpy
+  test_preserves_gpu_array
+TestAscontiguousarray:
+  test_basic
+  test_preserves_values
+  test_with_dtype
+TestAsfortranarray:
+  test_basic
+  test_preserves_values
+  test_2d_shape
+TestFromiter:
+  test_basic
+  test_with_count
+  test_generator
+TestReshapeCreation:
+  test_1d_to_2d
+  test_infer_dim
+  test_flatten
+TestRavelCreation:
+  test_2d
+  test_3d
+  test_already_1d
+TestTransposeCreation:
+  test_2d
+  test_3d_with_axes
+  test_square_matrix
+TestBlock:
+  test_1d_blocks
+  test_2d_blocks
+  test_vertical_blocks
+TestDiff:
+  test_1d
+  test_1d_n2
+  test_2d_axis0
+TestEdiff1d:
+  test_basic
+  test_2d_input
+  test_monotonic
+TestGradient:
+  test_1d
+  test_1d_uniform
+  test_1d_with_spacing
+TestTrapezoid:
+  test_basic
+  test_with_x
+  test_constant
+TestDiagIndices:
+  test_basic
+  test_ndim2
+  test_ndim3
+TestDiagIndicesFrom:
+  test_2d
+  test_4x4
+  test_use_for_indexing
+TestTrilIndices:
+  test_basic
+  test_4x4
+  test_with_k
+TestTrilIndicesFrom:
+  test_basic
+  test_4x4
+  test_with_k
+TestTriuIndices:
+  test_basic
+  test_4x4
+  test_with_k
+TestTriuIndicesFrom:
+  test_basic
+  test_4x4
+  test_with_k
+TestMaskIndices:
+  test_triu
+  test_tril
+  test_4x4_triu
+TestRavelMultiIndex:
+  test_basic
+  test_single_index
+  test_3d_dims
+TestUnravelIndex:
+  test_basic
+  test_single_value
+  test_3d_shape
+TestVander:
+  test_basic
+  test_with_N
+  test_increasing
+TestArray2string:
+  test_1d
+  test_2d
+  test_matches_numpy_format
+TestArrayRepr:
+  test_1d
+  test_contains_values
+  test_includes_dtype
+TestArrayStr:
+  test_1d
+  test_2d
+  test_matches_numpy
+TestBaseRepr:
+  test_binary
+  test_octal
+  test_hex
+TestBinaryRepr:
+  test_positive
+  test_zero
+  test_with_width
+TestTypename:
+  test_float
+  test_double
+  test_int
+TestMintypecode:
+  test_float_types
+  test_int_float
+  test_single_type
+TestIssubdtype:
+  test_float32_is_floating
+  test_int32_is_integer
+  test_float_not_integer
+TestCanCast:
+  test_safe_upcast
+  test_same_type
+  test_unsafe
+TestPromoteTypes:
+  test_int_float
+  test_same_type
+  test_int_types
+TestResultType:
+  test_basic
+  test_single
+  test_multiple
+TestMinScalarType:
+  test_small_int
+  test_large_int
+  test_float
+TestCommonType:
+  test_float32
+  test_int_array
+  test_complex
+TestFinfo:
+  test_float32
+  test_float16
+  test_has_max
+TestIinfo:
+  test_int32
+  test_int64
+  test_uint32
+TestIsscalar:
+  test_int
+  test_float
+  test_array
+TestIscomplexobj:
+  test_float_array
+  test_complex_array
+  test_real_scalar
+TestIsrealobj:
+  test_float_array
+  test_complex_array
+  test_int_array
+TestIsfortran:
+  test_c_order
+  test_1d
+  test_returns_bool
+TestArrayEquiv:
+  test_equal_arrays
+  test_not_equal
+  test_broadcast_equiv
+
+=== tests/test_untested_fft.py ===
+TestHfft:
+  test_basic
+  test_with_n
+  test_output_is_real
+  test_output_length_default
+  test_complex_input
+  test_2d_axis0
+  test_2d_axis1
+TestIhfft:
+  test_basic
+  test_with_n
+  test_output_length
+  test_roundtrip_with_hfft
+  test_2d_axis0
+  test_even_length
+  test_odd_length
+TestRfftfreq:
+  test_basic
+  test_with_d
+  test_odd_n
+  test_output_length_even
+  test_output_length_odd
+  test_large_n
+  test_values_range
+TestIfftshift:
+  test_1d
+  test_roundtrip_with_fftshift
+  test_2d
+  test_2d_axes0
+  test_even_length
+  test_odd_length
+  test_preserves_shape
+
+=== tests/test_untested_linalg.py ===
+TestCond:
+  test_identity
+  test_well_conditioned
+  test_ord_1
+  test_ord_inf
+  test_ord_fro
+  test_diagonal
+TestEig:
+  test_identity
+  test_diagonal
+  test_symmetric
+  test_output_shapes
+  test_2x2
+TestEigvals:
+  test_identity
+  test_diagonal
+  test_shape
+  test_symmetric
+  test_matches_eig
+TestMatrixPower:
+  test_power_0
+  test_power_1
+  test_power_2
+  test_power_3
+  test_power_negative
+  test_power_negative_2
+  test_identity_power
+  test_output_shape
+TestMultiDot:
+  test_two_matrices
+  test_three_matrices
+  test_four_matrices
+  test_vector_matrix_vector
+  test_output_shape
+TestTensorinv:
+  test_ind2_identity_like
+  test_ind1
+  test_output_shape_ind2
+  test_output_shape_ind1
+  test_roundtrip
+TestTensorsolve:
+  test_2d_identity
+  test_4d_identity
+  test_output_shape
+  test_simple_system
+
+=== tests/test_untested_math.py ===
+TestBitwiseAnd:
+  test_basic
+  test_all_ones_and_zeros
+  test_negative_values
+TestBitwiseOr:
+  test_basic
+  test_identity
+  test_2d
+TestBitwiseXor:
+  test_basic
+  test_self_xor_is_zero
+  test_xor_with_zero
+TestBitwiseNot:
+  test_basic
+  test_double_not
+TestBitwiseInvert:
+  test_basic
+  test_matches_bitwise_not
+  test_int32_large
+TestLeftShift:
+  test_basic
+  test_shift_by_zero
+  test_powers_of_two
+TestRightShift:
+  test_basic
+  test_shift_by_zero
+  test_shift_to_zero
+TestSubtract:
+  test_basic
+  test_self_subtract
+  test_negative_values
+TestTrueDivide:
+  test_basic
+  test_fractional_result
+  test_divide_by_one
+TestFloorDivide:
+  test_basic
+  test_exact_division
+  test_negative_values
+TestFmod:
+  test_basic
+  test_exact_multiple
+  test_negative_dividend
+TestFmax:
+  test_basic
+  test_with_nan
+  test_equal_values
+TestFmin:
+  test_basic
+  test_with_nan
+  test_negative_values
+TestFloatPower:
+  test_basic
+  test_power_of_zero
+  test_power_of_one
+TestLogaddexp:
+  test_basic
+  test_equal_values
+  test_negative_values
+TestLogaddexp2:
+  test_basic
+  test_equal_values
+  test_negative_values
+TestRint:
+  test_basic
+  test_already_integer
+  test_near_half
+TestSignbit:
+  test_basic
+  test_all_positive
+  test_all_negative
+TestSinc:
+  test_basic
+  test_negative_values
+  test_at_zero
+TestCopysign:
+  test_basic
+  test_all_positive_sign
+  test_zero_magnitude
+TestDeg2rad:
+  test_basic
+  test_negative_angles
+  test_common_angles
+TestHeaviside:
+  test_basic
+  test_zero_at_zero
+  test_one_at_zero
+TestConj:
+  test_complex
+  test_real_input
+  test_pure_imaginary
+TestConjugate:
+  test_matches_conj
+  test_complex_basic
+TestReal:
+  test_complex
+  test_real_input
+  test_pure_imaginary
+TestImag:
+  test_complex
+  test_real_input
+  test_pure_imaginary
+TestAngle:
+  test_basic
+  test_negative_real
+  test_pure_real
+TestFabs:
+  test_basic
+  test_all_positive
+  test_all_negative
+TestLogicalAnd:
+  test_basic
+  test_all_true
+  test_from_numeric
+TestLogicalOr:
+  test_basic
+  test_all_false
+  test_from_numeric
+TestLogicalXor:
+  test_basic
+  test_same_values
+  test_from_numeric
+TestLogicalNot:
+  test_basic
+  test_double_not
+  test_from_numeric
+
+=== tests/test_untested_misc.py ===
+TestHistogram:
+  test_basic
+  test_with_range
+  test_uniform_data
+TestHistogram2d:
+  test_basic
+  test_different_bins
+TestHistogramBinEdges:
+  test_basic
+  test_with_range
+TestHistogramdd:
+  test_basic_2d
+  test_3_samples
+TestBincount:
+  test_basic
+  test_minlength
+  test_larger_values
+TestDigitize:
+  test_basic
+  test_right
+TestConvolve:
+  test_full_mode
+  test_same_mode
+  test_valid_mode
+TestCorrelate:
+  test_default_mode
+  test_full_mode
+TestCorrcoef:
+  test_basic
+  test_single_array
+  test_negative_correlation
+TestCov:
+  test_basic
+  test_1d
+  test_with_y
+TestInterp:
+  test_basic
+  test_extrapolation
+  test_single_point
+TestPiecewise:
+  test_basic
+  test_three_conditions
+TestPackbits:
+  test_basic
+  test_short_input
+TestUnpackbits:
+  test_roundtrip
+  test_unpackbits_basic
+TestSavez:
+  test_positional_args
+  test_keyword_args
+TestSavezCompressed:
+  test_basic
+  test_multiple_arrays
+  test_compressed_smaller_than_uncompressed
+TestIsnat:
+  test_nat
+  test_not_nat
+  test_array
+TestCopyto:
+  test_basic
+  test_2d
+  test_overwrite
+TestFormatFloatPositional:
+  test_basic
+  test_precision
+  test_zero
+TestFormatFloatScientific:
+  test_basic
+  test_precision
+  test_large_number
+TestVectorize:
+  test_basic
+  test_conditional
+TestEinsumPath:
+  test_basic
+  test_three_operands
+TestUnwrap:
+  test_basic
+  test_no_wrapping_needed
+  test_multiple_wraps
+TestSpacing:
+  test_one
+  test_multiple_values
+TestNextafter:
+  test_basic
+  test_toward_negative
+  test_multiple
+TestIx:
+  test_basic
+  test_3d
+TestBroadcastShapes:
+  test_basic
+  test_scalar
+  test_three_shapes
+TestRealIfClose:
+  test_real_valued_complex
+  test_already_real
+TestAround:
+  test_basic
+  test_no_decimals
+  test_negative_decimals
+
+=== tests/test_untested_random.py ===
+TestBeta:
+  test_shape
+  test_dtype
+  test_range_and_mean
+TestBinomial:
+  test_shape
+  test_dtype
+  test_range_and_mean
+TestChisquare:
+  test_shape
+  test_dtype
+  test_positive_and_mean
+TestDefaultRng:
+  test_returns_generator
+  test_random
+  test_seed_reproducibility
+TestDirichlet:
+  test_shape
+  test_dtype
+  test_sums_to_one
+TestExponential:
+  test_shape
+  test_dtype
+  test_positive_and_mean
+TestF:
+  test_shape
+  test_dtype
+  test_positive_and_mean
+TestGamma:
+  test_shape
+  test_dtype
+  test_positive_and_mean
+TestGeometric:
+  test_shape
+  test_dtype
+  test_positive_and_mean
+TestGumbel:
+  test_shape
+  test_dtype
+  test_mean
+TestHypergeometric:
+  test_shape
+  test_dtype
+  test_range_and_mean
+TestLaplace:
+  test_shape
+  test_dtype
+  test_mean
+TestLogistic:
+  test_shape
+  test_dtype
+  test_mean
+TestLognormal:
+  test_shape
+  test_dtype
+  test_positive
+TestLogseries:
+  test_shape
+  test_dtype
+  test_positive
+TestMultinomial:
+  test_shape
+  test_dtype
+  test_sums
+TestMultivariateNormal:
+  test_shape
+  test_dtype
+  test_mean
+TestNegativeBinomial:
+  test_shape
+  test_dtype
+  test_non_negative_and_mean
+TestNoncentralChisquare:
+  test_shape
+  test_dtype
+  test_positive_and_mean
+TestNoncentralF:
+  test_shape
+  test_dtype
+  test_positive
+TestPareto:
+  test_shape
+  test_dtype
+  test_non_negative
+TestPermuted:
+  test_shape
+  test_dtype
+  test_does_not_modify_input
+TestPoisson:
+  test_shape
+  test_dtype
+  test_non_negative_and_mean
+TestRandint:
+  test_shape
+  test_dtype
+  test_range
+TestRandn:
+  test_shape
+  test_dtype
+  test_moments
+TestRandomSample:
+  test_shape
+  test_dtype
+  test_range
+TestRanf:
+  test_is_alias
+TestRayleigh:
+  test_shape
+  test_dtype
+  test_positive_and_mean
+TestSample:
+  test_is_alias
+TestStandardCauchy:
+  test_shape
+  test_dtype
+TestStandardExponential:
+  test_shape
+  test_dtype
+  test_positive_and_mean
+TestStandardGamma:
+  test_shape
+  test_dtype
+  test_positive_and_mean
+TestStandardNormal:
+  test_shape
+  test_dtype
+  test_moments
+TestStandardT:
+  test_shape
+  test_dtype
+  test_mean
+TestTriangular:
+  test_shape
+  test_dtype
+  test_range_and_mean
+TestVonmises:
+  test_shape
+  test_dtype
+  test_range
+TestWald:
+  test_shape
+  test_dtype
+  test_positive_and_mean
+TestWeibull:
+  test_shape
+  test_dtype
+  test_non_negative
+TestZipf:
+  test_shape
+  test_dtype
+  test_positive
+
+=== tests/test_untested_reductions.py ===
+TestAmax:
+  test_1d
+  test_2d_axis0
+  test_2d_axis1_keepdims
+TestAmin:
+  test_1d
+  test_2d_axis0
+  test_2d_axis1_keepdims
+TestPtp:
+  test_1d
+  test_2d_axis0
+  test_2d_axis1
+TestNancumsum:
+  test_no_nan
+  test_with_nan
+  test_2d_axis0_with_nan
+TestNancumprod:
+  test_no_nan
+  test_with_nan
+  test_2d_axis1_with_nan
+TestCountNonzero:
+  test_1d
+  test_2d_axis0
+  test_all_zero
+TestSortComplex:
+  test_real_input
+  test_real_input_negative
+  test_integer_input
+TestTakeTopLevel:
+  test_1d
+  test_2d_axis0
+  test_2d_axis1
+TestTakeAlongAxis:
+  test_1d
+  test_2d_axis1
+  test_argmax_gather
+TestPutAlongAxis:
+  test_2d_axis1
+  test_2d_axis0
+TestPlace:
+  test_basic
+  test_cycling_values
+TestPutmask:
+  test_basic
+  test_scalar_value
+  test_all_false
+TestSelect:
+  test_basic
+  test_with_default
+TestExtract:
+  test_basic
+  test_none_match
+  test_2d
+TestCompress:
+  test_1d
+  test_2d_axis0
+  test_2d_axis1
+TestChoose:
+  test_basic
+  test_2d_index
+TestFillDiagonal:
+  test_2d_scalar
+  test_2d_array
+  test_nonsquare
+TestDiagonal:
+  test_2d_main
+  test_2d_offset
+  test_2d_negative_offset
+TestDiagflat:
+  test_1d
+  test_offset
+  test_negative_offset
+TestTrace:
+  test_2d_basic
+  test_2d_offset
+  test_nonsquare
+TestMax:
+  test_1d
+  test_2d_axis0
+  test_keepdims
+TestMin:
+  test_1d
+  test_2d_axis1
+  test_keepdims
+TestAny:
+  test_true
+  test_false
+  test_2d_axis
+TestAll:
+  test_true
+  test_false
+  test_2d_axis
+TestLogicalAnd:
+  test_basic
+  test_numeric
+TestLogicalOr:
+  test_basic
+  test_numeric
+TestLogicalXor:
+  test_basic
+  test_numeric
+TestLogicalNot:
+  test_bool
+  test_numeric
+TestMedian:
+  test_1d_odd
+  test_1d_even
+  test_2d_axis0
+TestAverage:
+  test_unweighted
+  test_weighted
+  test_2d_axis1
+TestPercentile:
+  test_50th
+  test_multiple
+  test_2d_axis0
+TestQuantile:
+  test_basic
+  test_multiple
+  test_2d_axis1
+TestPut:
+  test_basic
+  test_wrap_mode
+  test_clip_mode
+TestSearchsorted:
+  test_left
+  test_right
+  test_duplicates
+
+=== tests/test_window.py ===
+TestBartlett:
+  test_values
+  test_symmetry
+TestBlackman:
+  test_values
+  test_symmetry
+TestHamming:
+  test_values
+  test_symmetry
+TestHanning:
+  test_values
+  test_symmetry
+TestKaiser:
+  test_default_beta
+  test_beta_variants
+  test_symmetry
+
+=== tests/test_window_misc.py ===
+TestBartlett:
+  test_basic
+  test_one
+  test_large
+TestBlackman:
+  test_basic
+  test_one
+TestHamming:
+  test_basic
+  test_one
+TestHanning:
+  test_basic
+  test_one
+TestKaiser:
+  test_basic
+  test_different_beta
+  test_one
+TestSinc:
+  test_basic
+  test_negative
+TestI0:
+  test_basic
+  test_single
+TestConvolve:
+  test_full
+  test_same
+  test_valid
+TestInterp:
+  test_basic
+  test_left_right
+TestFix:
+  test_basic
+  test_zero
+TestUnwrap:
+  test_basic
+  test_large_jump
+TestTrapezoid:
+  test_basic
+  test_with_x
+  test_with_dx

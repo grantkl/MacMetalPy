@@ -182,26 +182,29 @@ class TestSetxor1d:
 class TestIn1d:
     @pytest.mark.parametrize("dtype", NUMERIC_DTYPES)
     def test_basic(self, dtype):
+        from macmetalpy.set_ops import in1d
         a = np.array([1, 2, 3, 4, 5], dtype=dtype)
         b = np.array([2, 4], dtype=dtype)
-        result = cp.in1d(cp.array(a), cp.array(b))
-        expected = np.in1d(a, b)
+        result = in1d(cp.array(a), cp.array(b))
+        expected = np.isin(a, b)
         npt.assert_array_equal(result.get(), expected)
 
     @pytest.mark.parametrize("dtype", NUMERIC_DTYPES)
     def test_invert(self, dtype):
+        from macmetalpy.set_ops import in1d
         a = np.array([1, 2, 3, 4, 5], dtype=dtype)
         b = np.array([2, 4], dtype=dtype)
-        result = cp.in1d(cp.array(a), cp.array(b), invert=True)
-        expected = np.in1d(a, b, invert=True)
+        result = in1d(cp.array(a), cp.array(b), invert=True)
+        expected = np.isin(a, b, invert=True)
         npt.assert_array_equal(result.get(), expected)
 
     @pytest.mark.parametrize("dtype", NUMERIC_DTYPES)
     def test_assume_unique(self, dtype):
+        from macmetalpy.set_ops import in1d
         a = np.array([1, 2, 3, 4, 5], dtype=dtype)
         b = np.array([2, 4], dtype=dtype)
-        result = cp.in1d(cp.array(a), cp.array(b), assume_unique=True)
-        expected = np.in1d(a, b, assume_unique=True)
+        result = in1d(cp.array(a), cp.array(b), assume_unique=True)
+        expected = np.isin(a, b, assume_unique=True)
         npt.assert_array_equal(result.get(), expected)
 
 

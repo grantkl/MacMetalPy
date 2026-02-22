@@ -485,7 +485,8 @@ class TestAround:
     def test_round_alias(self, dtype):
         np_a = np.array([1.4, 1.5, 2.5, 3.6], dtype=dtype)
         result_around = cp.around(cp.array(np_a))
-        result_round = cp.round_(cp.array(np_a))
+        from macmetalpy.math_ops import round_
+        result_round = round_(cp.array(np_a))
         assert_eq(result_round, result_around.get(), dtype=dtype, category="unary_math")
 
 
@@ -898,8 +899,7 @@ class TestTrapezoid:
     @pytest.mark.parametrize("dtype", FLOAT_DTYPES)
     def test_basic(self, dtype):
         np_y = np.array([1.0, 2.0, 3.0, 4.0], dtype=dtype)
-        _trap = getattr(np, 'trapezoid', np.trapz)
-        expected = _trap(np_y)
+        expected = np.trapezoid(np_y)
         result = cp.trapezoid(cp.array(np_y))
         assert_eq(result, np.array(expected), dtype=dtype, category="unary_math")
 
@@ -907,15 +907,13 @@ class TestTrapezoid:
     def test_with_x(self, dtype):
         np_y = np.array([1.0, 2.0, 3.0], dtype=dtype)
         np_x = np.array([0.0, 1.0, 3.0], dtype=dtype)
-        _trap = getattr(np, 'trapezoid', np.trapz)
-        expected = _trap(np_y, x=np_x)
+        expected = np.trapezoid(np_y, x=np_x)
         result = cp.trapezoid(cp.array(np_y), x=cp.array(np_x))
         assert_eq(result, np.array(expected), dtype=dtype, category="unary_math")
 
     @pytest.mark.parametrize("dtype", FLOAT_DTYPES)
     def test_dx(self, dtype):
         np_y = np.array([1.0, 2.0, 3.0, 4.0], dtype=dtype)
-        _trap = getattr(np, 'trapezoid', np.trapz)
-        expected = _trap(np_y, dx=0.5)
+        expected = np.trapezoid(np_y, dx=0.5)
         result = cp.trapezoid(cp.array(np_y), dx=0.5)
         assert_eq(result, np.array(expected), dtype=dtype, category="unary_math")

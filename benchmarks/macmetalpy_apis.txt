@@ -1,0 +1,593 @@
+========================================================================
+macmetalpy Public API Catalog
+========================================================================
+
+------------------------------------------------------------------------
+Module: macmetalpy  (426 public names)
+------------------------------------------------------------------------
+  __all__ defined: no
+
+  Classes (54):
+    RawKernel(source: 'str', func_name: 'str') -> 'None'
+    bool_(value=False, /)
+    broadcast(*arrays)
+    byte(value=0, /)
+    cdouble(real=0, imag=0, /)
+    cfloat(real=0, imag=0, /)
+    clongdouble(real=0, imag=0, /)
+    clongfloat(real=0, imag=0, /)
+    complex128(real=0, imag=0, /)
+    complex64(real=0, imag=0, /)
+    complex_(real=0, imag=0, /)
+    complexfloating()
+    csingle(real=0, imag=0, /)
+    double(value=0, /)
+    dtype(dtype, align=False, copy=False, **kwargs)
+    flatiter()
+    float16(value=0, /)
+    float32(value=0, /)
+    float64(value=0, /)
+    float_(value=0, /)
+    floating()
+    generic()
+    half(value=0, /)
+    inexact()
+    int16(value=0, /)
+    int32(value=0, /)
+    int64(value=0, /)
+    int8(value=0, /)
+    int_(value=0, /)
+    intc(value=0, /)
+    integer()
+    intp(value=0, /)
+    longcomplex(real=0, imag=0, /)
+    longdouble(value=0, /)
+    longfloat(value=0, /)
+    longlong(value=0, /)
+    ndarray(buffer, shape: 'Tuple[int, ...]', dtype: 'np.dtype', strides: 'Optional[Tuple[int, ...]]' = None, offset: 'int' = 0, base: 'Optional[ndarray]' = None) -> 'None'
+    nditer(op, flags=None, op_flags=None, op_dtypes=None, order='K', casting='safe', op_axes=None, itershape=None, buffersize=0)
+    number()
+    short(value=0, /)
+    signedinteger()
+    single(value=0, /)
+    singlecomplex(real=0, imag=0, /)
+    ubyte(value=0, /)
+    uint(value=0, /)
+    uint16(value=0, /)
+    uint32(value=0, /)
+    uint64(value=0, /)
+    uint8(value=0, /)
+    uintc(value=0, /)
+    uintp(value=0, /)
+    ulonglong(value=0, /)
+    unsignedinteger()
+    ushort(value=0, /)
+
+  Functions (336):
+    abs(x)
+    absolute(x)
+    add(x1, x2)
+    all(a, axis=None, out=None, keepdims=False, where=<no value>)
+    allclose(a, b, rtol=1e-05, atol=1e-08, equal_nan=False)
+    amax(a, axis=None, out=None, keepdims=False, initial=<no value>, where=<no value>)
+    amin(a, axis=None, out=None, keepdims=False, initial=<no value>, where=<no value>)
+    angle(z, deg=False)
+    any(a, axis=None, out=None, keepdims=False, where=<no value>)
+    append(arr, values, axis=None)
+    apply_along_axis(func1d, axis, arr, *args, **kwargs)
+    apply_over_axes(func, a, axes)
+    arange(start_or_stop, stop=None, step=1, dtype=None) -> 'ndarray'
+    arccos(x)
+    arccosh(x)
+    arcsin(x)
+    arcsinh(x)
+    arctan(x)
+    arctan2(x1, x2)
+    arctanh(x)
+    argmax(a, axis=None, out=None, keepdims=False)
+    argmin(a, axis=None, out=None, keepdims=False)
+    argpartition(a, kth, axis=-1, kind='introselect', order=None)
+    argsort(a, axis=-1, kind=None, order=None)
+    argwhere(a)
+    around(x, decimals=0, out=None)
+    array(obj, dtype=None) -> 'ndarray'
+    array2string(a, max_line_width=None, precision=None, suppress_small=None, separator=' ', prefix='', formatter=None, threshold=None, edgeitems=None, sign=None, floatmode=None, suffix='', *, legacy=None, **extra_kw)
+    array_equal(a, b, equal_nan=False)
+    array_equiv(a1, a2)
+    array_repr(arr, max_line_width=None, precision=None, suppress_small=None)
+    array_split(a, indices_or_sections, axis=0)
+    array_str(a, max_line_width=None, precision=None, suppress_small=None)
+    asanyarray(a, dtype=None)
+    asarray(obj, dtype=None) -> 'ndarray'
+    asarray_chkfinite(a, dtype=None, order=None)
+    ascontiguousarray(a)
+    asfarray(a, dtype=<class 'numpy.float64'>)
+    asfortranarray(a, dtype=None)
+    atleast_1d(*arys)
+    atleast_2d(*arys)
+    atleast_3d(*arys)
+    average(a, axis=None, weights=None, returned=False, keepdims=False)
+    bartlett(M)
+    base_repr(number, base=2, padding=0)
+    binary_repr(num, width=None)
+    bincount(x, weights=None, minlength=0)
+    bitwise_and(x1, x2)
+    bitwise_invert(x)
+    bitwise_left_shift(x1, x2)
+    bitwise_not(x)
+    bitwise_or(x1, x2)
+    bitwise_right_shift(x1, x2)
+    bitwise_xor(x1, x2)
+    blackman(M)
+    block(arrays)
+    broadcast_arrays(*args)
+    broadcast_shapes(*args)
+    broadcast_to(a, shape)
+    can_cast(from_, to, casting='safe')
+    cbrt(x)
+    ceil(x)
+    choose(a, choices, out=None, mode='raise')
+    clip(a, a_min, a_max, out=None)
+    column_stack(tup)
+    common_type(*arrays)
+    compress(condition, a, axis=None, out=None)
+    concat(arrays, axis=0)
+    concatenate(arrays, axis=0)
+    conj(x)
+    conjugate(x)
+    convolve(a, v, mode='full')
+    copy(a, order='K')
+    copysign(x1, x2)
+    copyto(dst, src)
+    corrcoef(x, y=None, rowvar=True, bias=<no value>, ddof=<no value>, dtype=None)
+    correlate(a, v, mode='valid')
+    cos(x)
+    cosh(x)
+    count_nonzero(a, axis=None, keepdims=False)
+    cov(m, y=None, rowvar=True, bias=False, ddof=None, fweights=None, aweights=None, dtype=None)
+    cross(a, b, axisa=-1, axisb=-1, axisc=-1, axis=None)
+    cumprod(a, axis=None, dtype=None, out=None)
+    cumsum(a, axis=None, dtype=None, out=None)
+    deg2rad(x)
+    degrees(x)
+    delete(arr, obj, axis=None)
+    diag(v, k=0)
+    diag_indices(n, ndim=2)
+    diag_indices_from(arr)
+    diagflat(v, k=0)
+    diagonal(a, offset=0, axis1=0, axis2=1)
+    diff(a, n=1, axis=-1, prepend=<no value>, append=<no value>)
+    digitize(x, bins, right=False)
+    divide(x1, x2)
+    divmod(x1, x2)
+    dot(a, b)
+    dsplit(ary, indices_or_sections)
+    dstack(tup)
+    ediff1d(ary, to_end=None, to_begin=None)
+    einsum(*operands, out=None, optimize=False, **kwargs)
+    einsum_path(*operands, optimize='greedy', **kwargs)
+    empty(shape, dtype=None) -> 'ndarray'
+    empty_like(a, dtype=None) -> 'ndarray'
+    equal(x1, x2)
+    exp(x)
+    exp2(x)
+    expand_dims(a, axis)
+    expm1(x)
+    extract(condition, arr)
+    eye(N, M=None, k=0, dtype=None, order='C') -> 'ndarray'
+    fabs(x)
+    fill_diagonal(a, val, wrap=False)
+    finfo(dtype)
+    fix(x, out=None)
+    flatnonzero(a)
+    flip(a, axis=None)
+    fliplr(m)
+    flipud(m)
+    float_power(x1, x2)
+    floor(x)
+    floor_divide(x1, x2)
+    fmax(x1, x2)
+    fmin(x1, x2)
+    fmod(x1, x2)
+    format_float_positional(x, precision=None, unique=True, fractional=True, trim='k', sign=False, pad_left=None, pad_right=None, min_digits=None)
+    format_float_scientific(x, precision=None, unique=True, trim='k', sign=False, pad_left=None, exp_digits=None, min_digits=None)
+    frexp(x)
+    frombuffer(buffer, dtype=<class 'float'>, count=-1, offset=0)
+    fromfunction(function, shape, dtype=<class 'float'>)
+    fromiter(iterable, dtype, count=-1)
+    fromstring(string, dtype=<class 'float'>, count=-1, *, sep='')
+    full(shape, fill_value, dtype=None, order='C') -> 'ndarray'
+    full_like(a, fill_value, dtype=None, order='K') -> 'ndarray'
+    gcd(x1, x2)
+    geomspace(start, stop, num=50, endpoint=True, dtype=None, axis=0)
+    get_config() -> 'MacMetalConfig'
+    gradient(f, *varargs, axis=None, edge_order=1)
+    greater(x1, x2)
+    greater_equal(x1, x2)
+    hamming(M)
+    hanning(M)
+    heaviside(x1, x2)
+    histogram(a, bins=10, range=None, density=None, weights=None)
+    histogram2d(x, y, bins=10, range=None, density=None, weights=None)
+    histogram_bin_edges(a, bins=10, range=None, weights=None)
+    histogramdd(sample, bins=10, range=None, density=None, weights=None)
+    hsplit(ary, indices_or_sections)
+    hstack(arrays, dtype=None, casting='same_kind')
+    hypot(x1, x2)
+    i0(x)
+    identity(n, dtype=None)
+    iinfo(dtype)
+    imag(val)
+    in1d(ar1, ar2, assume_unique=False, invert=False, kind=None)
+    indices(dimensions, dtype=<class 'int'>, sparse=False)
+    inner(a, b)
+    insert(arr, obj, values, axis=None)
+    interp(x, xp, fp, left=None, right=None, period=None)
+    intersect1d(ar1, ar2, assume_unique=False, return_indices=False)
+    invert(x)
+    isclose(a, b, rtol=1e-05, atol=1e-08, equal_nan=False)
+    iscomplex(x)
+    iscomplexobj(x)
+    isfinite(x)
+    isfortran(a)
+    isin(element, test_elements, assume_unique=False, invert=False, kind=None)
+    isinf(x)
+    isnan(x)
+    isnat(x)
+    isneginf(x, out=None)
+    isposinf(x, out=None)
+    isreal(x)
+    isrealobj(x)
+    isscalar(element)
+    issctype(rep)
+    issubdtype(arg1, arg2)
+    ix_(*args)
+    kaiser(M, beta)
+    kron(a, b)
+    lcm(x1, x2)
+    ldexp(x1, x2)
+    left_shift(x1, x2)
+    less(x1, x2)
+    less_equal(x1, x2)
+    lexsort(keys)
+    linspace(start, stop, num=50, endpoint=True, retstep=False, dtype=None, axis=0) -> 'ndarray'
+    load(file, mmap_mode=None, allow_pickle=False, encoding='ASCII', fix_imports=True)
+    log(x)
+    log10(x)
+    log1p(x)
+    log2(x)
+    logaddexp(x1, x2)
+    logaddexp2(x1, x2)
+    logical_and(x1, x2)
+    logical_not(x)
+    logical_or(x1, x2)
+    logical_xor(x1, x2)
+    logspace(start, stop, num=50, endpoint=True, base=10.0, dtype=None, axis=0)
+    mask_indices(n, mask_func, k=0)
+    matmul(x1, x2)
+    max(a, axis=None, out=None, keepdims=False, initial=<no value>, where=<no value>)
+    maximum(a, b)
+    mean(a, axis=None, dtype=None, out=None, keepdims=False, where=<no value>)
+    median(a, axis=None, out=None, overwrite_input=False, keepdims=False)
+    meshgrid(*xi, copy=True, sparse=False, indexing='xy')
+    min(a, axis=None, out=None, keepdims=False, initial=<no value>, where=<no value>)
+    min_scalar_type(a)
+    minimum(a, b)
+    mintypecode(typechars, typeset='GDFgdf', default='d')
+    mod(x1, x2)
+    modf(x)
+    moveaxis(a, source, destination)
+    msort(a)
+    multiply(x1, x2)
+    nan_to_num(x, copy=True, nan=0.0, posinf=None, neginf=None)
+    nanargmax(a, axis=None, out=None, keepdims=False)
+    nanargmin(a, axis=None, out=None, keepdims=False)
+    nancumprod(a, axis=None, dtype=None, out=None)
+    nancumsum(a, axis=None, dtype=None, out=None)
+    nanmax(a, axis=None, out=None, keepdims=False, initial=<no value>, where=<no value>)
+    nanmean(a, axis=None, dtype=None, out=None, keepdims=False, where=<no value>)
+    nanmedian(a, axis=None, out=None, overwrite_input=False, keepdims=False)
+    nanmin(a, axis=None, out=None, keepdims=False, initial=<no value>, where=<no value>)
+    nanpercentile(a, q, axis=None, out=None, overwrite_input=False, method='linear', keepdims=False)
+    nanprod(a, axis=None, dtype=None, out=None, keepdims=False, initial=<no value>, where=<no value>)
+    nanquantile(a, q, axis=None, out=None, overwrite_input=False, method='linear', keepdims=False)
+    nanstd(a, axis=None, dtype=None, out=None, ddof=0, keepdims=False, where=<no value>)
+    nansum(a, axis=None, dtype=None, out=None, keepdims=False, initial=<no value>, where=<no value>)
+    nanvar(a, axis=None, dtype=None, out=None, ddof=0, keepdims=False, where=<no value>)
+    ndim(a)
+    negative(x)
+    nextafter(x1, x2)
+    nonzero(a)
+    not_equal(x1, x2)
+    obj2sctype(rep, default=None)
+    ones(shape, dtype=None, order='C') -> 'ndarray'
+    ones_like(a, dtype=None, order='K') -> 'ndarray'
+    outer(a, b, out=None)
+    packbits(a, axis=None)
+    pad(array, pad_width, mode='constant', **kwargs)
+    partition(a, kth, axis=-1, kind='introselect', order=None)
+    percentile(a, q, axis=None, out=None, overwrite_input=False, method='linear', keepdims=False)
+    piecewise(x, condlist, funclist, *args, **kw)
+    place(arr, mask, vals)
+    positive(x)
+    power(x1, x2)
+    prod(a, axis=None, dtype=None, out=None, keepdims=False, initial=<no value>, where=<no value>)
+    promote_types(type1, type2)
+    ptp(a, axis=None, out=None, keepdims=False)
+    put(a, ind, v, mode='raise')
+    put_along_axis(arr, indices, values, axis)
+    putmask(a, mask, values)
+    quantile(a, q, axis=None, out=None, overwrite_input=False, method='linear', keepdims=False)
+    rad2deg(x)
+    radians(x)
+    ravel(a, order='C')
+    ravel_multi_index(multi_index, dims)
+    real(val)
+    real_if_close(a, tol=100)
+    reciprocal(x)
+    remainder(x1, x2)
+    repeat(a, repeats, axis=None)
+    reshape(a, newshape, order='C')
+    resize(a, new_shape)
+    result_type(*arrays_and_dtypes)
+    right_shift(x1, x2)
+    rint(x)
+    roll(a, shift, axis=None)
+    rollaxis(a, axis, start=0)
+    rot90(m, k=1, axes=(0, 1))
+    round(x, decimals=0, out=None)
+    round_(x, decimals=0, out=None)
+    save(file, arr, allow_pickle=True)
+    savez(file, *args, **kwds)
+    savez_compressed(file, *args, **kwds)
+    sctype2char(sctype)
+    searchsorted(a, v, side='left', sorter=None)
+    select(condlist, choicelist, default=0)
+    set_config(*, float64_behavior: "Literal['downcast', 'cpu_fallback'] | None" = None, warn_on_downcast: 'bool | None' = None, default_float_dtype: 'str | None' = None) -> 'None'
+    setdiff1d(ar1, ar2, assume_unique=False)
+    setxor1d(ar1, ar2, assume_unique=False)
+    shape(a)
+    sign(x)
+    signbit(x)
+    sin(x)
+    sinc(x)
+    sinh(x)
+    size(a, axis=None)
+    sort(a, axis=-1, kind=None, order=None)
+    sort_complex(a)
+    spacing(x)
+    split(a, indices_or_sections, axis=0)
+    sqrt(x)
+    square(x)
+    squeeze(a, axis=None)
+    stack(arrays, axis=0, out=None, dtype=None, casting='same_kind')
+    std(a, axis=None, dtype=None, out=None, keepdims=False, ddof=0, where=<no value>)
+    subtract(x1, x2)
+    sum(a, axis=None, dtype=None, out=None, keepdims=False, initial=<no value>, where=<no value>)
+    swapaxes(a, axis1, axis2)
+    synchronize()
+    take(a, indices, axis=None, out=None, mode='raise')
+    take_along_axis(arr, indices, axis)
+    tan(x)
+    tanh(x)
+    tensordot(a, b, axes=2)
+    tile(a, reps)
+    trace(a, offset=0, axis1=0, axis2=1, dtype=None, out=None)
+    transpose(a, axes=None)
+    trapezoid(y, x=None, dx=1.0, axis=-1)
+    tri(N, M=None, k=0, dtype=None)
+    tril(m, k=0)
+    tril_indices(n, k=0, m=None)
+    tril_indices_from(arr, k=0)
+    trim_zeros(filt, trim='fb')
+    triu(m, k=0)
+    triu_indices(n, k=0, m=None)
+    triu_indices_from(arr, k=0)
+    true_divide(x1, x2)
+    trunc(x)
+    typename(char)
+    union1d(ar1, ar2)
+    unique(ar, return_index=False, return_inverse=False, return_counts=False, axis=None, equal_nan=True)
+    unpackbits(a, axis=None)
+    unravel_index(indices, shape)
+    unwrap(p, discont=None, axis=-1, period=None)
+    vander(x, N=None, increasing=False)
+    var(a, axis=None, dtype=None, out=None, keepdims=False, ddof=0, where=<no value>)
+    vdot(a, b)
+    vectorize(pyfunc, otypes=None, excluded=None, signature=None)
+    vsplit(ary, indices_or_sections)
+    vstack(arrays, dtype=None, casting='same_kind')
+    where(condition, x=None, y=None)
+    zeros(shape, dtype=None) -> 'ndarray'
+    zeros_like(a, dtype=None, order='K') -> 'ndarray'
+
+  Constants (11):
+    c_ (_CClass) = <macmetalpy.index_tricks._CClass object at 0x109dc7010>
+    e (float) = 2.718281828459045
+    euler_gamma (float) = 0.5772156649015329
+    inf (float) = inf
+    mgrid (_MGridClass) = <macmetalpy.index_tricks._MGridClass object at 0x109dc70d0>
+    nan (float) = nan
+    newaxis (NoneType) = None
+    ogrid (_OGridClass) = <macmetalpy.index_tricks._OGridClass object at 0x109dc7110>
+    pi (float) = 3.141592653589793
+    r_ (_RClass) = <macmetalpy.index_tricks._RClass object at 0x109dc7050>
+    s_ (_IndexExpression) = <macmetalpy.index_tricks._IndexExpression object at 0x109dc7090>
+
+  Submodules (25):
+    bitwise_ops
+    complex_ops
+    creation
+    dtype_utils
+    fft
+    format_ops
+    functional
+    index_tricks
+    indexing
+    io
+    linalg
+    linalg_top
+    logic_ops
+    manipulation
+    math_ext
+    math_ops
+    nan_ops
+    random
+    raw_kernel
+    reductions
+    set_ops
+    sorting
+    ufunc
+    ufunc_ops
+    window
+
+------------------------------------------------------------------------
+Module: macmetalpy.linalg  (25 public names)
+------------------------------------------------------------------------
+  __all__ defined: no
+
+  Classes (2):
+    LinAlgError
+    ndarray(buffer, shape: 'Tuple[int, ...]', dtype: 'np.dtype', strides: 'Optional[Tuple[int, ...]]' = None, offset: 'int' = 0, base: 'Optional[ndarray]' = None) -> 'None'
+
+  Functions (20):
+    cholesky(a)
+    cond(x, p=None)
+    det(a)
+    eig(a)
+    eigh(a, UPLO='L')
+    eigvals(a)
+    eigvalsh(a, UPLO='L')
+    inv(a)
+    lstsq(a, b, rcond=None)
+    matrix_power(a, n)
+    matrix_rank(M, tol=None, hermitian=False)
+    multi_dot(arrays, *, out=None)
+    norm(x, ord=None, axis=None, keepdims=False)
+    pinv(a, rcond=1e-15, hermitian=False)
+    qr(a, mode='reduced')
+    slogdet(a)
+    solve(a, b)
+    svd(a, full_matrices=True, compute_uv=True, hermitian=False)
+    tensorinv(a, ind=2)
+    tensorsolve(a, b, axes=None)
+
+  Constants (1):
+    annotations (_Feature) = _Feature((3, 7, 0, 'beta', 1), None, 16777216)
+
+  Submodules (2):
+    creation
+    np
+
+------------------------------------------------------------------------
+Module: macmetalpy.fft  (22 public names)
+------------------------------------------------------------------------
+  __all__ defined: no
+
+  Classes (1):
+    ndarray(buffer, shape: 'Tuple[int, ...]', dtype: 'np.dtype', strides: 'Optional[Tuple[int, ...]]' = None, offset: 'int' = 0, base: 'Optional[ndarray]' = None) -> 'None'
+
+  Functions (18):
+    fft(a, n=None, axis=-1, norm=None)
+    fft2(a, s=None, axes=(-2, -1), norm=None)
+    fftfreq(n, d=1.0)
+    fftn(a, s=None, axes=None, norm=None)
+    fftshift(x, axes=None)
+    hfft(a, n=None, axis=-1, norm=None)
+    ifft(a, n=None, axis=-1, norm=None)
+    ifft2(a, s=None, axes=(-2, -1), norm=None)
+    ifftn(a, s=None, axes=None, norm=None)
+    ifftshift(x, axes=None)
+    ihfft(a, n=None, axis=-1, norm=None)
+    irfft(a, n=None, axis=-1, norm=None)
+    irfft2(a, s=None, axes=(-2, -1), norm=None)
+    irfftn(a, s=None, axes=None, norm=None)
+    rfft(a, n=None, axis=-1, norm=None)
+    rfft2(a, s=None, axes=(-2, -1), norm=None)
+    rfftfreq(n, d=1.0)
+    rfftn(a, s=None, axes=None, norm=None)
+
+  Constants (1):
+    annotations (_Feature) = _Feature((3, 7, 0, 'beta', 1), None, 16777216)
+
+  Submodules (2):
+    creation
+    np
+
+------------------------------------------------------------------------
+Module: macmetalpy.random  (52 public names)
+------------------------------------------------------------------------
+  __all__ defined: no
+
+  Classes (1):
+    Generator(seed_val=None)
+
+  Functions (48):
+    beta(a, b, size=None)
+    binomial(n, p, size=None)
+    chisquare(df, size=None)
+    choice(a, size=None, replace=True, p=None)
+    default_rng(seed_val=None)
+    dirichlet(alpha, size=None)
+    exponential(scale=1.0, size=None)
+    f(dfnum, dfden, size=None)
+    gamma(shape, scale=1.0, size=None)
+    geometric(p, size=None)
+    gumbel(loc=0.0, scale=1.0, size=None)
+    hypergeometric(ngood, nbad, nsample, size=None)
+    laplace(loc=0.0, scale=1.0, size=None)
+    logistic(loc=0.0, scale=1.0, size=None)
+    lognormal(mean=0.0, sigma=1.0, size=None)
+    logseries(p, size=None)
+    multinomial(n, pvals, size=None)
+    multivariate_normal(mean, cov, size=None)
+    negative_binomial(n, p, size=None)
+    noncentral_chisquare(df, nonc, size=None)
+    noncentral_f(dfnum, dfden, nonc, size=None)
+    normal(loc=0.0, scale=1.0, size=None)
+    pareto(a, size=None)
+    permutation(x)
+    permuted(x, axis=None, out=None)
+    poisson(lam=1.0, size=None)
+    power(a, size=None)
+    rand(*shape)
+    randint(low, high=None, size=None, dtype=<class 'int'>)
+    randn(*shape)
+    random(size=None)
+    random_sample(size=None)
+    ranf(size=None)
+    rayleigh(scale=1.0, size=None)
+    sample(size=None)
+    seed(s=None)
+    shuffle(a)
+    standard_cauchy(size=None)
+    standard_exponential(size=None)
+    standard_gamma(shape, size=None)
+    standard_normal(size=None)
+    standard_t(df, size=None)
+    triangular(left, mode, right, size=None)
+    uniform(low=0.0, high=1.0, size=None)
+    vonmises(mu, kappa, size=None)
+    wald(mean, scale, size=None)
+    weibull(a, size=None)
+    zipf(a, size=None)
+
+  Constants (1):
+    annotations (_Feature) = _Feature((3, 7, 0, 'beta', 1), None, 16777216)
+
+  Submodules (2):
+    creation
+    np
+
+========================================================================
+__all__ exports from __init__.py files
+========================================================================
+
+macmetalpy.__all__: NOT DEFINED (using dir() fallback)
+
+macmetalpy.linalg.__all__: NOT DEFINED (using dir() fallback)
+
+macmetalpy.fft.__all__: NOT DEFINED (using dir() fallback)
+
+macmetalpy.random.__all__: NOT DEFINED (using dir() fallback)
+

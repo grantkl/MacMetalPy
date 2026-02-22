@@ -5,25 +5,41 @@ from .ndarray import ndarray
 from . import creation
 
 
+def _cpu_view(a):
+    """Get zero-copy numpy view (syncs if GPU-resident)."""
+    if a._np_data is None:
+        from ._metal_backend import MetalBackend
+        MetalBackend().synchronize()
+    return a._get_view()
+
+
+def _get_np(a):
+    """Get numpy data, preferring _np_data for CPU-resident arrays."""
+    np_data = a._np_data
+    if np_data is not None:
+        return np_data
+    return _cpu_view(a)
+
+
 def _to_ndarray(np_result):
     """Convert a numpy result to ndarray, handling empty arrays."""
     if np_result.size == 0:
         return creation.empty(np_result.shape, dtype=np_result.dtype)
-    return creation.array(np_result)
+    return ndarray._from_np_direct(np_result)
 
 
 def union1d(ar1, ar2):
     """Find the union of two arrays."""
     if not isinstance(ar1, ndarray): ar1 = creation.asarray(ar1)
     if not isinstance(ar2, ndarray): ar2 = creation.asarray(ar2)
-    return _to_ndarray(np.union1d(ar1.get(), ar2.get()))
+    return _to_ndarray(np.union1d(_get_np(ar1), _get_np(ar2)))
 
 
 def intersect1d(ar1, ar2, assume_unique=False, return_indices=False):
     """Find the intersection of two arrays."""
     if not isinstance(ar1, ndarray): ar1 = creation.asarray(ar1)
     if not isinstance(ar2, ndarray): ar2 = creation.asarray(ar2)
-    result = np.intersect1d(ar1.get(), ar2.get(), assume_unique=assume_unique, return_indices=return_indices)
+    result = np.intersect1d(_get_np(ar1), _get_np(ar2), assume_unique=assume_unique, return_indices=return_indices)
     if return_indices:
         return _to_ndarray(result[0]), _to_ndarray(result[1]), _to_ndarray(result[2])
     return _to_ndarray(result)
@@ -33,25 +49,37 @@ def setdiff1d(ar1, ar2, assume_unique=False):
     """Find set difference of two arrays."""
     if not isinstance(ar1, ndarray): ar1 = creation.asarray(ar1)
     if not isinstance(ar2, ndarray): ar2 = creation.asarray(ar2)
-    return _to_ndarray(np.setdiff1d(ar1.get(), ar2.get(), assume_unique=assume_unique))
+    return _to_ndarray(np.setdiff1d(_get_np(ar1), _get_np(ar2), assume_unique=assume_unique))
 
 
 def setxor1d(ar1, ar2, assume_unique=False):
     """Find set exclusive-or of two arrays."""
     if not isinstance(ar1, ndarray): ar1 = creation.asarray(ar1)
     if not isinstance(ar2, ndarray): ar2 = creation.asarray(ar2)
-    return _to_ndarray(np.setxor1d(ar1.get(), ar2.get(), assume_unique=assume_unique))
+    return _to_ndarray(np.setxor1d(_get_np(ar1), _get_np(ar2), assume_unique=assume_unique))
 
 
-def in1d(ar1, ar2, assume_unique=False, invert=False):
-    """Test whether each element is also present in a second array."""
+def in1d(ar1, ar2, assume_unique=False, invert=False, kind=None):
+    """Test whether each element is also present in a second array.
+
+    .. deprecated:: NumPy 2.0
+        ``np.in1d`` was removed in NumPy 2.0.  This wrapper delegates to
+        :func:`numpy.isin` which is the official replacement.  The function
+        name ``in1d`` is kept for backward compatibility with CuPy-style code.
+    """
     if not isinstance(ar1, ndarray): ar1 = creation.asarray(ar1)
     if not isinstance(ar2, ndarray): ar2 = creation.asarray(ar2)
-    return creation.array(np.in1d(ar1.get(), ar2.get(), assume_unique=assume_unique, invert=invert))
+    kwargs = dict(assume_unique=assume_unique, invert=invert)
+    if kind is not None:
+        kwargs["kind"] = kind
+    return ndarray._from_np_direct(np.isin(_get_np(ar1), _get_np(ar2), **kwargs))
 
 
-def isin(element, test_elements, assume_unique=False, invert=False):
+def isin(element, test_elements, assume_unique=False, invert=False, kind=None):
     """Check if elements are present in test_elements."""
     if not isinstance(element, ndarray): element = creation.asarray(element)
-    te = test_elements.get() if isinstance(test_elements, ndarray) else np.asarray(test_elements)
-    return creation.array(np.isin(element.get(), te, assume_unique=assume_unique, invert=invert))
+    te = _get_np(test_elements) if isinstance(test_elements, ndarray) else np.asarray(test_elements)
+    kwargs = dict(assume_unique=assume_unique, invert=invert)
+    if kind is not None:
+        kwargs["kind"] = kind
+    return ndarray._from_np_direct(np.isin(_get_np(element), te, **kwargs))

@@ -8,7 +8,7 @@ import numpy as np
 
 from ._dtypes import resolve_dtype
 from ._metal_backend import MetalBackend
-from .ndarray import ndarray
+from .ndarray import ndarray, _c_contiguous_strides
 
 __all__ = [
     "empty",
@@ -27,54 +27,53 @@ __all__ = [
 ]
 
 
+def _wrap_np(np_data):
+    """Inline ndarray construction for creation ops (known-good dtype, C-contiguous)."""
+    arr = ndarray.__new__(ndarray)
+    arr._buffer = None
+    arr._np_data = np_data
+    arr._shape = np_data.shape
+    arr._dtype = np_data.dtype
+    arr._strides = _c_contiguous_strides(np_data.shape)
+    arr._offset = 0
+    arr._base = None
+    return arr
+
+
 def empty(shape, dtype=None) -> ndarray:
     """Return a new array of given shape and type, without initialising entries."""
     if isinstance(shape, int):
         shape = (shape,)
-    shape = tuple(shape)
-    dtype = resolve_dtype(dtype)
-    size = 1
-    for s in shape:
-        size *= s
-    backend = MetalBackend()
-    buf = backend.create_buffer(max(size, 1), dtype)
-    return ndarray._from_buffer(buf, shape, dtype)
+    else:
+        shape = tuple(shape)
+    return _wrap_np(np.empty(shape, dtype=resolve_dtype(dtype)))
 
 
 def zeros(shape, dtype=None) -> ndarray:
     """Return a new array of given shape filled with zeros."""
     if isinstance(shape, int):
         shape = (shape,)
-    shape = tuple(shape)
-    dtype = resolve_dtype(dtype)
-    np_data = np.zeros(shape, dtype=dtype)
-    backend = MetalBackend()
-    buf = backend.array_to_buffer(np_data)
-    return ndarray._from_buffer(buf, shape, dtype)
+    else:
+        shape = tuple(shape)
+    return _wrap_np(np.zeros(shape, dtype=resolve_dtype(dtype)))
 
 
-def ones(shape, dtype=None) -> ndarray:
+def ones(shape, dtype=None, order='C') -> ndarray:
     """Return a new array of given shape filled with ones."""
     if isinstance(shape, int):
         shape = (shape,)
-    shape = tuple(shape)
-    dtype = resolve_dtype(dtype)
-    np_data = np.ones(shape, dtype=dtype)
-    backend = MetalBackend()
-    buf = backend.array_to_buffer(np_data)
-    return ndarray._from_buffer(buf, shape, dtype)
+    else:
+        shape = tuple(shape)
+    return _wrap_np(np.ones(shape, dtype=resolve_dtype(dtype)))
 
 
-def full(shape, fill_value, dtype=None) -> ndarray:
+def full(shape, fill_value, dtype=None, order='C') -> ndarray:
     """Return a new array of given shape filled with *fill_value*."""
     if isinstance(shape, int):
         shape = (shape,)
-    shape = tuple(shape)
-    dtype = resolve_dtype(dtype)
-    np_data = np.full(shape, fill_value, dtype=dtype)
-    backend = MetalBackend()
-    buf = backend.array_to_buffer(np_data)
-    return ndarray._from_buffer(buf, shape, dtype)
+    else:
+        shape = tuple(shape)
+    return _wrap_np(np.full(shape, fill_value, dtype=resolve_dtype(dtype)))
 
 
 def arange(start_or_stop, stop=None, step=1, dtype=None) -> ndarray:
@@ -83,16 +82,13 @@ def arange(start_or_stop, stop=None, step=1, dtype=None) -> ndarray:
         start, stop = 0, start_or_stop
     else:
         start = start_or_stop
-    np_data = np.arange(start, stop, step)
     if dtype is not None:
         dtype = resolve_dtype(dtype)
-        np_data = np_data.astype(dtype)
     else:
-        dtype = resolve_dtype(np_data.dtype)
-        np_data = np_data.astype(dtype)
-    backend = MetalBackend()
-    buf = backend.array_to_buffer(np_data)
-    return ndarray._from_buffer(buf, np_data.shape, dtype)
+        # Resolve dtype from arguments to avoid float64 intermediate copy
+        probe = np.result_type(type(start), type(stop), type(step))
+        dtype = resolve_dtype(probe)
+    return _wrap_np(np.arange(start, stop, step, dtype=dtype))
 
 
 def array(obj, dtype=None) -> ndarray:
@@ -102,15 +98,10 @@ def array(obj, dtype=None) -> ndarray:
     else:
         np_data = np.asarray(obj)
 
-    orig_shape = np_data.shape  # Save BEFORE any shape-mangling
     if dtype is not None:
         dtype = resolve_dtype(dtype)
-    else:
-        dtype = resolve_dtype(np_data.dtype)
-    np_data = np.ascontiguousarray(np_data, dtype=dtype)
-    backend = MetalBackend()
-    buf = backend.array_to_buffer(np_data)
-    return ndarray._from_buffer(buf, orig_shape, dtype)
+        np_data = np_data.astype(dtype, copy=False)
+    return ndarray._from_np_direct(np_data)
 
 
 def asarray(obj, dtype=None) -> ndarray:
@@ -121,40 +112,34 @@ def asarray(obj, dtype=None) -> ndarray:
     return array(obj, dtype=dtype)
 
 
-def zeros_like(a, dtype=None) -> ndarray:
+def zeros_like(a, dtype=None, order='K') -> ndarray:
     """Return an array of zeros with the same shape as *a*."""
     if isinstance(a, ndarray):
-        shape = a.shape
-        dtype = dtype if dtype is not None else a.dtype
-    else:
-        a = np.asarray(a)
-        shape = a.shape
-    return zeros(shape, dtype=dtype)
+        d = dtype if dtype is not None else a.dtype
+        return _wrap_np(np.zeros(a.shape, dtype=d))
+    a = np.asarray(a)
+    return _wrap_np(np.zeros_like(a, dtype=dtype))
 
 
-def ones_like(a, dtype=None) -> ndarray:
+def ones_like(a, dtype=None, order='K') -> ndarray:
     """Return an array of ones with the same shape as *a*."""
     if isinstance(a, ndarray):
-        shape = a.shape
-        dtype = dtype if dtype is not None else a.dtype
-    else:
-        a = np.asarray(a)
-        shape = a.shape
-    return ones(shape, dtype=dtype)
+        d = dtype if dtype is not None else a.dtype
+        return _wrap_np(np.ones(a.shape, dtype=d))
+    a = np.asarray(a)
+    return _wrap_np(np.ones_like(a, dtype=dtype))
 
 
 def empty_like(a, dtype=None) -> ndarray:
     """Return an uninitialised array with the same shape as *a*."""
     if isinstance(a, ndarray):
-        shape = a.shape
-        dtype = dtype if dtype is not None else a.dtype
-    else:
-        a = np.asarray(a)
-        shape = a.shape
-    return empty(shape, dtype=dtype)
+        d = dtype if dtype is not None else a.dtype
+        return _wrap_np(np.empty(a.shape, dtype=d))
+    a = np.asarray(a)
+    return _wrap_np(np.empty_like(a, dtype=dtype))
 
 
-def full_like(a, fill_value, dtype=None) -> ndarray:
+def full_like(a, fill_value, dtype=None, order='K') -> ndarray:
     """Return a filled array with the same shape as *a*."""
     if isinstance(a, ndarray):
         shape = a.shape
@@ -165,38 +150,27 @@ def full_like(a, fill_value, dtype=None) -> ndarray:
     return full(shape, fill_value, dtype=dtype)
 
 
-def linspace(start, stop, num=50, endpoint=True, retstep=False, dtype=None) -> ndarray:
+def linspace(start, stop, num=50, endpoint=True, retstep=False, dtype=None, axis=0) -> ndarray:
     """Return evenly spaced numbers over a specified interval."""
-    np_result = np.linspace(start, stop, num, endpoint=endpoint, retstep=retstep)
+    np_result = np.linspace(start, stop, num, endpoint=endpoint, retstep=retstep, axis=axis)
     if retstep:
         np_data, step = np_result
     else:
         np_data = np_result
     if dtype is not None:
         dtype = resolve_dtype(dtype)
-    else:
-        dtype = resolve_dtype(np_data.dtype)
-    np_data = np.ascontiguousarray(np_data, dtype=dtype)
-    backend = MetalBackend()
-    buf = backend.array_to_buffer(np_data)
-    arr = ndarray._from_buffer(buf, np_data.shape, dtype)
+        np_data = np_data.astype(dtype, copy=False)
+    arr = ndarray._from_np_direct(np_data)
     if retstep:
         return arr, step
     return arr
 
 
-def eye(N, M=None, dtype=None) -> ndarray:
+def eye(N, M=None, k=0, dtype=None, order='C') -> ndarray:
     """Return a 2-D array with ones on the diagonal and zeros elsewhere."""
     if M is None:
         M = N
-    if dtype is not None:
-        dtype = resolve_dtype(dtype)
-    else:
-        dtype = resolve_dtype(None)
-    np_data = np.eye(N, M, dtype=dtype)
-    backend = MetalBackend()
-    buf = backend.array_to_buffer(np_data)
-    return ndarray._from_buffer(buf, np_data.shape, dtype)
+    return _wrap_np(np.eye(N, M, k=k, dtype=resolve_dtype(dtype)))
 
 
 def diag(v, k=0):
@@ -206,11 +180,7 @@ def diag(v, k=0):
     else:
         v_np = np.asarray(v)
     result = np.diag(v_np, k=k)
-    dtype = resolve_dtype(result.dtype)
-    result = np.ascontiguousarray(result, dtype=dtype)
-    backend = MetalBackend()
-    buf = backend.array_to_buffer(result)
-    return ndarray._from_buffer(buf, result.shape, dtype)
+    return ndarray._from_np_direct(result)
 
 
 def identity(n, dtype=None):
@@ -220,11 +190,7 @@ def identity(n, dtype=None):
 
 def tri(N, M=None, k=0, dtype=None):
     """Return array with ones at and below the given diagonal."""
-    dtype = resolve_dtype(dtype)
-    result = np.tri(N, M, k, dtype=dtype)
-    backend = MetalBackend()
-    buf = backend.array_to_buffer(np.ascontiguousarray(result))
-    return ndarray._from_buffer(buf, result.shape, dtype)
+    return _wrap_np(np.tri(N, M, k, dtype=resolve_dtype(dtype)))
 
 
 def triu(m, k=0):
@@ -233,12 +199,7 @@ def triu(m, k=0):
         m_np = m.get()
     else:
         m_np = np.asarray(m)
-    result = np.triu(m_np, k=k)
-    dtype = resolve_dtype(result.dtype)
-    result = np.ascontiguousarray(result, dtype=dtype)
-    backend = MetalBackend()
-    buf = backend.array_to_buffer(result)
-    return ndarray._from_buffer(buf, result.shape, dtype)
+    return ndarray._from_np_direct(np.triu(m_np, k=k))
 
 
 def tril(m, k=0):
@@ -247,49 +208,41 @@ def tril(m, k=0):
         m_np = m.get()
     else:
         m_np = np.asarray(m)
-    result = np.tril(m_np, k=k)
-    dtype = resolve_dtype(result.dtype)
-    result = np.ascontiguousarray(result, dtype=dtype)
-    backend = MetalBackend()
-    buf = backend.array_to_buffer(result)
-    return ndarray._from_buffer(buf, result.shape, dtype)
+    return ndarray._from_np_direct(np.tril(m_np, k=k))
 
 
-def logspace(start, stop, num=50, dtype=None):
+def logspace(start, stop, num=50, endpoint=True, base=10.0, dtype=None, axis=0):
     """Return numbers spaced evenly on a log scale."""
-    np_data = np.logspace(start, stop, num)
+    np_data = np.logspace(start, stop, num, endpoint=endpoint, base=base, axis=axis)
     if dtype is not None:
-        dtype = resolve_dtype(dtype)
-    else:
-        dtype = resolve_dtype(np_data.dtype)
-    np_data = np.ascontiguousarray(np_data, dtype=dtype)
-    backend = MetalBackend()
-    buf = backend.array_to_buffer(np_data)
-    return ndarray._from_buffer(buf, np_data.shape, dtype)
+        np_data = np_data.astype(resolve_dtype(dtype), copy=False)
+    return ndarray._from_np_direct(np_data)
 
 
-def meshgrid(*xi, indexing='xy'):
+def meshgrid(*xi, copy=True, sparse=False, indexing='xy'):
     """Return coordinate matrices from coordinate vectors."""
     np_arrays = []
     for x in xi:
         if isinstance(x, ndarray):
-            np_arrays.append(x.get())
+            np_arrays.append(x._np_data if x._np_data is not None else x.get())
         else:
             np_arrays.append(np.asarray(x))
-    results = np.meshgrid(*np_arrays, indexing=indexing)
-    return [array(np.ascontiguousarray(r)) for r in results]
+    results = np.meshgrid(*np_arrays, copy=copy, sparse=sparse, indexing=indexing)
+    return [ndarray._from_np_direct(r) for r in results]
 
 
-def indices(dimensions, dtype=int):
+def indices(dimensions, dtype=int, sparse=False):
     """Return an array representing the indices of a grid."""
-    result = np.indices(dimensions, dtype=dtype)
+    result = np.indices(dimensions, dtype=dtype, sparse=sparse)
+    if sparse:
+        return [ndarray._from_np_direct(r) for r in result]
     return array(result)
 
 
 def fromfunction(function, shape, dtype=float):
     """Construct array by executing function over each coordinate."""
     result = np.fromfunction(function, shape, dtype=dtype)
-    return array(np.ascontiguousarray(result, dtype=resolve_dtype(np.asarray(result).dtype)))
+    return ndarray._from_np_direct(result)
 
 
 def diagflat(v, k=0):
@@ -299,8 +252,7 @@ def diagflat(v, k=0):
     else:
         v_np = np.asarray(v)
     result = np.diagflat(v_np, k=k)
-    dtype = resolve_dtype(result.dtype)
-    return array(np.ascontiguousarray(result, dtype=dtype))
+    return ndarray._from_np_direct(result)
 
 
 def vander(x, N=None, increasing=False):
@@ -310,8 +262,7 @@ def vander(x, N=None, increasing=False):
     else:
         x_np = np.asarray(x)
     result = np.vander(x_np, N=N, increasing=increasing)
-    dtype = resolve_dtype(result.dtype)
-    return array(np.ascontiguousarray(result, dtype=dtype))
+    return ndarray._from_np_direct(result)
 
 
 def asanyarray(a, dtype=None):
@@ -319,24 +270,52 @@ def asanyarray(a, dtype=None):
     return asarray(a, dtype=dtype)
 
 
-def geomspace(start, stop, num=50, dtype=None):
+def geomspace(start, stop, num=50, endpoint=True, dtype=None, axis=0):
     """Return numbers spaced evenly on a log scale (a geometric progression)."""
-    np_data = np.geomspace(start, stop, num)
+    np_data = np.geomspace(start, stop, num, endpoint=endpoint, axis=axis)
     if dtype is not None:
-        dtype = resolve_dtype(dtype)
-    else:
-        dtype = resolve_dtype(np_data.dtype)
-    np_data = np.ascontiguousarray(np_data, dtype=dtype)
-    backend = MetalBackend()
-    buf = backend.array_to_buffer(np_data)
-    return ndarray._from_buffer(buf, np_data.shape, dtype)
+        np_data = np_data.astype(resolve_dtype(dtype), copy=False)
+    return ndarray._from_np_direct(np_data)
 
 
 def frombuffer(buffer, dtype=float, count=-1, offset=0):
     """Interpret a buffer as a 1-D array."""
     dtype = resolve_dtype(dtype)
-    np_data = np.frombuffer(buffer, dtype=dtype, count=count, offset=offset)
-    np_data = np.ascontiguousarray(np_data)
-    backend = MetalBackend()
-    buf = backend.array_to_buffer(np_data)
-    return ndarray._from_buffer(buf, np_data.shape, dtype)
+    np_data = np.frombuffer(buffer, dtype=dtype, count=count, offset=offset).copy()
+    return ndarray._from_np_direct(np_data)
+
+
+def asarray_chkfinite(a, dtype=None, order=None):
+    """Convert input to an array, checking for NaN and Inf.
+
+    Raises ValueError if the input contains NaN or Inf.
+    """
+    if isinstance(a, ndarray):
+        a = a.get()
+    np_data = np.asarray_chkfinite(a, dtype=dtype, order=order)
+    return array(np_data)
+
+
+def fromiter(iterable, dtype, count=-1):
+    """Create a new 1-D array from an iterable object."""
+    np_data = np.fromiter(iterable, dtype=dtype, count=count)
+    return array(np_data)
+
+
+def fromstring(string, dtype=float, count=-1, *, sep=''):
+    """Create a new 1-D array from a string."""
+    np_data = np.fromstring(string, dtype=dtype, count=count, sep=sep)
+    return array(np_data)
+
+
+def asfarray(a, dtype=np.float64):
+    """Return an array converted to a float type.
+
+    Deprecated in NumPy 1.26 but provided for API compatibility.
+    """
+    if isinstance(a, ndarray):
+        a = a.get()
+    if not np.issubdtype(dtype, np.floating):
+        dtype = np.float64
+    np_data = np.asarray(a, dtype=dtype)
+    return array(np_data)

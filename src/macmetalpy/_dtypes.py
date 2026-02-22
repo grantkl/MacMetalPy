@@ -70,6 +70,10 @@ def is_float_dtype(dtype: np.dtype) -> bool:
     return np.issubdtype(dtype, np.floating)
 
 
+# Fast set of dtypes that pass through resolve_dtype unchanged
+_PASSTHROUGH_DTYPES = frozenset(SUPPORTED_DTYPES | {np.dtype(np.complex64)})
+
+
 def resolve_dtype(dtype) -> np.dtype:
     """Resolve a user-supplied dtype, handling float64 per config.
 
@@ -83,12 +87,21 @@ def resolve_dtype(dtype) -> np.dtype:
     np.dtype
         A dtype supported by Metal.
     """
-    cfg = get_config()
-
-    if dtype is None:
+    # Fast path for already-supported dtypes (avoids get_config() call)
+    if isinstance(dtype, np.dtype):
+        if dtype in _PASSTHROUGH_DTYPES:
+            return dtype
+    elif dtype is not None:
+        # Handle type objects like np.float32 without calling get_config()
+        dtype = np.dtype(dtype)
+        if dtype in _PASSTHROUGH_DTYPES:
+            return dtype
+    else:
+        # dtype is None
+        cfg = get_config()
         return np.dtype(cfg.default_float_dtype)
 
-    dtype = np.dtype(dtype)
+    cfg = get_config()
 
     # Handle float64 — Metal does not support it
     if dtype == np.float64:
@@ -110,6 +123,12 @@ def resolve_dtype(dtype) -> np.dtype:
     # Accept complex64 even though it has no Metal kernel type
     if dtype == np.complex64:
         return dtype
+
+    # Handle int8/uint8 — upcast to int16/uint16 (Metal doesn't support 8-bit ints)
+    if dtype == np.int8:
+        return np.dtype(np.int16)
+    if dtype == np.uint8:
+        return np.dtype(np.uint16)
 
     if dtype not in SUPPORTED_DTYPES:
         raise TypeError(f"Unsupported dtype for Metal: {dtype}")

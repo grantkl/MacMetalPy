@@ -26,6 +26,8 @@ from .creation import (
     # Extended creation
     fromfunction, diagflat, vander, asanyarray,
     geomspace, frombuffer,
+    # Final gap-filling creation
+    asarray_chkfinite, fromiter, fromstring,
 )
 from .math_ops import (
     sqrt, exp, log, abs, power,
@@ -37,7 +39,7 @@ from .math_ops import (
     sinh, cosh, tanh,
     log2, log10,
     square, negative,
-    around, round_, mod, remainder,
+    around, mod, remainder,
     isnan, isinf, isfinite, nan_to_num,
     isclose, allclose, array_equal, count_nonzero,
     copy, ascontiguousarray, trace, diagonal,
@@ -46,9 +48,11 @@ from .math_ops import round
 from .reductions import (
     sum, mean, max, min, any, all, argmax, argmin,
     std, var, prod, median, percentile,
-    cumsum, cumprod, diff,
+    cumsum, cumprod, diff, divmod,
     # Extended reductions
     ptp, quantile, average,
+    # NumPy 2 cumulative aliases
+    cumulative_sum, cumulative_prod,
 )
 from .ufunc import maximum, minimum
 from ._config import get_config, set_config
@@ -56,7 +60,9 @@ from ._config import get_config, set_config
 # Sorting & searching
 from .sorting import (
     sort, argsort, unique, searchsorted,
-    lexsort, partition, argpartition, msort, sort_complex,
+    lexsort, partition, argpartition, sort_complex,
+    # NumPy 2 unique variants
+    unique_all, unique_counts, unique_inverse, unique_values,
 )
 
 # Manipulation
@@ -73,12 +79,16 @@ from .manipulation import (
     broadcast_arrays, copyto, pad,
     # Gap-filling manipulation
     block, insert, broadcast_shapes, asfortranarray,
+    # NumPy 2 array manipulation
+    astype, matrix_transpose, permute_dims, unstack,
 )
 
 # Linear algebra
 from . import linalg
 from .linalg_top import (
-    vdot, inner, outer, tensordot, einsum, kron, matmul, cross,
+    vdot, inner, outer, tensordot, einsum, einsum_path, kron, matmul, cross,
+    # NumPy 2 linalg shortcuts
+    matvec, vecmat, vecdot,
 )
 
 # Math ufuncs
@@ -117,9 +127,11 @@ from .logic_ops import (
 
 # Bitwise operations
 from .bitwise_ops import (
-    bitwise_and, bitwise_or, bitwise_xor, invert,
+    bitwise_and, bitwise_or, bitwise_xor, invert, bitwise_not,
     left_shift, right_shift, packbits, unpackbits,
     gcd, lcm,
+    # NumPy 2 bitwise
+    bitwise_count,
 )
 
 # Indexing
@@ -131,11 +143,12 @@ from .indexing import (
     triu_indices, triu_indices_from,
     ravel_multi_index, unravel_index,
     fill_diagonal, nonzero, flatnonzero, argwhere, ix_,
+    mask_indices,
 )
 
 # Set operations
 from .set_ops import (
-    union1d, intersect1d, setdiff1d, setxor1d, in1d, isin,
+    union1d, intersect1d, setdiff1d, setxor1d, isin,
 )
 
 # FFT & Random modules
@@ -146,7 +159,7 @@ from . import random
 from .window import bartlett, blackman, hamming, hanning, kaiser
 
 # Math extensions
-from .math_ext import sinc, i0, convolve, interp, fix, unwrap, trapezoid
+from .math_ext import sinc, i0, convolve, interp, fix, unwrap, trapezoid, piecewise, spacing, isnat
 
 # Complex number operations
 from .complex_ops import angle, real, imag, conj, conjugate, real_if_close
@@ -158,6 +171,15 @@ from .dtype_utils import (
     ndim, shape, size,
     euler_gamma,
     int_, float_, complex_, intp, uintp,
+    # Dtype aliases
+    int8, uint8, byte, ubyte, short, ushort, intc, uintc, uint,
+    longlong, ulonglong,
+    single, double, half, longdouble, longfloat,
+    csingle, cdouble, clongdouble, clongfloat, singlecomplex, longcomplex,
+    complex128, cfloat,
+    complexfloating, floating, integer, signedinteger, unsignedinteger,
+    number, generic, inexact,
+    dtype, broadcast, flatiter, nditer,
 )
 
 # Functional programming
@@ -166,9 +188,40 @@ from .functional import vectorize, apply_along_axis, apply_over_axes
 # Index expression objects
 from .index_tricks import c_, r_, s_, mgrid, ogrid
 
+# Formatting & string representation
+from .format_ops import (
+    array2string, array_repr, array_str,
+    base_repr, binary_repr,
+    format_float_positional, format_float_scientific,
+    typename, mintypecode,
+)
+
 # I/O
 from . import io
 from .io import save, load, savez, savez_compressed
+from .io import loadtxt, savetxt, fromfile, genfromtxt, fromregex, from_dlpack
+
+# Polynomial functions
+from .poly_ops import (
+    poly, polyval, polyfit, polyadd, polysub, polymul, polydiv,
+    polyder, polyint, roots, poly1d,
+)
+
+# Print/buffer/error configuration
+from .config_ops import (
+    get_printoptions, set_printoptions, printoptions,
+    getbufsize, setbufsize,
+    geterr, seterr, geterrcall, seterrcall,
+    get_include,
+    show_config, show_runtime,
+)
+
+# Utility functions
+from .utils import (
+    frompyfunc, require, iterable,
+    may_share_memory, shares_memory,
+    isdtype, info,
+)
 
 
 def expand_dims(a, axis):
@@ -203,9 +256,51 @@ bitwise_invert = invert
 bitwise_left_shift = left_shift
 bitwise_right_shift = right_shift
 
+# NumPy 2 math aliases (C99/IEEE-754 names)
+acos = arccos
+acosh = arccosh
+asin = arcsin
+asinh = arcsinh
+atan = arctan
+atan2 = arctan2
+atanh = arctanh
+pow = power
+
+# NumPy 2 manipulation alias
+row_stack = vstack
+
 nan = float('nan')
 inf = float('inf')
 pi = _math.pi
 e = _math.e
+
+# Classes (re-export from numpy or thin wrappers)
+errstate = _np.errstate
+ndindex = _np.ndindex
+
+# Constants
+False_ = _np.False_
+True_ = _np.True_
+ScalarType = _np.ScalarType
+index_exp = _np.index_exp
+little_endian = _np.little_endian
+typecodes = _np.typecodes
+
+
+class ndenumerate:
+    """Multidimensional index iterator (works on macmetalpy arrays via .get())."""
+
+    def __init__(self, arr):
+        from .ndarray import ndarray as _ndarray
+        if isinstance(arr, _ndarray):
+            arr = arr.get()
+        self._impl = _np.ndenumerate(arr)
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        return next(self._impl)
+
 
 __version__ = "0.1.0"

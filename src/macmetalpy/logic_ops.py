@@ -11,88 +11,125 @@ def _ensure(x):
     return x if isinstance(x, ndarray) else creation.asarray(x)
 
 
+def _cpu_view(x):
+    """Get zero-copy numpy view (syncs if GPU-resident)."""
+    if x._np_data is None:
+        from ._metal_backend import MetalBackend
+        MetalBackend().synchronize()
+    return x._get_view()
+
+
 # -- Logical functions (GPU-native via boolean shader) ---------------------
 
 
 def _to_bool(x):
     """Convert to bool dtype so truthiness is correct for non-boolean inputs."""
-    return x.astype(np.bool_) if x.dtype != np.bool_ else x
+    if x.dtype == np.bool_:
+        return x
+    return x.astype(np.bool_)
+
+
+def _logical_binary(x1, x2, np_func, gpu_op):
+    x1, x2 = _ensure(x1), _ensure(x2)
+    if x1.size < 4194304 and x2.size < 4194304:
+        a = x1._np_data if x1._np_data is not None else _cpu_view(x1)
+        b = x2._np_data if x2._np_data is not None else _cpu_view(x2)
+        return ndarray._from_np_direct(np_func(a, b))
+    if x1.dtype != np.bool_:
+        x1 = x1.astype(np.bool_)
+    if x2.dtype != np.bool_:
+        x2 = x2.astype(np.bool_)
+    return x1._boolean_op(x2, gpu_op)
 
 
 def logical_and(x1, x2):
-    x1, x2 = _to_bool(_ensure(x1)), _to_bool(_ensure(x2))
-    return x1._boolean_op(x2, "and_op")
+    return _logical_binary(x1, x2, np.logical_and, "and_op")
 
 
 def logical_or(x1, x2):
-    x1, x2 = _to_bool(_ensure(x1)), _to_bool(_ensure(x2))
-    return x1._boolean_op(x2, "or_op")
+    return _logical_binary(x1, x2, np.logical_or, "or_op")
 
 
 def logical_not(x):
-    x = _to_bool(_ensure(x))
+    x = _ensure(x)
+    if x.size < 4194304:
+        a = x._np_data if x._np_data is not None else _cpu_view(x)
+        return ndarray._from_np_direct(np.logical_not(a))
+    if x.dtype != np.bool_:
+        x = x.astype(np.bool_)
     return ~x
 
 
 def logical_xor(x1, x2):
-    x1, x2 = _to_bool(_ensure(x1)), _to_bool(_ensure(x2))
-    return x1._boolean_op(x2, "xor_op")
+    return _logical_binary(x1, x2, np.logical_xor, "xor_op")
 
 
 # -- Comparison functions (GPU-native via comparison shader) ---------------
 
 
 def greater(x1, x2):
-    x1, x2 = _ensure(x1), _ensure(x2)
+    if type(x1) is not ndarray: x1 = creation.asarray(x1)
     return x1._comparison_op(x2, "gt_op")
 
 
 def greater_equal(x1, x2):
-    x1, x2 = _ensure(x1), _ensure(x2)
+    if type(x1) is not ndarray: x1 = creation.asarray(x1)
     return x1._comparison_op(x2, "ge_op")
 
 
 def less(x1, x2):
-    x1, x2 = _ensure(x1), _ensure(x2)
+    if type(x1) is not ndarray: x1 = creation.asarray(x1)
     return x1._comparison_op(x2, "lt_op")
 
 
 def less_equal(x1, x2):
-    x1, x2 = _ensure(x1), _ensure(x2)
+    if type(x1) is not ndarray: x1 = creation.asarray(x1)
     return x1._comparison_op(x2, "le_op")
 
 
 def equal(x1, x2):
-    x1, x2 = _ensure(x1), _ensure(x2)
+    if type(x1) is not ndarray: x1 = creation.asarray(x1)
     return x1._comparison_op(x2, "eq_op")
 
 
 def not_equal(x1, x2):
-    x1, x2 = _ensure(x1), _ensure(x2)
+    if type(x1) is not ndarray: x1 = creation.asarray(x1)
     return x1._comparison_op(x2, "ne_op")
 
 
 # -- Type / value checks (CPU — diagnostic ops, not hot-path) -------------
 
 
-def isneginf(x):
+def isneginf(x, out=None):
     x = _ensure(x)
-    return creation.array(np.isneginf(x.get()))
+    a = x._np_data if x._np_data is not None else _cpu_view(x)
+    result = ndarray._from_np_direct(np.isneginf(a))
+    if out is not None:
+        out.set(result.get())
+        return out
+    return result
 
 
-def isposinf(x):
+def isposinf(x, out=None):
     x = _ensure(x)
-    return creation.array(np.isposinf(x.get()))
+    a = x._np_data if x._np_data is not None else _cpu_view(x)
+    result = ndarray._from_np_direct(np.isposinf(a))
+    if out is not None:
+        out.set(result.get())
+        return out
+    return result
 
 
 def iscomplex(x):
     x = _ensure(x)
-    return creation.array(np.iscomplex(x.get()))
+    a = x._np_data if x._np_data is not None else _cpu_view(x)
+    return ndarray._from_np_direct(np.asarray(np.iscomplex(a)))
 
 
 def isreal(x):
     x = _ensure(x)
-    return creation.array(np.isreal(x.get()))
+    a = x._np_data if x._np_data is not None else _cpu_view(x)
+    return ndarray._from_np_direct(np.asarray(np.isreal(a)))
 
 
 def isscalar(element):

@@ -88,11 +88,15 @@ class TestResolveDtype:
         result = resolve_dtype(np.complex64)
         assert result == np.dtype(np.complex64)
 
-    @pytest.mark.parametrize("bad_dtype", [np.int8, np.uint8])
-    def test_unsupported_dtype_raises_typeerror(self, bad_dtype):
-        """Unsupported dtypes should raise TypeError."""
-        with pytest.raises(TypeError, match="Unsupported dtype"):
-            resolve_dtype(bad_dtype)
+    def test_int8_upcast_to_int16(self):
+        """int8 should be upcast to int16 (Metal doesn't support 8-bit ints)."""
+        result = resolve_dtype(np.int8)
+        assert result == np.dtype(np.int16)
+
+    def test_uint8_upcast_to_uint16(self):
+        """uint8 should be upcast to uint16 (Metal doesn't support 8-bit ints)."""
+        result = resolve_dtype(np.uint8)
+        assert result == np.dtype(np.uint16)
 
     def test_string_dtype_passthrough(self):
         """String dtype specifiers should work (e.g. 'float32')."""

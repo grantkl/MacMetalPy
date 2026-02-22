@@ -14,11 +14,33 @@ def _ensure(x):
     return x if isinstance(x, ndarray) else creation.asarray(x)
 
 
+def _cpu_view(a):
+    """Get zero-copy numpy view (syncs if GPU-resident)."""
+    if a._np_data is None:
+        MetalBackend().synchronize()
+    return a._get_view()
+
+
 # ── Bitwise operations ───────────────────────────────────────────────
+
+
+_BITWISE_NP = {
+    "bit_and_op": np.bitwise_and, "bit_or_op": np.bitwise_or,
+    "bit_xor_op": np.bitwise_xor, "lshift_op": np.left_shift,
+    "rshift_op": np.right_shift,
+}
+_GPU_THRESHOLD_MEMORY = 4194304  # 4M — bitwise ops are pure memory, CPU SIMD always wins
 
 
 def _binary_bitwise(x1, x2, kernel_name):
     x1, x2 = _ensure(x1), _ensure(x2)
+    # CPU fallback — bitwise ops are pure memory operations
+    if x1.size < _GPU_THRESHOLD_MEMORY and x2.size < _GPU_THRESHOLD_MEMORY:
+        np_func = _BITWISE_NP.get(kernel_name)
+        if np_func is not None:
+            a_np = (x1._np_data if x1._np_data is not None else _cpu_view(x1)).astype(np.int32, copy=False)
+            b_np = (x2._np_data if x2._np_data is not None else _cpu_view(x2)).astype(np.int32, copy=False)
+            return ndarray._from_np_direct(np_func(a_np, b_np))
     backend = MetalBackend()
     cache = KernelCache()
     a = x1.astype(np.int32)._ensure_contiguous()
@@ -47,6 +69,10 @@ def bitwise_xor(x1, x2):
 
 def invert(x):
     x = _ensure(x)
+    # CPU fallback — pure memory op
+    if x.size < _GPU_THRESHOLD_MEMORY:
+        a_np = (x._np_data if x._np_data is not None else _cpu_view(x)).astype(np.int32, copy=False)
+        return ndarray._from_np_direct(np.invert(a_np))
     backend = MetalBackend()
     cache = KernelCache()
     a = x.astype(np.int32)._ensure_contiguous()
@@ -57,6 +83,7 @@ def invert(x):
 
 
 bitwise_invert = invert
+bitwise_not = invert
 
 
 def left_shift(x1, x2):
@@ -72,14 +99,14 @@ def right_shift(x1, x2):
 
 def packbits(a, axis=None):
     a = _ensure(a)
-    result = np.packbits(a.get().astype(np.uint8), axis=axis)
-    return creation.array(result.astype(np.uint16))
+    result = np.packbits(_cpu_view(a).astype(np.uint8, copy=False), axis=axis)
+    return ndarray._from_np_direct(result.astype(np.uint16))
 
 
 def unpackbits(a, axis=None):
     a = _ensure(a)
-    result = np.unpackbits(a.get().astype(np.uint8), axis=axis)
-    return creation.array(result.astype(np.uint16))
+    result = np.unpackbits(_cpu_view(a).astype(np.uint8, copy=False), axis=axis)
+    return ndarray._from_np_direct(result.astype(np.uint16))
 
 
 # ── Math ──────────────────────────────────────────────────────────────
@@ -87,9 +114,20 @@ def unpackbits(a, axis=None):
 
 def gcd(x1, x2):
     x1, x2 = _ensure(x1), _ensure(x2)
-    return creation.array(np.gcd(x1.get(), x2.get()))
+    return ndarray._from_np_direct(np.gcd(_cpu_view(x1), _cpu_view(x2)))
 
 
 def lcm(x1, x2):
     x1, x2 = _ensure(x1), _ensure(x2)
-    return creation.array(np.lcm(x1.get(), x2.get()))
+    return ndarray._from_np_direct(np.lcm(_cpu_view(x1), _cpu_view(x2)))
+
+
+def bitwise_count(a):
+    """Count the number of 1-bits (popcount) in each element."""
+    a = _ensure(a)
+    a_np = a._np_data if a._np_data is not None else _cpu_view(a)
+    result = np.bitwise_count(a_np)
+    # bitwise_count returns uint8; convert to int32 for Metal compatibility
+    if result.dtype == np.uint8:
+        result = result.view(np.int8).astype(np.int16, copy=False)
+    return ndarray._from_np_direct(result)

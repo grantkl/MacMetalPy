@@ -19,6 +19,64 @@ from ._dtypes import numpy_to_metal
 
 __all__ = ["MetalBackend"]
 
+
+class _BufferPool:
+    """Reuse freed Metal buffers by byte-size bucket.
+
+    Uses deferred pooling: released buffers go to a pending list and only
+    become available after the next GPU synchronize(), ensuring no in-flight
+    kernel is still reading from a reused buffer.
+    """
+    __slots__ = ("_pool", "_pending", "_pending_counts", "_max_per_bucket",
+                 "_lib", "_ptr")
+
+    def __init__(self, max_per_bucket: int = 8):
+        self._pool: dict[int, list[int]] = {}
+        self._pending: list[tuple[int, int]] = []  # (byte_size, buf_num)
+        self._pending_counts: dict[int, int] = {}  # byte_size -> count in pending
+        self._max_per_bucket = max_per_bucket
+        self._lib = None
+        self._ptr = None
+
+    def set_backend(self, lib, ptr) -> None:
+        """Store backend references so we can free excess buffers."""
+        self._lib = lib
+        self._ptr = ptr
+
+    def flush_pending(self) -> None:
+        """Move pending buffers into the pool (call after synchronize)."""
+        for byte_size, buf_num in self._pending:
+            bucket = self._pool.setdefault(byte_size, [])
+            if len(bucket) < self._max_per_bucket:
+                bucket.append(buf_num)
+            else:
+                # Bucket full — actually free the Metal buffer
+                self._lib.releaseBuffer(self._ptr, buf_num)
+        self._pending.clear()
+        self._pending_counts.clear()
+
+    def get(self, byte_size: int) -> int | None:
+        bucket = self._pool.get(byte_size)
+        if bucket:
+            return bucket.pop()
+        return None
+
+    def put(self, byte_size: int, buf_num: int) -> bool:
+        """Defer buffer for reuse after next synchronize.
+
+        Returns False if we already have enough buffers of this size
+        (pool + pending >= max_per_bucket), signalling the caller to
+        free the buffer immediately via releaseBuffer.
+        """
+        pool_count = len(self._pool.get(byte_size, []))
+        pending_count = self._pending_counts.get(byte_size, 0)
+        if pool_count + pending_count >= self._max_per_bucket:
+            return False
+        self._pending.append((byte_size, buf_num))
+        self._pending_counts[byte_size] = pending_count + 1
+        return True
+
+
 # ── dtype → ctypes type ──────────────────────────────────────────────
 _NP_TO_CTYPE: dict[np.dtype, type] = {
     np.dtype(np.float32): ctypes.c_float,
@@ -63,7 +121,8 @@ def _find_dylib() -> str:
 class _Buffer:
     """Lightweight wrapper around a single Metal buffer."""
 
-    __slots__ = ("contents", "bufNum", "_interface_ptr", "_lib", "bufType")
+    __slots__ = ("contents", "bufNum", "_interface_ptr", "_lib", "bufType",
+                 "_byte_size", "_pool")
 
     def __init__(
         self,
@@ -73,12 +132,16 @@ class _Buffer:
         buf_num: int,
         interface_ptr,
         lib,
+        byte_size: int = 0,
+        pool: _BufferPool | None = None,
     ) -> None:
         dtype = np.dtype(dtype)
         self.bufNum = buf_num
         self.bufType = dtype
         self._interface_ptr = interface_ptr
         self._lib = lib
+        self._byte_size = byte_size
+        self._pool = pool
         if size == 0:
             # Zero-size buffer: use an empty numpy array (no Metal memory)
             storage_dtype = np.float32 if dtype == np.complex64 else dtype
@@ -91,7 +154,15 @@ class _Buffer:
 
     def release(self) -> None:
         if self.bufNum >= 0:
+            if self._pool is not None and self._byte_size > 0:
+                if self._pool.put(self._byte_size, self.bufNum):
+                    self.bufNum = -1
+                    return
             self._lib.releaseBuffer(self._interface_ptr, self.bufNum)
+            self.bufNum = -1
+
+    def __del__(self) -> None:
+        self.release()
 
 
 class MetalSize:
@@ -130,8 +201,17 @@ class MetalBackend:
         self._ptr = self._lib.init()  # Instance* pointer
         self._lock = threading.Lock()
         self._current_shader_hash: str | None = None
+        self._current_shader_id: int | None = None  # Opt 4: id()-based fast path
         self._totbuf = -1
         self._has_pending = False
+        self._pool = _BufferPool()
+        self._pool.set_backend(self._lib, self._ptr)
+
+        # Opt 6: pre-allocate sync arrays
+        self._sync_size = np.array([1, 1, 1], dtype=np.int32)
+        self._sync_bufs = np.array([], dtype=np.int32)
+        self._sync_size_ptr = self._sync_size.ctypes.data_as(ctypes.POINTER(ctypes.c_int))
+        self._sync_bufs_ptr = self._sync_bufs.ctypes.data_as(ctypes.POINTER(ctypes.c_int))
 
         # Load a no-op shader so the library is in a valid state
         noop = b"#include <metal_stdlib>\nusing namespace metal;\nkernel void _noop() {}\nkernel void _sync() {}\n"
@@ -195,8 +275,14 @@ class MetalBackend:
             return _Buffer(None, 0, dtype, -1, self._ptr, self._lib)
         ctype = _NP_TO_CTYPE[dtype]
         byte_size = ctypes.sizeof(ctype) * buf_elems
+        # Opt 1: check buffer pool first
+        pooled = self._pool.get(byte_size)
+        if pooled is not None:
+            return _Buffer(None, buf_elems, dtype, pooled, self._ptr, self._lib,
+                           byte_size=byte_size, pool=self._pool)
         buf_num = self._lib.createBuffer(self._ptr, byte_size)
-        return _Buffer(None, buf_elems, dtype, buf_num, self._ptr, self._lib)
+        return _Buffer(None, buf_elems, dtype, buf_num, self._ptr, self._lib,
+                       byte_size=byte_size, pool=self._pool)
 
     def array_to_buffer(self, np_array: np.ndarray) -> _Buffer:
         """Create a Metal buffer and copy *np_array* into it."""
@@ -227,12 +313,13 @@ class MetalBackend:
     def execute_kernel(
         self,
         shader_src: str,
-        func_name: str,
+        func_name: str | bytes,
         grid_size: int | MetalSize,
         buffers: list[_Buffer],
     ) -> None:
         """Compile (if needed), select, and dispatch a Metal kernel."""
-        src_hash = hashlib.sha256(shader_src.encode()).hexdigest()
+        # Opt 4: use id() for cached (interned) shader strings; fall back to hash
+        src_id = id(shader_src)
 
         if isinstance(grid_size, int):
             grid_size = MetalSize(grid_size, 1, 1)
@@ -248,13 +335,22 @@ class MetalBackend:
         size_ptr = metal_size.ctypes.data_as(ctypes.POINTER(ctypes.c_int))
         buf_ptr = buf_nums.ctypes.data_as(ctypes.POINTER(ctypes.c_int))
 
+        # Opt 8: accept pre-encoded bytes for func_name
+        func_bytes = func_name if isinstance(func_name, bytes) else func_name.encode("utf-8")
+
         with self._lock:
-            if src_hash != self._current_shader_hash:
-                self._lib.createLibraryFromString(
-                    self._ptr, shader_src.encode("utf-8")
-                )
-                self._current_shader_hash = src_hash
-            self._lib.setFunction(self._ptr, func_name.encode("utf-8"))
+            if src_id != self._current_shader_id:
+                # Different Python object — compute hash to check if content changed
+                src_hash = hashlib.sha256(shader_src.encode()).hexdigest()
+                if src_hash != self._current_shader_hash:
+                    self._lib.createLibraryFromString(
+                        self._ptr, shader_src.encode("utf-8")
+                    )
+                    self._current_shader_hash = src_hash
+                self._current_shader_id = src_id
+                # Keep a reference so Python doesn't reuse the id
+                self._current_shader_ref = shader_src
+            self._lib.setFunction(self._ptr, func_bytes)
             self._lib.runFunction(
                 self._ptr, size_ptr, buf_ptr, len(buf_nums), False
             )
@@ -267,10 +363,10 @@ class MetalBackend:
         with self._lock:
             if not self._has_pending:
                 return
+            # Opt 6: use pre-allocated sync arrays
             self._lib.setFunction(self._ptr, b"_sync")
-            size = np.array([1, 1, 1], dtype=np.int32)
-            bufs = np.array([], dtype=np.int32)
-            size_ptr = size.ctypes.data_as(ctypes.POINTER(ctypes.c_int))
-            buf_ptr = bufs.ctypes.data_as(ctypes.POINTER(ctypes.c_int))
-            self._lib.runFunction(self._ptr, size_ptr, buf_ptr, 0, True)
+            self._lib.runFunction(self._ptr, self._sync_size_ptr,
+                                  self._sync_bufs_ptr, 0, True)
             self._has_pending = False
+            # Now safe to reuse buffers that were released during async work
+            self._pool.flush_pending()

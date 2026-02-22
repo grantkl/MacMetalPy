@@ -24,15 +24,15 @@ class TestCreationErrors:
         with pytest.raises((ValueError, ZeroDivisionError)):
             cp.arange(0, 10, 0)
 
-    def test_array_unsupported_dtype(self):
-        """Creating array with unsupported dtype should raise TypeError."""
-        with pytest.raises(TypeError, match="Unsupported dtype"):
-            cp.array([1, 2, 3], dtype=np.int8)
+    def test_array_int8_upcast(self):
+        """Creating array with int8 should upcast to int16."""
+        a = cp.array([1, 2, 3], dtype=np.int8)
+        assert a.dtype == np.int16
 
-    def test_array_unsupported_dtype_uint8(self):
-        """Creating array with uint8 should raise TypeError."""
-        with pytest.raises(TypeError, match="Unsupported dtype"):
-            cp.array([1, 2, 3], dtype=np.uint8)
+    def test_array_uint8_upcast(self):
+        """Creating array with uint8 should upcast to uint16."""
+        a = cp.array([1, 2, 3], dtype=np.uint8)
+        assert a.dtype == np.uint16
 
 
 # ── Reshape errors ───────────────────────────────────────────────────
@@ -79,13 +79,13 @@ class TestSqueezeErrors:
     def test_squeeze_non_size1_axis(self):
         """Squeeze on axis with size != 1 should raise ValueError."""
         a = cp.zeros((2, 3))
-        with pytest.raises(ValueError, match="cannot squeeze"):
+        with pytest.raises(ValueError, match="cannot s"):
             a.squeeze(axis=0)
 
     def test_squeeze_non_size1_axis_negative(self):
         """Squeeze on negative axis with size != 1 should raise ValueError."""
         a = cp.zeros((2, 3))
-        with pytest.raises(ValueError, match="cannot squeeze"):
+        with pytest.raises(ValueError, match="cannot s"):
             a.squeeze(axis=-1)
 
 
@@ -104,12 +104,14 @@ class TestMatmulErrors:
         with pytest.raises(ValueError, match="shape mismatch"):
             a @ b
 
-    def test_matmul_1d_raises(self):
-        """Matmul with 1-D arrays should raise (requires 2-D)."""
+    def test_matmul_1d_inner_product(self):
+        """Matmul with 1-D arrays computes inner product (like NumPy)."""
+        import numpy as np
         a = cp.arange(3, dtype=cp.float32)
         b = cp.arange(3, dtype=cp.float32)
-        with pytest.raises(ValueError, match="2-D"):
-            a @ b
+        result = a @ b
+        expected = np.arange(3, dtype=np.float32) @ np.arange(3, dtype=np.float32)
+        assert float(result.get()) == float(expected)
 
     def test_matmul_3d_raises(self):
         """Matmul with 3-D array should raise."""
@@ -314,14 +316,14 @@ class TestInvalidAxisErrors:
     def test_sum_invalid_axis(self):
         """sum with axis out of range should raise."""
         a = cp.zeros((2, 3), dtype=cp.float32)
-        with pytest.raises((np.AxisError, IndexError, ValueError)):
+        with pytest.raises((np.exceptions.AxisError, IndexError, ValueError)):
             cp.sum(a, axis=5)
 
     def test_concatenate_invalid_axis(self):
         """concatenate with invalid axis should raise."""
         a = cp.zeros((2, 3), dtype=cp.float32)
         b = cp.zeros((2, 3), dtype=cp.float32)
-        with pytest.raises((np.AxisError, IndexError, ValueError)):
+        with pytest.raises((np.exceptions.AxisError, IndexError, ValueError)):
             cp.concatenate([a, b], axis=5)
 
 

@@ -19,6 +19,52 @@ complex_ = np.complex128
 intp = np.intp
 uintp = np.uintp
 
+# Integer types
+int8 = np.int8
+uint8 = np.uint8
+byte = np.byte
+ubyte = np.ubyte
+short = np.short
+ushort = np.ushort
+intc = np.intc
+uintc = np.uintc
+uint = np.uint
+longlong = np.longlong
+ulonglong = np.ulonglong
+
+# Float types
+single = np.single
+double = np.double
+half = np.half
+longdouble = np.longdouble
+longfloat = np.longdouble
+
+# Complex types
+csingle = np.csingle
+cdouble = np.cdouble
+clongdouble = np.clongdouble
+clongfloat = np.clongdouble
+singlecomplex = np.complex64
+longcomplex = np.clongdouble
+complex128 = np.complex128
+cfloat = np.complex128
+
+# Abstract types
+complexfloating = np.complexfloating
+floating = np.floating
+integer = np.integer
+signedinteger = np.signedinteger
+unsignedinteger = np.unsignedinteger
+number = np.number
+generic = np.generic
+inexact = np.inexact
+
+# Utility classes
+dtype = np.dtype
+broadcast = np.broadcast
+flatiter = np.flatiter
+nditer = np.nditer
+
 
 # ── Helpers ───────────────────────────────────────────────────────────
 

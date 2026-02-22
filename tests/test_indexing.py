@@ -114,8 +114,9 @@ class TestPut:
     def test_basic(self, dtype):
         a_np = make_arg((5,), dtype).copy()
         a_cp = cp.array(a_np.copy())
-        cp.put(a_cp, [0, 2], [-10, -20])
-        np.put(a_np, [0, 2], [-10, -20])
+        vals = [10, 20] if np.issubdtype(dtype, np.unsignedinteger) else [-10, -20]
+        cp.put(a_cp, [0, 2], vals)
+        np.put(a_np, [0, 2], vals)
         assert_eq(a_cp, a_np, dtype=dtype)
 
     @pytest.mark.parametrize("dtype", NUMERIC_DTYPES)
@@ -139,7 +140,8 @@ class TestPutAlongAxis:
     def test_basic(self, dtype):
         a_np = make_arg((3, 4), dtype).copy()
         idx_np = np.array([[0], [2], [1]])
-        vals_np = np.array([[-99], [-99], [-99]], dtype=dtype)
+        val = 99 if np.issubdtype(dtype, np.unsignedinteger) else -99
+        vals_np = np.array([[val], [val], [val]], dtype=dtype)
         a_cp = cp.array(a_np.copy())
         idx_cp = cp.array(idx_np)
         vals_cp = cp.array(vals_np)
@@ -160,8 +162,9 @@ class TestPutmask:
         mask = np.array([True, False, True, False, True, False])
         a_cp = cp.array(a_np.copy())
         mask_cp = cp.array(mask)
-        cp.putmask(a_cp, mask_cp, [-1, -2, -3])
-        np.putmask(a_np, mask, [-1, -2, -3])
+        vals = [1, 2, 3] if np.issubdtype(dtype, np.unsignedinteger) else [-1, -2, -3]
+        cp.putmask(a_cp, mask_cp, vals)
+        np.putmask(a_np, mask, vals)
         assert_eq(a_cp, a_np, dtype=dtype)
 
     @pytest.mark.parametrize("dtype", NUMERIC_DTYPES)
@@ -176,8 +179,9 @@ class TestPutmask:
         mask = a_np > 3
         a_cp = cp.array(a_np.copy())
         mask_cp = cp.array(mask)
-        cp.putmask(a_cp, mask_cp, [-1])
-        np.putmask(a_np, mask, [-1])
+        val = [1] if np.issubdtype(dtype, np.unsignedinteger) else [-1]
+        cp.putmask(a_cp, mask_cp, val)
+        np.putmask(a_np, mask, val)
         assert_eq(a_cp, a_np, dtype=dtype)
 
 
@@ -188,8 +192,9 @@ class TestPlace:
         mask = np.array([True, False, True, False, True, False])
         a_cp = cp.array(a_np.copy())
         mask_cp = cp.array(mask)
-        cp.place(a_cp, mask_cp, [-1, -2, -3])
-        np.place(a_np, mask, [-1, -2, -3])
+        vals = [1, 2, 3] if np.issubdtype(dtype, np.unsignedinteger) else [-1, -2, -3]
+        cp.place(a_cp, mask_cp, vals)
+        np.place(a_np, mask, vals)
         assert_eq(a_cp, a_np, dtype=dtype)
 
     @pytest.mark.parametrize("dtype", NUMERIC_DTYPES)
@@ -251,7 +256,8 @@ class TestSelect:
     def test_basic(self, dtype):
         a_np = make_arg((10,), dtype)
         condlist = [a_np < 3, a_np > 7]
-        c0 = np.full(10, -1, dtype=dtype)
+        v0 = 100 if np.issubdtype(dtype, np.unsignedinteger) else -1
+        c0 = np.full(10, v0, dtype=dtype)
         c1 = np.full(10, 1, dtype=dtype)
         condlist_cp = [cp.array(c) for c in condlist]
         choicelist_cp = [cp.array(c0), cp.array(c1)]

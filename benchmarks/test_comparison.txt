@@ -1,0 +1,758 @@
+========================================================================
+Test Coverage Comparison: NumPy 2 vs macmetalpy
+========================================================================
+
+------------------------------------------------------------------------
+SUMMARY STATISTICS
+------------------------------------------------------------------------
+  NumPy 2 test suite:
+    Total test files:      190
+    Total test classes:     782
+    Total test functions:   6765
+    Unique API tags:        5384
+
+  macmetalpy test suite:
+    Total test files:      72
+    Total test classes:     725
+    Total test functions:   2755
+    Unique API tags:        266
+
+------------------------------------------------------------------------
+API-LEVEL TEST COVERAGE (against macmetalpy catalog)
+------------------------------------------------------------------------
+  macmetalpy catalog size:              494
+  Catalog APIs tested by macmetalpy:    229
+  Catalog APIs tested by NumPy 2:       397
+  Catalog APIs tested by both:          200
+  Catalog APIs tested by neither:       68
+
+  macmetalpy coverage:   46.4%
+  NumPy 2 coverage:      80.4%
+  Combined coverage:     86.2%
+
+========================================================================
+A. COVERAGE GAPS: NumPy 2 tests these catalog APIs but macmetalpy
+   does NOT (highest-priority gaps to close)
+========================================================================
+
+  Total: 197 APIs
+
+  np (top-level) (145):
+    np.amax
+    np.amin
+    np.angle
+    np.apply_along_axis
+    np.apply_over_axes
+    np.array2string
+    np.array_equiv
+    np.array_repr
+    np.array_split
+    np.asarray
+    np.base_repr
+    np.binary_repr
+    np.bincount
+    np.bitwise_and
+    np.bitwise_or
+    np.bitwise_xor
+    np.block
+    np.broadcast
+    np.byte
+    np.c_
+    np.can_cast
+    np.cfloat
+    np.choose
+    np.clongdouble
+    np.common_type
+    np.complex128
+    np.complex64
+    np.complexfloating
+    np.compress
+    np.concat
+    np.conjugate
+    np.convolve
+    np.copyto
+    np.corrcoef
+    np.correlate
+    np.cov
+    np.degrees
+    np.diag_indices
+    np.diag_indices_from
+    np.diagonal
+    np.diff
+    np.digitize
+    np.double
+    np.dtype
+    np.e
+    np.ediff1d
+    np.einsum_path
+    np.empty_like
+    np.euler_gamma
+    np.fabs
+    np.fill_diagonal
+    np.finfo
+    np.flatiter
+    np.float16
+    np.float32
+    np.float64
+    np.float_power
+    np.floating
+    np.fmax
+    np.fmin
+    np.fromiter
+    np.fromstring
+    np.gcd
+    np.generic
+    np.gradient
+    np.half
+    np.hamming
+    np.heaviside
+    np.histogram
+    np.histogram2d
+    np.histogram_bin_edges
+    np.histogramdd
+    np.iinfo
+    np.imag
+    np.inexact
+    np.inf
+    np.int16
+    np.int32
+    np.int64
+    np.int8
+    np.integer
+    np.interp
+    np.intp
+    np.iscomplexobj
+    np.isnat
+    np.isrealobj
+    np.isscalar
+    np.issctype
+    np.issubdtype
+    np.ix_
+    np.lcm
+    np.logaddexp
+    np.logaddexp2
+    np.logical_not
+    np.longdouble
+    np.longlong
+    np.mask_indices
+    np.min_scalar_type
+    np.mintypecode
+    np.nan
+    np.ndarray
+    np.ndim
+    np.nditer
+    np.newaxis
+    np.number
+    np.packbits
+    np.pi
+    np.piecewise
+    np.place
+    np.ptp
+    np.put
+    np.put_along_axis
+    np.putmask
+    np.real
+    np.real_if_close
+    np.result_type
+    np.rint
+    np.savez
+    np.select
+    np.shape
+    np.short
+    np.sinc
+    np.single
+    np.size
+    np.sort_complex
+    np.subtract
+    np.take
+    np.take_along_axis
+    np.trace
+    np.trapezoid
+    np.tril_indices
+    np.tril_indices_from
+    np.triu_indices
+    np.triu_indices_from
+    np.true_divide
+    np.uint
+    np.uint16
+    np.uint32
+    np.uint64
+    np.uint8
+    np.uintp
+    np.unpackbits
+    np.unwrap
+    np.vander
+    np.vectorize
+
+  np.fft (4):
+    np.fft.hfft
+    np.fft.ihfft
+    np.fft.ndarray
+    np.fft.rfftfreq
+
+  np.linalg (8):
+    np.linalg.cond
+    np.linalg.eig
+    np.linalg.eigvals
+    np.linalg.matrix_power
+    np.linalg.multi_dot
+    np.linalg.ndarray
+    np.linalg.tensorinv
+    np.linalg.tensorsolve
+
+  np.random (40):
+    np.random.Generator
+    np.random.beta
+    np.random.binomial
+    np.random.chisquare
+    np.random.dirichlet
+    np.random.exponential
+    np.random.f
+    np.random.gamma
+    np.random.geometric
+    np.random.gumbel
+    np.random.hypergeometric
+    np.random.laplace
+    np.random.logistic
+    np.random.lognormal
+    np.random.logseries
+    np.random.multinomial
+    np.random.multivariate_normal
+    np.random.negative_binomial
+    np.random.noncentral_chisquare
+    np.random.noncentral_f
+    np.random.pareto
+    np.random.permuted
+    np.random.poisson
+    np.random.power
+    np.random.randint
+    np.random.randn
+    np.random.random
+    np.random.random_sample
+    np.random.rayleigh
+    np.random.sample
+    np.random.standard_cauchy
+    np.random.standard_exponential
+    np.random.standard_gamma
+    np.random.standard_normal
+    np.random.standard_t
+    np.random.triangular
+    np.random.vonmises
+    np.random.wald
+    np.random.weibull
+    np.random.zipf
+
+========================================================================
+B. macmetalpy tests these catalog APIs but NumPy 2 does NOT
+   (unique macmetalpy coverage)
+========================================================================
+
+  Total: 29 APIs
+
+  np (top-level) (28):
+    np.absolute                                    (1 macmetalpy tests)
+    np.arccos                                      (4 macmetalpy tests)
+    np.arcsin                                      (5 macmetalpy tests)
+    np.arctan2                                     (1 macmetalpy tests)
+    np.atleast_1d                                  (2 macmetalpy tests)
+    np.atleast_3d                                  (1 macmetalpy tests)
+    np.broadcast_to                                (7 macmetalpy tests)
+    np.ceil                                        (2 macmetalpy tests)
+    np.cos                                         (4 macmetalpy tests)
+    np.flatnonzero                                 (1 macmetalpy tests)
+    np.fromfunction                                (4 macmetalpy tests)
+    np.full_like                                   (1 macmetalpy tests)
+    np.log10                                       (4 macmetalpy tests)
+    np.modf                                        (1 macmetalpy tests)
+    np.nanargmax                                   (8 macmetalpy tests)
+    np.nanargmin                                   (8 macmetalpy tests)
+    np.nanmax                                      (10 macmetalpy tests)
+    np.nanmean                                     (10 macmetalpy tests)
+    np.nanmedian                                   (6 macmetalpy tests)
+    np.nanmin                                      (9 macmetalpy tests)
+    np.nanpercentile                               (6 macmetalpy tests)
+    np.nanprod                                     (9 macmetalpy tests)
+    np.nanquantile                                 (6 macmetalpy tests)
+    np.nanvar                                      (8 macmetalpy tests)
+    np.ogrid                                       (3 macmetalpy tests)
+    np.rad2deg                                     (2 macmetalpy tests)
+    np.sin                                         (17 macmetalpy tests)
+    np.trunc                                       (1 macmetalpy tests)
+
+  np.linalg (1):
+    np.linalg.slogdet                              (3 macmetalpy tests)
+
+========================================================================
+C. UNTESTED: macmetalpy catalog APIs with NO tests in either suite
+========================================================================
+
+  Total: 68 APIs
+
+  np (top-level) (61):
+    np.RawKernel
+    np.array_str
+    np.asanyarray
+    np.asarray_chkfinite
+    np.ascontiguousarray
+    np.asfarray
+    np.asfortranarray
+    np.bitwise_invert
+    np.bitwise_left_shift
+    np.bitwise_not
+    np.bitwise_right_shift
+    np.bool_
+    np.broadcast_shapes
+    np.cdouble
+    np.clongfloat
+    np.complex_
+    np.conj
+    np.csingle
+    np.deg2rad
+    np.diagflat
+    np.extract
+    np.float_
+    np.floor_divide
+    np.fmod
+    np.format_float_positional
+    np.format_float_scientific
+    np.get_config
+    np.i0
+    np.int_
+    np.intc
+    np.isfortran
+    np.left_shift
+    np.logical_and
+    np.logical_or
+    np.logical_xor
+    np.longcomplex
+    np.longfloat
+    np.msort
+    np.nancumprod
+    np.nancumsum
+    np.obj2sctype
+    np.promote_types
+    np.r_
+    np.ravel_multi_index
+    np.right_shift
+    np.round_
+    np.s_
+    np.savez_compressed
+    np.sctype2char
+    np.set_config
+    np.signbit
+    np.signedinteger
+    np.singlecomplex
+    np.synchronize
+    np.typename
+    np.ubyte
+    np.uintc
+    np.ulonglong
+    np.unravel_index
+    np.unsignedinteger
+    np.ushort
+
+  np.fft (2):
+    np.fft.annotations
+    np.fft.ifftshift
+
+  np.linalg (2):
+    np.linalg.LinAlgError
+    np.linalg.annotations
+
+  np.random (3):
+    np.random.annotations
+    np.random.default_rng
+    np.random.ranf
+
+========================================================================
+D. COVERAGE BY macmetalpy MODULE
+========================================================================
+
+  macmetalpy:
+    Total APIs:              390
+    Tested by macmetalpy:    193 (49%)
+    Tested by NumPy 2:       304 (78%)
+    Tested by both:          166
+    Untested by either:      59
+    Untested APIs:
+      np.RawKernel
+      np.array_str
+      np.asanyarray
+      np.asarray_chkfinite
+      np.ascontiguousarray
+      np.asfarray
+      np.asfortranarray
+      np.bitwise_invert
+      np.bitwise_left_shift
+      np.bitwise_not
+      np.bitwise_right_shift
+      np.bool_
+      np.broadcast_shapes
+      np.cdouble
+      np.clongfloat
+      np.complex_
+      np.conj
+      np.csingle
+      np.deg2rad
+      np.diagflat
+      np.extract
+      np.float_
+      np.floor_divide
+      np.fmod
+      np.format_float_positional
+      np.format_float_scientific
+      np.get_config
+      np.i0
+      np.int_
+      np.intc
+      np.isfortran
+      np.left_shift
+      np.logical_and
+      np.logical_or
+      np.logical_xor
+      np.longcomplex
+      np.longfloat
+      np.msort
+      np.nancumprod
+      np.nancumsum
+      np.obj2sctype
+      np.promote_types
+      np.ravel_multi_index
+      np.right_shift
+      np.round_
+      np.savez_compressed
+      np.sctype2char
+      np.set_config
+      np.signbit
+      np.signedinteger
+      np.singlecomplex
+      np.synchronize
+      np.typename
+      np.ubyte
+      np.uintc
+      np.ulonglong
+      np.unravel_index
+      np.unsignedinteger
+      np.ushort
+
+  macmetalpy.linalg:
+    Total APIs:              22
+    Tested by macmetalpy:    13 (59%)
+    Tested by NumPy 2:       20 (91%)
+    Tested by both:          12
+    Untested by either:      1
+    Untested APIs:
+      np.linalg.LinAlgError
+
+  macmetalpy.fft:
+    Total APIs:              19
+    Tested by macmetalpy:    14 (74%)
+    Tested by NumPy 2:       18 (95%)
+    Tested by both:          14
+    Untested by either:      1
+    Untested APIs:
+      np.fft.ifftshift
+
+  macmetalpy.random:
+    Total APIs:              49
+    Tested by macmetalpy:    7 (14%)
+    Tested by NumPy 2:       47 (96%)
+    Tested by both:          7
+    Untested by either:      2
+    Untested APIs:
+      np.random.default_rng
+      np.random.ranf
+
+========================================================================
+E. WELL-COVERED: Catalog APIs tested by BOTH suites
+========================================================================
+
+  Total: 200 APIs
+
+    np.abs
+    np.add
+    np.all
+    np.allclose
+    np.any
+    np.append
+    np.arange
+    np.arccosh
+    np.arcsinh
+    np.arctan
+    np.arctanh
+    np.argmax
+    np.argmin
+    np.argpartition
+    np.argsort
+    np.argwhere
+    np.around
+    np.array
+    np.array_equal
+    np.atleast_2d
+    np.average
+    np.bartlett
+    np.blackman
+    np.broadcast_arrays
+    np.cbrt
+    np.clip
+    np.column_stack
+    np.concatenate
+    np.copy
+    np.copysign
+    np.cosh
+    np.count_nonzero
+    np.cross
+    np.cumprod
+    np.cumsum
+    np.delete
+    np.diag
+    np.divide
+    np.divmod
+    np.dot
+    np.dsplit
+    np.dstack
+    np.einsum
+    np.empty
+    np.equal
+    np.exp
+    np.exp2
+    np.expand_dims
+    np.expm1
+    np.eye
+    np.fft.fft
+    np.fft.fft2
+    np.fft.fftfreq
+    np.fft.fftn
+    np.fft.fftshift
+    np.fft.ifft
+    np.fft.ifft2
+    np.fft.ifftn
+    np.fft.irfft
+    np.fft.irfft2
+    np.fft.irfftn
+    np.fft.rfft
+    np.fft.rfft2
+    np.fft.rfftn
+    np.fix
+    np.flip
+    np.fliplr
+    np.flipud
+    np.floor
+    np.frexp
+    np.frombuffer
+    np.full
+    np.geomspace
+    np.greater
+    np.greater_equal
+    np.hanning
+    np.hsplit
+    np.hstack
+    np.hypot
+    np.identity
+    np.in1d
+    np.indices
+    np.inner
+    np.insert
+    np.intersect1d
+    np.invert
+    np.isclose
+    np.iscomplex
+    np.isfinite
+    np.isin
+    np.isinf
+    np.isnan
+    np.isneginf
+    np.isposinf
+    np.isreal
+    np.kaiser
+    np.kron
+    np.ldexp
+    np.less
+    np.less_equal
+    np.lexsort
+    np.linalg.cholesky
+    np.linalg.det
+    np.linalg.eigh
+    np.linalg.eigvalsh
+    np.linalg.inv
+    np.linalg.lstsq
+    np.linalg.matrix_rank
+    np.linalg.norm
+    np.linalg.pinv
+    np.linalg.qr
+    np.linalg.solve
+    np.linalg.svd
+    np.linspace
+    np.load
+    np.log
+    np.log1p
+    np.log2
+    np.logspace
+    np.matmul
+    np.max
+    np.maximum
+    np.mean
+    np.median
+    np.meshgrid
+    np.mgrid
+    np.min
+    np.minimum
+    np.mod
+    np.moveaxis
+    np.multiply
+    np.nan_to_num
+    np.nanstd
+    np.nansum
+    np.negative
+    np.nextafter
+    np.nonzero
+    np.not_equal
+    np.ones
+    np.ones_like
+    np.outer
+    np.pad
+    np.partition
+    np.percentile
+    np.positive
+    np.power
+    np.prod
+    np.quantile
+    np.radians
+    np.random.choice
+    np.random.normal
+    np.random.permutation
+    np.random.rand
+    np.random.seed
+    np.random.shuffle
+    np.random.uniform
+    np.ravel
+    np.reciprocal
+    np.remainder
+    np.repeat
+    np.reshape
+    np.resize
+    np.roll
+    np.rollaxis
+    np.rot90
+    np.round
+    np.save
+    np.searchsorted
+    np.setdiff1d
+    np.setxor1d
+    np.sign
+    np.sinh
+    np.sort
+    np.spacing
+    np.split
+    np.sqrt
+    np.square
+    np.squeeze
+    np.stack
+    np.std
+    np.sum
+    np.swapaxes
+    np.tan
+    np.tanh
+    np.tensordot
+    np.tile
+    np.transpose
+    np.tri
+    np.tril
+    np.trim_zeros
+    np.triu
+    np.union1d
+    np.unique
+    np.var
+    np.vdot
+    np.vsplit
+    np.vstack
+    np.where
+    np.zeros
+    np.zeros_like
+
+========================================================================
+F. macmetalpy TEST TAG DISTRIBUTION (top 80)
+========================================================================
+
+  API Tag                                               Count
+  --------------------------------------------------  -------
+  unknown                                                 260
+  dtype system                                            158
+  ndarray.shape                                            93
+  np.array                                                 92
+  np.std                                                   85
+  ndarray.__str__                                          50
+  np.all                                                   50
+  np.tri                                                   49
+  np.sort                                                  43
+  np.min / ndarray.min                                     42
+  np.max / ndarray.max                                     37
+  np.negative                                              36
+  np.positive                                              32
+  np.linalg.norm                                           28
+  I/O operations                                           26
+  dtype casting                                            24
+  np.sum                                                   24
+  np.where                                                 24
+  error handling                                           23
+  np.cumsum                                                22
+  np.var                                                   22
+  np.any                                                   21
+  complex number ops                                       20
+  np.reshape / ndarray.reshape                             20
+  np.stack                                                 19
+  np.prod                                                  19
+  np.equal                                                 17
+  np.linspace                                              17
+  np.square                                                17
+  np.indices                                               17
+  np.sin                                                   17
+  np.ravel / ndarray.ravel                                 17
+  np.cumprod                                               17
+  np.empty                                                 16
+  np.copy                                                  16
+  np.argmax                                                16
+  np.nonzero                                               16
+  np.median                                                16
+  np.unique                                                16
+  np.zeros                                                 15
+  np.abs                                                   15
+  broadcasting                                             14
+  np.log                                                   14
+  np.full                                                  14
+  np.linalg.eigh                                           14
+  np.nansum                                                14
+  ndarray.__getitem__                                      14
+  np.diag                                                  13
+  np.flip                                                  13
+  np.argmin                                                13
+  np.identity                                              12
+  np.concatenate                                           12
+  np.argsort                                               12
+  np.partition                                             12
+  np.isin                                                  12
+  np.transpose / ndarray.T                                 12
+  np.nan_to_num                                            12
+  np.sign                                                  11
+  ndarray.get (device->host)                               11
+  np.linalg.inv                                            11
+  np.linalg.solve                                          11
+  np.matmul                                                11
+  np.mean                                                  11
+  np.squeeze                                               11
+  np.dot                                                   11
+  np.mod                                                   11
+  np.repeat                                                11
+  np.percentile                                            11
+  np.power                                                 10
+  ndarray.__repr__                                         10
+  np.add                                                   10
+  ndarray.size                                             10
+  np.nanmax                                                10
+  np.nanmean                                               10
+  np.tan                                                    9
+  np.round                                                  9
+  configuration                                             9
+  np.logspace                                               9
+  np.meshgrid                                               9
+  np.geomspace                                              9

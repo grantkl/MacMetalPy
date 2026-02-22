@@ -23,10 +23,8 @@ class _Ufunc2:
         from .ndarray import ndarray
         from . import creation
 
-        if not isinstance(a, ndarray):
+        if type(a) is not ndarray:
             a = creation.asarray(a)
-        if not isinstance(b, ndarray):
-            b = creation.asarray(b)
 
         return a._binary_op(b, self._gpu_op)
 

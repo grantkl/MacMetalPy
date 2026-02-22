@@ -4,8 +4,10 @@ from __future__ import annotations
 
 __all__ = [
     "elementwise_shader", "reduction_shader", "matmul_shader",
-    "comparison_shader", "boolean_shader", "where_shader", "clip_shader",
-    "predicate_shader", "axis_reduction_shader",
+    "comparison_shader", "comparison_bool_shader", "boolean_shader",
+    "where_shader", "clip_shader",
+    "predicate_shader", "axis_reduction_shader", "nan_elementwise_shader",
+    "parallel_reduction_shader", "parallel_scan_shader",
 ]
 
 _MSL_HEADER = """\
@@ -492,6 +494,61 @@ kernel void reduce_min(device {metal_type} *input [[buffer(0)]],
         output[gid] = shared_data[0];
     }}
 }}
+
+kernel void reduce_prod(device {metal_type} *input [[buffer(0)]],
+                        device {metal_type} *output [[buffer(1)]],
+                        device uint *n_elements [[buffer(2)]],
+                        uint tid [[thread_position_in_grid]],
+                        uint lid [[thread_position_in_threadgroup]],
+                        uint gid [[threadgroup_position_in_grid]],
+                        uint group_size [[threads_per_threadgroup]]) {{
+    threadgroup {metal_type} shared_data[1024];
+    uint n = n_elements[0];
+    shared_data[lid] = (tid < n) ? input[tid] : ({metal_type})1;
+    for (uint i = lid + group_size; i < 1024u; i += group_size) {{
+        shared_data[i] = ({metal_type})1;
+    }}
+    threadgroup_barrier(mem_flags::mem_threadgroup);
+
+    for (uint s = 512u; s > 0; s >>= 1) {{
+        if (lid < s) {{
+            shared_data[lid] *= shared_data[lid + s];
+        }}
+        threadgroup_barrier(mem_flags::mem_threadgroup);
+    }}
+
+    if (lid == 0) {{
+        output[gid] = shared_data[0];
+    }}
+}}
+
+kernel void reduce_dot(device {metal_type} *a [[buffer(0)]],
+                       device {metal_type} *b [[buffer(1)]],
+                       device {metal_type} *output [[buffer(2)]],
+                       device uint *n_elements [[buffer(3)]],
+                       uint tid [[thread_position_in_grid]],
+                       uint lid [[thread_position_in_threadgroup]],
+                       uint gid [[threadgroup_position_in_grid]],
+                       uint group_size [[threads_per_threadgroup]]) {{
+    threadgroup {metal_type} shared_data[1024];
+    uint n = n_elements[0];
+    shared_data[lid] = (tid < n) ? a[tid] * b[tid] : 0;
+    for (uint i = lid + group_size; i < 1024u; i += group_size) {{
+        shared_data[i] = 0;
+    }}
+    threadgroup_barrier(mem_flags::mem_threadgroup);
+
+    for (uint s = 512u; s > 0; s >>= 1) {{
+        if (lid < s) {{
+            shared_data[lid] += shared_data[lid + s];
+        }}
+        threadgroup_barrier(mem_flags::mem_threadgroup);
+    }}
+
+    if (lid == 0) {{
+        output[gid] = shared_data[0];
+    }}
+}}
 """
     )
 
@@ -578,6 +635,59 @@ kernel void ne_op(device {metal_type} *a [[buffer(0)]],
     )
 
 
+def comparison_bool_shader(metal_type: str) -> str:
+    """Return MSL source with 6 comparison kernels that output bool (uchar) directly.
+
+    Eliminates the int32 intermediate + astype(bool) conversion.
+    """
+    return (
+        _MSL_HEADER
+        + f"""
+kernel void lt_op(device {metal_type} *a [[buffer(0)]],
+                  device {metal_type} *b [[buffer(1)]],
+                  device uchar *out [[buffer(2)]],
+                  uint id [[thread_position_in_grid]]) {{
+    out[id] = (a[id] < b[id]) ? (uchar)1 : (uchar)0;
+}}
+
+kernel void le_op(device {metal_type} *a [[buffer(0)]],
+                  device {metal_type} *b [[buffer(1)]],
+                  device uchar *out [[buffer(2)]],
+                  uint id [[thread_position_in_grid]]) {{
+    out[id] = (a[id] <= b[id]) ? (uchar)1 : (uchar)0;
+}}
+
+kernel void gt_op(device {metal_type} *a [[buffer(0)]],
+                  device {metal_type} *b [[buffer(1)]],
+                  device uchar *out [[buffer(2)]],
+                  uint id [[thread_position_in_grid]]) {{
+    out[id] = (a[id] > b[id]) ? (uchar)1 : (uchar)0;
+}}
+
+kernel void ge_op(device {metal_type} *a [[buffer(0)]],
+                  device {metal_type} *b [[buffer(1)]],
+                  device uchar *out [[buffer(2)]],
+                  uint id [[thread_position_in_grid]]) {{
+    out[id] = (a[id] >= b[id]) ? (uchar)1 : (uchar)0;
+}}
+
+kernel void eq_op(device {metal_type} *a [[buffer(0)]],
+                  device {metal_type} *b [[buffer(1)]],
+                  device uchar *out [[buffer(2)]],
+                  uint id [[thread_position_in_grid]]) {{
+    out[id] = (a[id] == b[id]) ? (uchar)1 : (uchar)0;
+}}
+
+kernel void ne_op(device {metal_type} *a [[buffer(0)]],
+                  device {metal_type} *b [[buffer(1)]],
+                  device uchar *out [[buffer(2)]],
+                  uint id [[thread_position_in_grid]]) {{
+    out[id] = (a[id] != b[id]) ? (uchar)1 : (uchar)0;
+}}
+"""
+    )
+
+
 def boolean_shader() -> str:
     """Return MSL source with 3 boolean logic kernels operating on ``int`` buffers."""
     return (
@@ -648,6 +758,44 @@ kernel void bit_xor_op(device int *a [[buffer(0)]],
                        device int *b [[buffer(1)]],
                        device int *out [[buffer(2)]],
                        uint id [[thread_position_in_grid]]) {
+    out[id] = a[id] ^ b[id];
+}
+"""
+    )
+
+
+def bool_logic_shader() -> str:
+    """Return MSL source with boolean logic kernels operating on native bool (uchar) buffers.
+
+    This avoids costly bool->int32->bool conversions in _boolean_op.
+    """
+    return (
+        _MSL_HEADER
+        + """
+kernel void bool_and_op(device uchar *a [[buffer(0)]],
+                        device uchar *b [[buffer(1)]],
+                        device uchar *out [[buffer(2)]],
+                        uint id [[thread_position_in_grid]]) {
+    out[id] = a[id] & b[id];
+}
+
+kernel void bool_or_op(device uchar *a [[buffer(0)]],
+                       device uchar *b [[buffer(1)]],
+                       device uchar *out [[buffer(2)]],
+                       uint id [[thread_position_in_grid]]) {
+    out[id] = a[id] | b[id];
+}
+
+kernel void bool_not_op(device uchar *a [[buffer(0)]],
+                        device uchar *out [[buffer(1)]],
+                        uint id [[thread_position_in_grid]]) {
+    out[id] = a[id] ? 0 : 1;
+}
+
+kernel void bool_xor_op(device uchar *a [[buffer(0)]],
+                        device uchar *b [[buffer(1)]],
+                        device uchar *out [[buffer(2)]],
+                        uint id [[thread_position_in_grid]]) {
     out[id] = a[id] ^ b[id];
 }
 """
@@ -840,6 +988,245 @@ kernel void prefix_prod(device {metal_type} *input [[buffer(0)]],
     output[base] = input[base];
     for (uint j = 1; j < inner; j++)
         output[base + j] = output[base + j - 1] * input[base + j];
+}}
+"""
+    )
+
+
+def parallel_reduction_shader(metal_type: str) -> str:
+    """Return MSL source with parallel argmax/argmin reduction kernels.
+
+    Two-pass approach:
+      Pass 1 (par_argmax_block / par_argmin_block):
+        Each thread processes a contiguous block of elements, finding the local
+        best value and its global index.  Outputs partial_vals[] and partial_idx[].
+      Pass 2 (par_argmax_final / par_argmin_final):
+        A single thread reduces the partial results to find the global answer.
+    """
+    return (
+        _MSL_HEADER
+        + f"""
+// --- Pass 1: each thread reduces one block ---
+kernel void par_argmax_block(device {metal_type} *input [[buffer(0)]],
+                             device {metal_type} *partial_vals [[buffer(1)]],
+                             device int *partial_idx [[buffer(2)]],
+                             device uint *params [[buffer(3)]],
+                             uint id [[thread_position_in_grid]]) {{
+    uint total = params[0];
+    uint block_size = params[1];
+    uint start = id * block_size;
+    if (start >= total) return;
+    uint end = min(start + block_size, total);
+    int best = (int)start;
+    {metal_type} best_val = input[start];
+    for (uint j = start + 1; j < end; j++) {{
+        {metal_type} v = input[j];
+        if (v > best_val) {{ best_val = v; best = (int)j; }}
+    }}
+    partial_vals[id] = best_val;
+    partial_idx[id] = best;
+}}
+
+kernel void par_argmin_block(device {metal_type} *input [[buffer(0)]],
+                             device {metal_type} *partial_vals [[buffer(1)]],
+                             device int *partial_idx [[buffer(2)]],
+                             device uint *params [[buffer(3)]],
+                             uint id [[thread_position_in_grid]]) {{
+    uint total = params[0];
+    uint block_size = params[1];
+    uint start = id * block_size;
+    if (start >= total) return;
+    uint end = min(start + block_size, total);
+    int best = (int)start;
+    {metal_type} best_val = input[start];
+    for (uint j = start + 1; j < end; j++) {{
+        {metal_type} v = input[j];
+        if (v < best_val) {{ best_val = v; best = (int)j; }}
+    }}
+    partial_vals[id] = best_val;
+    partial_idx[id] = best;
+}}
+
+// --- Pass 2: single thread reduces partial results ---
+kernel void par_argmax_final(device {metal_type} *partial_vals [[buffer(0)]],
+                             device int *partial_idx [[buffer(1)]],
+                             device int *output [[buffer(2)]],
+                             device uint *params [[buffer(3)]],
+                             uint id [[thread_position_in_grid]]) {{
+    uint n_blocks = params[0];
+    int best = partial_idx[0];
+    {metal_type} best_val = partial_vals[0];
+    for (uint j = 1; j < n_blocks; j++) {{
+        {metal_type} v = partial_vals[j];
+        if (v > best_val) {{ best_val = v; best = partial_idx[j]; }}
+    }}
+    output[0] = best;
+}}
+
+kernel void par_argmin_final(device {metal_type} *partial_vals [[buffer(0)]],
+                             device int *partial_idx [[buffer(1)]],
+                             device int *output [[buffer(2)]],
+                             device uint *params [[buffer(3)]],
+                             uint id [[thread_position_in_grid]]) {{
+    uint n_blocks = params[0];
+    int best = partial_idx[0];
+    {metal_type} best_val = partial_vals[0];
+    for (uint j = 1; j < n_blocks; j++) {{
+        {metal_type} v = partial_vals[j];
+        if (v < best_val) {{ best_val = v; best = partial_idx[j]; }}
+    }}
+    output[0] = best;
+}}
+"""
+    )
+
+
+def parallel_scan_shader(metal_type: str) -> str:
+    """Return MSL source with block-parallel prefix scan kernels (cumsum/cumprod).
+
+    Three-pass approach:
+      Pass 1 (block_scan_sum / block_scan_prod):
+        Each thread computes a sequential prefix scan within its block.
+        Also writes the block total to a separate buffer.
+      Pass 2 (block_scan_sum / block_scan_prod on block totals):
+        Prefix scan the block totals themselves (small array, 1 thread).
+      Pass 3 (propagate_sum / propagate_prod):
+        Each thread adds/multiplies the cumulative block total to every
+        element in its block.
+    """
+    return (
+        _MSL_HEADER
+        + f"""
+// --- Pass 1: sequential prefix scan within each block ---
+kernel void block_scan_sum(device {metal_type} *input [[buffer(0)]],
+                           device {metal_type} *output [[buffer(1)]],
+                           device {metal_type} *block_totals [[buffer(2)]],
+                           device uint *params [[buffer(3)]],
+                           uint id [[thread_position_in_grid]]) {{
+    uint total = params[0];
+    uint block_size = params[1];
+    uint start = id * block_size;
+    if (start >= total) return;
+    uint end = min(start + block_size, total);
+    output[start] = input[start];
+    for (uint j = start + 1; j < end; j++)
+        output[j] = output[j - 1] + input[j];
+    block_totals[id] = output[end - 1];
+}}
+
+kernel void block_scan_prod(device {metal_type} *input [[buffer(0)]],
+                            device {metal_type} *output [[buffer(1)]],
+                            device {metal_type} *block_totals [[buffer(2)]],
+                            device uint *params [[buffer(3)]],
+                            uint id [[thread_position_in_grid]]) {{
+    uint total = params[0];
+    uint block_size = params[1];
+    uint start = id * block_size;
+    if (start >= total) return;
+    uint end = min(start + block_size, total);
+    output[start] = input[start];
+    for (uint j = start + 1; j < end; j++)
+        output[j] = output[j - 1] * input[j];
+    block_totals[id] = output[end - 1];
+}}
+
+// --- Pass 2: prefix scan on block totals (single thread) ---
+kernel void scan_block_totals_sum(device {metal_type} *block_totals [[buffer(0)]],
+                                  device uint *params [[buffer(1)]],
+                                  uint id [[thread_position_in_grid]]) {{
+    uint n_blocks = params[0];
+    for (uint j = 1; j < n_blocks; j++)
+        block_totals[j] = block_totals[j - 1] + block_totals[j];
+}}
+
+kernel void scan_block_totals_prod(device {metal_type} *block_totals [[buffer(0)]],
+                                   device uint *params [[buffer(1)]],
+                                   uint id [[thread_position_in_grid]]) {{
+    uint n_blocks = params[0];
+    for (uint j = 1; j < n_blocks; j++)
+        block_totals[j] = block_totals[j - 1] * block_totals[j];
+}}
+
+// --- Pass 3: propagate block prefix to all elements ---
+kernel void propagate_sum(device {metal_type} *output [[buffer(0)]],
+                          device {metal_type} *block_totals [[buffer(1)]],
+                          device uint *params [[buffer(2)]],
+                          uint id [[thread_position_in_grid]]) {{
+    if (id == 0) return;  // block 0 is already correct
+    uint total = params[0];
+    uint block_size = params[1];
+    uint start = id * block_size;
+    if (start >= total) return;
+    uint end = min(start + block_size, total);
+    {metal_type} prefix = block_totals[id - 1];
+    for (uint j = start; j < end; j++)
+        output[j] = output[j] + prefix;
+}}
+
+kernel void propagate_prod(device {metal_type} *output [[buffer(0)]],
+                           device {metal_type} *block_totals [[buffer(1)]],
+                           device uint *params [[buffer(2)]],
+                           uint id [[thread_position_in_grid]]) {{
+    if (id == 0) return;  // block 0 is already correct
+    uint total = params[0];
+    uint block_size = params[1];
+    uint start = id * block_size;
+    if (start >= total) return;
+    uint end = min(start + block_size, total);
+    {metal_type} prefix = block_totals[id - 1];
+    for (uint j = start; j < end; j++)
+        output[j] = output[j] * prefix;
+}}
+"""
+    )
+
+
+def nan_elementwise_shader(metal_type: str) -> str:
+    """Return MSL source with NaN-replacement kernels parameterised on *metal_type*."""
+    return (
+        _MSL_HEADER
+        + f"""
+kernel void nan_replace_zero(device {metal_type} *a [[buffer(0)]],
+                              device {metal_type} *out [[buffer(1)]],
+                              uint id [[thread_position_in_grid]]) {{
+    float v = static_cast<float>(a[id]);
+    out[id] = isnan(v) ? ({metal_type})0 : a[id];
+}}
+
+kernel void nan_replace_one(device {metal_type} *a [[buffer(0)]],
+                             device {metal_type} *out [[buffer(1)]],
+                             uint id [[thread_position_in_grid]]) {{
+    float v = static_cast<float>(a[id]);
+    out[id] = isnan(v) ? ({metal_type})1 : a[id];
+}}
+
+kernel void nan_replace_neg_inf(device {metal_type} *a [[buffer(0)]],
+                                 device {metal_type} *out [[buffer(1)]],
+                                 uint id [[thread_position_in_grid]]) {{
+    float v = static_cast<float>(a[id]);
+    out[id] = isnan(v) ? ({metal_type})(-INFINITY) : a[id];
+}}
+
+kernel void nan_replace_pos_inf(device {metal_type} *a [[buffer(0)]],
+                                 device {metal_type} *out [[buffer(1)]],
+                                 uint id [[thread_position_in_grid]]) {{
+    float v = static_cast<float>(a[id]);
+    out[id] = isnan(v) ? ({metal_type})(INFINITY) : a[id];
+}}
+
+kernel void nan_count(device {metal_type} *a [[buffer(0)]],
+                       device {metal_type} *out [[buffer(1)]],
+                       uint id [[thread_position_in_grid]]) {{
+    float v = static_cast<float>(a[id]);
+    out[id] = isnan(v) ? ({metal_type})0 : ({metal_type})1;
+}}
+
+kernel void nan_replace_val(device {metal_type} *a [[buffer(0)]],
+                              device {metal_type} *val [[buffer(1)]],
+                              device {metal_type} *out [[buffer(2)]],
+                              uint id [[thread_position_in_grid]]) {{
+    float v = static_cast<float>(a[id]);
+    out[id] = isnan(v) ? val[0] : a[id];
 }}
 """
     )

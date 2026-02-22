@@ -297,7 +297,7 @@ class TestIn1d:
         a = cp.array(np.array([1, 2, 3, 4, 5], dtype=np.int32))
         b = cp.array(np.array([2, 4], dtype=np.int32))
         result = in1d(a, b)
-        expected = np.in1d(np.array([1, 2, 3, 4, 5], dtype=np.int32),
+        expected = np.isin(np.array([1, 2, 3, 4, 5], dtype=np.int32),
                            np.array([2, 4], dtype=np.int32))
         assert_array_equal(result.get(), expected)
 
@@ -305,7 +305,7 @@ class TestIn1d:
         a = cp.array(np.array([1.0, 2.0, 3.0], dtype=np.float32))
         b = cp.array(np.array([2.0, 3.0], dtype=np.float32))
         result = in1d(a, b)
-        expected = np.in1d(np.array([1.0, 2.0, 3.0], dtype=np.float32),
+        expected = np.isin(np.array([1.0, 2.0, 3.0], dtype=np.float32),
                            np.array([2.0, 3.0], dtype=np.float32))
         assert_array_equal(result.get(), expected)
 
@@ -313,13 +313,13 @@ class TestIn1d:
         a = cp.array(np.array([1, 2, 3, 4, 5], dtype=np.int32))
         b = cp.array(np.array([2, 4], dtype=np.int32))
         result = in1d(a, b, invert=True)
-        expected = np.in1d(np.array([1, 2, 3, 4, 5], dtype=np.int32),
+        expected = np.isin(np.array([1, 2, 3, 4, 5], dtype=np.int32),
                            np.array([2, 4], dtype=np.int32), invert=True)
         assert_array_equal(result.get(), expected)
 
     def test_in1d_from_list(self):
         result = in1d([1, 2, 3, 4], [2, 4])
-        expected = np.in1d([1, 2, 3, 4], [2, 4])
+        expected = np.isin([1, 2, 3, 4], [2, 4])
         assert_array_equal(result.get(), expected)
 
 

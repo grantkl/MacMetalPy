@@ -1,0 +1,5699 @@
+{
+  "numpy_version": "1.26.4",
+  "top_level": {
+    "ALLOW_THREADS": {
+      "type": "constant",
+      "params": null,
+      "signature": null
+    },
+    "BUFSIZE": {
+      "type": "constant",
+      "params": null,
+      "signature": null
+    },
+    "CLIP": {
+      "type": "constant",
+      "params": null,
+      "signature": null
+    },
+    "DataSource": {
+      "type": "class",
+      "params": null,
+      "signature": null
+    },
+    "ERR_CALL": {
+      "type": "constant",
+      "params": null,
+      "signature": null
+    },
+    "ERR_DEFAULT": {
+      "type": "constant",
+      "params": null,
+      "signature": null
+    },
+    "ERR_IGNORE": {
+      "type": "constant",
+      "params": null,
+      "signature": null
+    },
+    "ERR_LOG": {
+      "type": "constant",
+      "params": null,
+      "signature": null
+    },
+    "ERR_PRINT": {
+      "type": "constant",
+      "params": null,
+      "signature": null
+    },
+    "ERR_RAISE": {
+      "type": "constant",
+      "params": null,
+      "signature": null
+    },
+    "ERR_WARN": {
+      "type": "constant",
+      "params": null,
+      "signature": null
+    },
+    "FLOATING_POINT_SUPPORT": {
+      "type": "constant",
+      "params": null,
+      "signature": null
+    },
+    "FPE_DIVIDEBYZERO": {
+      "type": "constant",
+      "params": null,
+      "signature": null
+    },
+    "FPE_INVALID": {
+      "type": "constant",
+      "params": null,
+      "signature": null
+    },
+    "FPE_OVERFLOW": {
+      "type": "constant",
+      "params": null,
+      "signature": null
+    },
+    "FPE_UNDERFLOW": {
+      "type": "constant",
+      "params": null,
+      "signature": null
+    },
+    "False_": {
+      "type": "constant",
+      "params": null,
+      "signature": null
+    },
+    "Inf": {
+      "type": "constant",
+      "params": null,
+      "signature": null
+    },
+    "Infinity": {
+      "type": "constant",
+      "params": null,
+      "signature": null
+    },
+    "MAXDIMS": {
+      "type": "constant",
+      "params": null,
+      "signature": null
+    },
+    "MAY_SHARE_BOUNDS": {
+      "type": "constant",
+      "params": null,
+      "signature": null
+    },
+    "MAY_SHARE_EXACT": {
+      "type": "constant",
+      "params": null,
+      "signature": null
+    },
+    "NAN": {
+      "type": "constant",
+      "params": null,
+      "signature": null
+    },
+    "NINF": {
+      "type": "constant",
+      "params": null,
+      "signature": null
+    },
+    "NZERO": {
+      "type": "constant",
+      "params": null,
+      "signature": null
+    },
+    "NaN": {
+      "type": "constant",
+      "params": null,
+      "signature": null
+    },
+    "PINF": {
+      "type": "constant",
+      "params": null,
+      "signature": null
+    },
+    "PZERO": {
+      "type": "constant",
+      "params": null,
+      "signature": null
+    },
+    "RAISE": {
+      "type": "constant",
+      "params": null,
+      "signature": null
+    },
+    "RankWarning": {
+      "type": "class",
+      "params": null,
+      "signature": null
+    },
+    "SHIFT_DIVIDEBYZERO": {
+      "type": "constant",
+      "params": null,
+      "signature": null
+    },
+    "SHIFT_INVALID": {
+      "type": "constant",
+      "params": null,
+      "signature": null
+    },
+    "SHIFT_OVERFLOW": {
+      "type": "constant",
+      "params": null,
+      "signature": null
+    },
+    "SHIFT_UNDERFLOW": {
+      "type": "constant",
+      "params": null,
+      "signature": null
+    },
+    "ScalarType": {
+      "type": "constant",
+      "params": null,
+      "signature": null
+    },
+    "True_": {
+      "type": "constant",
+      "params": null,
+      "signature": null
+    },
+    "UFUNC_BUFSIZE_DEFAULT": {
+      "type": "constant",
+      "params": null,
+      "signature": null
+    },
+    "UFUNC_PYVALS_NAME": {
+      "type": "constant",
+      "params": null,
+      "signature": null
+    },
+    "WRAP": {
+      "type": "constant",
+      "params": null,
+      "signature": null
+    },
+    "abs": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "absolute": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "add": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "add_docstring": {
+      "type": "function",
+      "params": null,
+      "signature": null
+    },
+    "add_newdoc": {
+      "type": "function",
+      "params": [
+        "place",
+        "obj",
+        "doc",
+        "warn_on_python"
+      ],
+      "signature": "(place, obj, doc, warn_on_python=True)"
+    },
+    "add_newdoc_ufunc": {
+      "type": "function",
+      "params": null,
+      "signature": null
+    },
+    "all": {
+      "type": "function",
+      "params": [
+        "a",
+        "axis",
+        "out",
+        "keepdims",
+        "where"
+      ],
+      "signature": "(a, axis=None, out=None, keepdims=<no value>, *, where=<no value>)"
+    },
+    "allclose": {
+      "type": "function",
+      "params": [
+        "a",
+        "b",
+        "rtol",
+        "atol",
+        "equal_nan"
+      ],
+      "signature": "(a, b, rtol=1e-05, atol=1e-08, equal_nan=False)"
+    },
+    "alltrue": {
+      "type": "function",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "amax": {
+      "type": "function",
+      "params": [
+        "a",
+        "axis",
+        "out",
+        "keepdims",
+        "initial",
+        "where"
+      ],
+      "signature": "(a, axis=None, out=None, keepdims=<no value>, initial=<no value>, where=<no value>)"
+    },
+    "amin": {
+      "type": "function",
+      "params": [
+        "a",
+        "axis",
+        "out",
+        "keepdims",
+        "initial",
+        "where"
+      ],
+      "signature": "(a, axis=None, out=None, keepdims=<no value>, initial=<no value>, where=<no value>)"
+    },
+    "angle": {
+      "type": "function",
+      "params": [
+        "z",
+        "deg"
+      ],
+      "signature": "(z, deg=False)"
+    },
+    "any": {
+      "type": "function",
+      "params": [
+        "a",
+        "axis",
+        "out",
+        "keepdims",
+        "where"
+      ],
+      "signature": "(a, axis=None, out=None, keepdims=<no value>, *, where=<no value>)"
+    },
+    "append": {
+      "type": "function",
+      "params": [
+        "arr",
+        "values",
+        "axis"
+      ],
+      "signature": "(arr, values, axis=None)"
+    },
+    "apply_along_axis": {
+      "type": "function",
+      "params": [
+        "func1d",
+        "axis",
+        "arr",
+        "args",
+        "kwargs"
+      ],
+      "signature": "(func1d, axis, arr, *args, **kwargs)"
+    },
+    "apply_over_axes": {
+      "type": "function",
+      "params": [
+        "func",
+        "a",
+        "axes"
+      ],
+      "signature": "(func, a, axes)"
+    },
+    "arange": {
+      "type": "function",
+      "params": null,
+      "signature": null
+    },
+    "arccos": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "arccosh": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "arcsin": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "arcsinh": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "arctan": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "arctan2": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "arctanh": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "argmax": {
+      "type": "function",
+      "params": [
+        "a",
+        "axis",
+        "out",
+        "keepdims"
+      ],
+      "signature": "(a, axis=None, out=None, *, keepdims=<no value>)"
+    },
+    "argmin": {
+      "type": "function",
+      "params": [
+        "a",
+        "axis",
+        "out",
+        "keepdims"
+      ],
+      "signature": "(a, axis=None, out=None, *, keepdims=<no value>)"
+    },
+    "argpartition": {
+      "type": "function",
+      "params": [
+        "a",
+        "kth",
+        "axis",
+        "kind",
+        "order"
+      ],
+      "signature": "(a, kth, axis=-1, kind='introselect', order=None)"
+    },
+    "argsort": {
+      "type": "function",
+      "params": [
+        "a",
+        "axis",
+        "kind",
+        "order"
+      ],
+      "signature": "(a, axis=-1, kind=None, order=None)"
+    },
+    "argwhere": {
+      "type": "function",
+      "params": [
+        "a"
+      ],
+      "signature": "(a)"
+    },
+    "around": {
+      "type": "function",
+      "params": [
+        "a",
+        "decimals",
+        "out"
+      ],
+      "signature": "(a, decimals=0, out=None)"
+    },
+    "array": {
+      "type": "function",
+      "params": null,
+      "signature": null
+    },
+    "array2string": {
+      "type": "function",
+      "params": [
+        "a",
+        "max_line_width",
+        "precision",
+        "suppress_small",
+        "separator",
+        "prefix",
+        "style",
+        "formatter",
+        "threshold",
+        "edgeitems",
+        "sign",
+        "floatmode",
+        "suffix",
+        "legacy"
+      ],
+      "signature": "(a, max_line_width=None, precision=None, suppress_small=None, separator=' ', prefix='', style=<no value>, formatter=None, threshold=None, edgeitems=None, sign=None, floatmode=None, suffix='', *, legacy=None)"
+    },
+    "array_equal": {
+      "type": "function",
+      "params": [
+        "a1",
+        "a2",
+        "equal_nan"
+      ],
+      "signature": "(a1, a2, equal_nan=False)"
+    },
+    "array_equiv": {
+      "type": "function",
+      "params": [
+        "a1",
+        "a2"
+      ],
+      "signature": "(a1, a2)"
+    },
+    "array_repr": {
+      "type": "function",
+      "params": [
+        "arr",
+        "max_line_width",
+        "precision",
+        "suppress_small"
+      ],
+      "signature": "(arr, max_line_width=None, precision=None, suppress_small=None)"
+    },
+    "array_split": {
+      "type": "function",
+      "params": [
+        "ary",
+        "indices_or_sections",
+        "axis"
+      ],
+      "signature": "(ary, indices_or_sections, axis=0)"
+    },
+    "array_str": {
+      "type": "function",
+      "params": [
+        "a",
+        "max_line_width",
+        "precision",
+        "suppress_small"
+      ],
+      "signature": "(a, max_line_width=None, precision=None, suppress_small=None)"
+    },
+    "asanyarray": {
+      "type": "function",
+      "params": null,
+      "signature": null
+    },
+    "asarray": {
+      "type": "function",
+      "params": null,
+      "signature": null
+    },
+    "asarray_chkfinite": {
+      "type": "function",
+      "params": [
+        "a",
+        "dtype",
+        "order"
+      ],
+      "signature": "(a, dtype=None, order=None)"
+    },
+    "ascontiguousarray": {
+      "type": "function",
+      "params": null,
+      "signature": null
+    },
+    "asfarray": {
+      "type": "function",
+      "params": [
+        "a",
+        "dtype"
+      ],
+      "signature": "(a, dtype=<class 'numpy.float64'>)"
+    },
+    "asfortranarray": {
+      "type": "function",
+      "params": null,
+      "signature": null
+    },
+    "asmatrix": {
+      "type": "function",
+      "params": [
+        "data",
+        "dtype"
+      ],
+      "signature": "(data, dtype=None)"
+    },
+    "atleast_1d": {
+      "type": "function",
+      "params": [
+        "arys"
+      ],
+      "signature": "(*arys)"
+    },
+    "atleast_2d": {
+      "type": "function",
+      "params": [
+        "arys"
+      ],
+      "signature": "(*arys)"
+    },
+    "atleast_3d": {
+      "type": "function",
+      "params": [
+        "arys"
+      ],
+      "signature": "(*arys)"
+    },
+    "average": {
+      "type": "function",
+      "params": [
+        "a",
+        "axis",
+        "weights",
+        "returned",
+        "keepdims"
+      ],
+      "signature": "(a, axis=None, weights=None, returned=False, *, keepdims=<no value>)"
+    },
+    "bartlett": {
+      "type": "function",
+      "params": [
+        "M"
+      ],
+      "signature": "(M)"
+    },
+    "base_repr": {
+      "type": "function",
+      "params": [
+        "number",
+        "base",
+        "padding"
+      ],
+      "signature": "(number, base=2, padding=0)"
+    },
+    "binary_repr": {
+      "type": "function",
+      "params": [
+        "num",
+        "width"
+      ],
+      "signature": "(num, width=None)"
+    },
+    "bincount": {
+      "type": "function",
+      "params": null,
+      "signature": null
+    },
+    "bitwise_and": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "bitwise_not": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "bitwise_or": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "bitwise_xor": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "blackman": {
+      "type": "function",
+      "params": [
+        "M"
+      ],
+      "signature": "(M)"
+    },
+    "block": {
+      "type": "function",
+      "params": [
+        "arrays"
+      ],
+      "signature": "(arrays)"
+    },
+    "bmat": {
+      "type": "function",
+      "params": [
+        "obj",
+        "ldict",
+        "gdict"
+      ],
+      "signature": "(obj, ldict=None, gdict=None)"
+    },
+    "bool_": {
+      "type": "class",
+      "params": null,
+      "signature": null
+    },
+    "broadcast": {
+      "type": "class",
+      "params": null,
+      "signature": null
+    },
+    "broadcast_arrays": {
+      "type": "function",
+      "params": [
+        "args",
+        "subok"
+      ],
+      "signature": "(*args, subok=False)"
+    },
+    "broadcast_shapes": {
+      "type": "function",
+      "params": [
+        "args"
+      ],
+      "signature": "(*args)"
+    },
+    "broadcast_to": {
+      "type": "function",
+      "params": [
+        "array",
+        "shape",
+        "subok"
+      ],
+      "signature": "(array, shape, subok=False)"
+    },
+    "busday_count": {
+      "type": "function",
+      "params": null,
+      "signature": null
+    },
+    "busday_offset": {
+      "type": "function",
+      "params": null,
+      "signature": null
+    },
+    "busdaycalendar": {
+      "type": "class",
+      "params": null,
+      "signature": null
+    },
+    "byte": {
+      "type": "class",
+      "params": null,
+      "signature": null
+    },
+    "byte_bounds": {
+      "type": "function",
+      "params": [
+        "a"
+      ],
+      "signature": "(a)"
+    },
+    "bytes_": {
+      "type": "class",
+      "params": null,
+      "signature": null
+    },
+    "c_": {
+      "type": "constant",
+      "params": null,
+      "signature": null
+    },
+    "can_cast": {
+      "type": "function",
+      "params": null,
+      "signature": null
+    },
+    "cast": {
+      "type": "constant",
+      "params": null,
+      "signature": null
+    },
+    "cbrt": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "cdouble": {
+      "type": "class",
+      "params": null,
+      "signature": null
+    },
+    "ceil": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "cfloat": {
+      "type": "class",
+      "params": null,
+      "signature": null
+    },
+    "char": {
+      "type": "module",
+      "params": null,
+      "signature": null
+    },
+    "character": {
+      "type": "class",
+      "params": null,
+      "signature": null
+    },
+    "chararray": {
+      "type": "class",
+      "params": null,
+      "signature": null
+    },
+    "choose": {
+      "type": "function",
+      "params": [
+        "a",
+        "choices",
+        "out",
+        "mode"
+      ],
+      "signature": "(a, choices, out=None, mode='raise')"
+    },
+    "clip": {
+      "type": "function",
+      "params": [
+        "a",
+        "a_min",
+        "a_max",
+        "out",
+        "kwargs"
+      ],
+      "signature": "(a, a_min, a_max, out=None, **kwargs)"
+    },
+    "clongdouble": {
+      "type": "class",
+      "params": null,
+      "signature": null
+    },
+    "clongfloat": {
+      "type": "class",
+      "params": null,
+      "signature": null
+    },
+    "column_stack": {
+      "type": "function",
+      "params": [
+        "tup"
+      ],
+      "signature": "(tup)"
+    },
+    "common_type": {
+      "type": "function",
+      "params": [
+        "arrays"
+      ],
+      "signature": "(*arrays)"
+    },
+    "compare_chararrays": {
+      "type": "function",
+      "params": null,
+      "signature": null
+    },
+    "compat": {
+      "type": "module",
+      "params": null,
+      "signature": null
+    },
+    "complex128": {
+      "type": "class",
+      "params": null,
+      "signature": null
+    },
+    "complex64": {
+      "type": "class",
+      "params": null,
+      "signature": null
+    },
+    "complex_": {
+      "type": "class",
+      "params": null,
+      "signature": null
+    },
+    "complexfloating": {
+      "type": "class",
+      "params": null,
+      "signature": null
+    },
+    "compress": {
+      "type": "function",
+      "params": [
+        "condition",
+        "a",
+        "axis",
+        "out"
+      ],
+      "signature": "(condition, a, axis=None, out=None)"
+    },
+    "concatenate": {
+      "type": "function",
+      "params": null,
+      "signature": null
+    },
+    "conj": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "conjugate": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "convolve": {
+      "type": "function",
+      "params": [
+        "a",
+        "v",
+        "mode"
+      ],
+      "signature": "(a, v, mode='full')"
+    },
+    "copy": {
+      "type": "function",
+      "params": [
+        "a",
+        "order",
+        "subok"
+      ],
+      "signature": "(a, order='K', subok=False)"
+    },
+    "copysign": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "copyto": {
+      "type": "function",
+      "params": null,
+      "signature": null
+    },
+    "corrcoef": {
+      "type": "function",
+      "params": [
+        "x",
+        "y",
+        "rowvar",
+        "bias",
+        "ddof",
+        "dtype"
+      ],
+      "signature": "(x, y=None, rowvar=True, bias=<no value>, ddof=<no value>, *, dtype=None)"
+    },
+    "correlate": {
+      "type": "function",
+      "params": [
+        "a",
+        "v",
+        "mode"
+      ],
+      "signature": "(a, v, mode='valid')"
+    },
+    "cos": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "cosh": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "count_nonzero": {
+      "type": "function",
+      "params": [
+        "a",
+        "axis",
+        "keepdims"
+      ],
+      "signature": "(a, axis=None, *, keepdims=False)"
+    },
+    "cov": {
+      "type": "function",
+      "params": [
+        "m",
+        "y",
+        "rowvar",
+        "bias",
+        "ddof",
+        "fweights",
+        "aweights",
+        "dtype"
+      ],
+      "signature": "(m, y=None, rowvar=True, bias=False, ddof=None, fweights=None, aweights=None, *, dtype=None)"
+    },
+    "cross": {
+      "type": "function",
+      "params": [
+        "a",
+        "b",
+        "axisa",
+        "axisb",
+        "axisc",
+        "axis"
+      ],
+      "signature": "(a, b, axisa=-1, axisb=-1, axisc=-1, axis=None)"
+    },
+    "csingle": {
+      "type": "class",
+      "params": null,
+      "signature": null
+    },
+    "ctypeslib": {
+      "type": "module",
+      "params": null,
+      "signature": null
+    },
+    "cumprod": {
+      "type": "function",
+      "params": [
+        "a",
+        "axis",
+        "dtype",
+        "out"
+      ],
+      "signature": "(a, axis=None, dtype=None, out=None)"
+    },
+    "cumproduct": {
+      "type": "function",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "cumsum": {
+      "type": "function",
+      "params": [
+        "a",
+        "axis",
+        "dtype",
+        "out"
+      ],
+      "signature": "(a, axis=None, dtype=None, out=None)"
+    },
+    "datetime64": {
+      "type": "class",
+      "params": null,
+      "signature": null
+    },
+    "datetime_as_string": {
+      "type": "function",
+      "params": null,
+      "signature": null
+    },
+    "datetime_data": {
+      "type": "function",
+      "params": null,
+      "signature": null
+    },
+    "deg2rad": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "degrees": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "delete": {
+      "type": "function",
+      "params": [
+        "arr",
+        "obj",
+        "axis"
+      ],
+      "signature": "(arr, obj, axis=None)"
+    },
+    "deprecate": {
+      "type": "function",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "deprecate_with_doc": {
+      "type": "function",
+      "params": [
+        "msg"
+      ],
+      "signature": "(msg)"
+    },
+    "diag": {
+      "type": "function",
+      "params": [
+        "v",
+        "k"
+      ],
+      "signature": "(v, k=0)"
+    },
+    "diag_indices": {
+      "type": "function",
+      "params": [
+        "n",
+        "ndim"
+      ],
+      "signature": "(n, ndim=2)"
+    },
+    "diag_indices_from": {
+      "type": "function",
+      "params": [
+        "arr"
+      ],
+      "signature": "(arr)"
+    },
+    "diagflat": {
+      "type": "function",
+      "params": [
+        "v",
+        "k"
+      ],
+      "signature": "(v, k=0)"
+    },
+    "diagonal": {
+      "type": "function",
+      "params": [
+        "a",
+        "offset",
+        "axis1",
+        "axis2"
+      ],
+      "signature": "(a, offset=0, axis1=0, axis2=1)"
+    },
+    "diff": {
+      "type": "function",
+      "params": [
+        "a",
+        "n",
+        "axis",
+        "prepend",
+        "append"
+      ],
+      "signature": "(a, n=1, axis=-1, prepend=<no value>, append=<no value>)"
+    },
+    "digitize": {
+      "type": "function",
+      "params": [
+        "x",
+        "bins",
+        "right"
+      ],
+      "signature": "(x, bins, right=False)"
+    },
+    "disp": {
+      "type": "function",
+      "params": [
+        "mesg",
+        "device",
+        "linefeed"
+      ],
+      "signature": "(mesg, device=None, linefeed=True)"
+    },
+    "divide": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "divmod": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "dot": {
+      "type": "function",
+      "params": null,
+      "signature": null
+    },
+    "double": {
+      "type": "class",
+      "params": null,
+      "signature": null
+    },
+    "dsplit": {
+      "type": "function",
+      "params": [
+        "ary",
+        "indices_or_sections"
+      ],
+      "signature": "(ary, indices_or_sections)"
+    },
+    "dstack": {
+      "type": "function",
+      "params": [
+        "tup"
+      ],
+      "signature": "(tup)"
+    },
+    "dtype": {
+      "type": "class",
+      "params": null,
+      "signature": null
+    },
+    "dtypes": {
+      "type": "module",
+      "params": null,
+      "signature": null
+    },
+    "e": {
+      "type": "constant",
+      "params": null,
+      "signature": null
+    },
+    "ediff1d": {
+      "type": "function",
+      "params": [
+        "ary",
+        "to_end",
+        "to_begin"
+      ],
+      "signature": "(ary, to_end=None, to_begin=None)"
+    },
+    "einsum": {
+      "type": "function",
+      "params": [
+        "operands",
+        "out",
+        "optimize",
+        "kwargs"
+      ],
+      "signature": "(*operands, out=None, optimize=False, **kwargs)"
+    },
+    "einsum_path": {
+      "type": "function",
+      "params": [
+        "operands",
+        "optimize",
+        "einsum_call"
+      ],
+      "signature": "(*operands, optimize='greedy', einsum_call=False)"
+    },
+    "emath": {
+      "type": "module",
+      "params": null,
+      "signature": null
+    },
+    "empty": {
+      "type": "function",
+      "params": null,
+      "signature": null
+    },
+    "empty_like": {
+      "type": "function",
+      "params": null,
+      "signature": null
+    },
+    "equal": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "errstate": {
+      "type": "class",
+      "params": null,
+      "signature": null
+    },
+    "euler_gamma": {
+      "type": "constant",
+      "params": null,
+      "signature": null
+    },
+    "exceptions": {
+      "type": "module",
+      "params": null,
+      "signature": null
+    },
+    "exp": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "exp2": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "expand_dims": {
+      "type": "function",
+      "params": [
+        "a",
+        "axis"
+      ],
+      "signature": "(a, axis)"
+    },
+    "expm1": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "extract": {
+      "type": "function",
+      "params": [
+        "condition",
+        "arr"
+      ],
+      "signature": "(condition, arr)"
+    },
+    "eye": {
+      "type": "function",
+      "params": [
+        "N",
+        "M",
+        "k",
+        "dtype",
+        "order",
+        "like"
+      ],
+      "signature": "(N, M=None, k=0, dtype=<class 'float'>, order='C', *, like=None)"
+    },
+    "fabs": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "fastCopyAndTranspose": {
+      "type": "function",
+      "params": null,
+      "signature": null
+    },
+    "fft": {
+      "type": "module",
+      "params": null,
+      "signature": null
+    },
+    "fill_diagonal": {
+      "type": "function",
+      "params": [
+        "a",
+        "val",
+        "wrap"
+      ],
+      "signature": "(a, val, wrap=False)"
+    },
+    "find_common_type": {
+      "type": "function",
+      "params": [
+        "array_types",
+        "scalar_types"
+      ],
+      "signature": "(array_types, scalar_types)"
+    },
+    "finfo": {
+      "type": "class",
+      "params": null,
+      "signature": null
+    },
+    "fix": {
+      "type": "function",
+      "params": [
+        "x",
+        "out"
+      ],
+      "signature": "(x, out=None)"
+    },
+    "flatiter": {
+      "type": "class",
+      "params": null,
+      "signature": null
+    },
+    "flatnonzero": {
+      "type": "function",
+      "params": [
+        "a"
+      ],
+      "signature": "(a)"
+    },
+    "flexible": {
+      "type": "class",
+      "params": null,
+      "signature": null
+    },
+    "flip": {
+      "type": "function",
+      "params": [
+        "m",
+        "axis"
+      ],
+      "signature": "(m, axis=None)"
+    },
+    "fliplr": {
+      "type": "function",
+      "params": [
+        "m"
+      ],
+      "signature": "(m)"
+    },
+    "flipud": {
+      "type": "function",
+      "params": [
+        "m"
+      ],
+      "signature": "(m)"
+    },
+    "float16": {
+      "type": "class",
+      "params": null,
+      "signature": null
+    },
+    "float32": {
+      "type": "class",
+      "params": null,
+      "signature": null
+    },
+    "float64": {
+      "type": "class",
+      "params": null,
+      "signature": null
+    },
+    "float_": {
+      "type": "class",
+      "params": null,
+      "signature": null
+    },
+    "float_power": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "floating": {
+      "type": "class",
+      "params": null,
+      "signature": null
+    },
+    "floor": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "floor_divide": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "fmax": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "fmin": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "fmod": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "format_float_positional": {
+      "type": "function",
+      "params": [
+        "x",
+        "precision",
+        "unique",
+        "fractional",
+        "trim",
+        "sign",
+        "pad_left",
+        "pad_right",
+        "min_digits"
+      ],
+      "signature": "(x, precision=None, unique=True, fractional=True, trim='k', sign=False, pad_left=None, pad_right=None, min_digits=None)"
+    },
+    "format_float_scientific": {
+      "type": "function",
+      "params": [
+        "x",
+        "precision",
+        "unique",
+        "trim",
+        "sign",
+        "pad_left",
+        "exp_digits",
+        "min_digits"
+      ],
+      "signature": "(x, precision=None, unique=True, trim='k', sign=False, pad_left=None, exp_digits=None, min_digits=None)"
+    },
+    "format_parser": {
+      "type": "class",
+      "params": null,
+      "signature": null
+    },
+    "frexp": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "from_dlpack": {
+      "type": "function",
+      "params": null,
+      "signature": null
+    },
+    "frombuffer": {
+      "type": "function",
+      "params": null,
+      "signature": null
+    },
+    "fromfile": {
+      "type": "function",
+      "params": null,
+      "signature": null
+    },
+    "fromfunction": {
+      "type": "function",
+      "params": [
+        "function",
+        "shape",
+        "dtype",
+        "like",
+        "kwargs"
+      ],
+      "signature": "(function, shape, *, dtype=<class 'float'>, like=None, **kwargs)"
+    },
+    "fromiter": {
+      "type": "function",
+      "params": null,
+      "signature": null
+    },
+    "frompyfunc": {
+      "type": "function",
+      "params": null,
+      "signature": null
+    },
+    "fromregex": {
+      "type": "function",
+      "params": [
+        "file",
+        "regexp",
+        "dtype",
+        "encoding"
+      ],
+      "signature": "(file, regexp, dtype, encoding=None)"
+    },
+    "fromstring": {
+      "type": "function",
+      "params": null,
+      "signature": null
+    },
+    "full": {
+      "type": "function",
+      "params": [
+        "shape",
+        "fill_value",
+        "dtype",
+        "order",
+        "like"
+      ],
+      "signature": "(shape, fill_value, dtype=None, order='C', *, like=None)"
+    },
+    "full_like": {
+      "type": "function",
+      "params": [
+        "a",
+        "fill_value",
+        "dtype",
+        "order",
+        "subok",
+        "shape"
+      ],
+      "signature": "(a, fill_value, dtype=None, order='K', subok=True, shape=None)"
+    },
+    "gcd": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "generic": {
+      "type": "class",
+      "params": null,
+      "signature": null
+    },
+    "genfromtxt": {
+      "type": "function",
+      "params": [
+        "fname",
+        "dtype",
+        "comments",
+        "delimiter",
+        "skip_header",
+        "skip_footer",
+        "converters",
+        "missing_values",
+        "filling_values",
+        "usecols",
+        "names",
+        "excludelist",
+        "deletechars",
+        "replace_space",
+        "autostrip",
+        "case_sensitive",
+        "defaultfmt",
+        "unpack",
+        "usemask",
+        "loose",
+        "invalid_raise",
+        "max_rows",
+        "encoding",
+        "ndmin",
+        "like"
+      ],
+      "signature": "(fname, dtype=<class 'float'>, comments='#', delimiter=None, skip_header=0, skip_footer=0, converters=None, missing_values=None, filling_values=None, usecols=None, names=None, excludelist=None, deletechars=\" !#$%&'()*+,-./:;<=>?@[\\\\]^{|}~\", replace_space='_', autostrip=False, case_sensitive=True, defaultfmt='f%i', unpack=None, usemask=False, loose=True, invalid_raise=True, max_rows=None, encoding='bytes', *, ndmin=0, like=None)"
+    },
+    "geomspace": {
+      "type": "function",
+      "params": [
+        "start",
+        "stop",
+        "num",
+        "endpoint",
+        "dtype",
+        "axis"
+      ],
+      "signature": "(start, stop, num=50, endpoint=True, dtype=None, axis=0)"
+    },
+    "get_array_wrap": {
+      "type": "function",
+      "params": [
+        "args"
+      ],
+      "signature": "(*args)"
+    },
+    "get_include": {
+      "type": "function",
+      "params": [],
+      "signature": "()"
+    },
+    "get_printoptions": {
+      "type": "function",
+      "params": [],
+      "signature": "()"
+    },
+    "getbufsize": {
+      "type": "function",
+      "params": [],
+      "signature": "()"
+    },
+    "geterr": {
+      "type": "function",
+      "params": [],
+      "signature": "()"
+    },
+    "geterrcall": {
+      "type": "function",
+      "params": [],
+      "signature": "()"
+    },
+    "geterrobj": {
+      "type": "function",
+      "params": null,
+      "signature": null
+    },
+    "gradient": {
+      "type": "function",
+      "params": [
+        "f",
+        "varargs",
+        "axis",
+        "edge_order"
+      ],
+      "signature": "(f, *varargs, axis=None, edge_order=1)"
+    },
+    "greater": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "greater_equal": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "half": {
+      "type": "class",
+      "params": null,
+      "signature": null
+    },
+    "hamming": {
+      "type": "function",
+      "params": [
+        "M"
+      ],
+      "signature": "(M)"
+    },
+    "hanning": {
+      "type": "function",
+      "params": [
+        "M"
+      ],
+      "signature": "(M)"
+    },
+    "heaviside": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "histogram": {
+      "type": "function",
+      "params": [
+        "a",
+        "bins",
+        "range",
+        "density",
+        "weights"
+      ],
+      "signature": "(a, bins=10, range=None, density=None, weights=None)"
+    },
+    "histogram2d": {
+      "type": "function",
+      "params": [
+        "x",
+        "y",
+        "bins",
+        "range",
+        "density",
+        "weights"
+      ],
+      "signature": "(x, y, bins=10, range=None, density=None, weights=None)"
+    },
+    "histogram_bin_edges": {
+      "type": "function",
+      "params": [
+        "a",
+        "bins",
+        "range",
+        "weights"
+      ],
+      "signature": "(a, bins=10, range=None, weights=None)"
+    },
+    "histogramdd": {
+      "type": "function",
+      "params": [
+        "sample",
+        "bins",
+        "range",
+        "density",
+        "weights"
+      ],
+      "signature": "(sample, bins=10, range=None, density=None, weights=None)"
+    },
+    "hsplit": {
+      "type": "function",
+      "params": [
+        "ary",
+        "indices_or_sections"
+      ],
+      "signature": "(ary, indices_or_sections)"
+    },
+    "hstack": {
+      "type": "function",
+      "params": [
+        "tup",
+        "dtype",
+        "casting"
+      ],
+      "signature": "(tup, *, dtype=None, casting='same_kind')"
+    },
+    "hypot": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "i0": {
+      "type": "function",
+      "params": [
+        "x"
+      ],
+      "signature": "(x)"
+    },
+    "identity": {
+      "type": "function",
+      "params": [
+        "n",
+        "dtype",
+        "like"
+      ],
+      "signature": "(n, dtype=None, *, like=None)"
+    },
+    "iinfo": {
+      "type": "class",
+      "params": null,
+      "signature": null
+    },
+    "imag": {
+      "type": "function",
+      "params": [
+        "val"
+      ],
+      "signature": "(val)"
+    },
+    "in1d": {
+      "type": "function",
+      "params": [
+        "ar1",
+        "ar2",
+        "assume_unique",
+        "invert",
+        "kind"
+      ],
+      "signature": "(ar1, ar2, assume_unique=False, invert=False, *, kind=None)"
+    },
+    "index_exp": {
+      "type": "constant",
+      "params": null,
+      "signature": null
+    },
+    "indices": {
+      "type": "function",
+      "params": [
+        "dimensions",
+        "dtype",
+        "sparse"
+      ],
+      "signature": "(dimensions, dtype=<class 'int'>, sparse=False)"
+    },
+    "inexact": {
+      "type": "class",
+      "params": null,
+      "signature": null
+    },
+    "inf": {
+      "type": "constant",
+      "params": null,
+      "signature": null
+    },
+    "info": {
+      "type": "function",
+      "params": [
+        "object",
+        "maxwidth",
+        "output",
+        "toplevel"
+      ],
+      "signature": "(object=None, maxwidth=76, output=None, toplevel='numpy')"
+    },
+    "infty": {
+      "type": "constant",
+      "params": null,
+      "signature": null
+    },
+    "inner": {
+      "type": "function",
+      "params": null,
+      "signature": null
+    },
+    "insert": {
+      "type": "function",
+      "params": [
+        "arr",
+        "obj",
+        "values",
+        "axis"
+      ],
+      "signature": "(arr, obj, values, axis=None)"
+    },
+    "int16": {
+      "type": "class",
+      "params": null,
+      "signature": null
+    },
+    "int32": {
+      "type": "class",
+      "params": null,
+      "signature": null
+    },
+    "int64": {
+      "type": "class",
+      "params": null,
+      "signature": null
+    },
+    "int8": {
+      "type": "class",
+      "params": null,
+      "signature": null
+    },
+    "int_": {
+      "type": "class",
+      "params": null,
+      "signature": null
+    },
+    "intc": {
+      "type": "class",
+      "params": null,
+      "signature": null
+    },
+    "integer": {
+      "type": "class",
+      "params": null,
+      "signature": null
+    },
+    "interp": {
+      "type": "function",
+      "params": [
+        "x",
+        "xp",
+        "fp",
+        "left",
+        "right",
+        "period"
+      ],
+      "signature": "(x, xp, fp, left=None, right=None, period=None)"
+    },
+    "intersect1d": {
+      "type": "function",
+      "params": [
+        "ar1",
+        "ar2",
+        "assume_unique",
+        "return_indices"
+      ],
+      "signature": "(ar1, ar2, assume_unique=False, return_indices=False)"
+    },
+    "intp": {
+      "type": "class",
+      "params": null,
+      "signature": null
+    },
+    "invert": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "is_busday": {
+      "type": "function",
+      "params": null,
+      "signature": null
+    },
+    "isclose": {
+      "type": "function",
+      "params": [
+        "a",
+        "b",
+        "rtol",
+        "atol",
+        "equal_nan"
+      ],
+      "signature": "(a, b, rtol=1e-05, atol=1e-08, equal_nan=False)"
+    },
+    "iscomplex": {
+      "type": "function",
+      "params": [
+        "x"
+      ],
+      "signature": "(x)"
+    },
+    "iscomplexobj": {
+      "type": "function",
+      "params": [
+        "x"
+      ],
+      "signature": "(x)"
+    },
+    "isfinite": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "isfortran": {
+      "type": "function",
+      "params": [
+        "a"
+      ],
+      "signature": "(a)"
+    },
+    "isin": {
+      "type": "function",
+      "params": [
+        "element",
+        "test_elements",
+        "assume_unique",
+        "invert",
+        "kind"
+      ],
+      "signature": "(element, test_elements, assume_unique=False, invert=False, *, kind=None)"
+    },
+    "isinf": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "isnan": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "isnat": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "isneginf": {
+      "type": "function",
+      "params": [
+        "x",
+        "out"
+      ],
+      "signature": "(x, out=None)"
+    },
+    "isposinf": {
+      "type": "function",
+      "params": [
+        "x",
+        "out"
+      ],
+      "signature": "(x, out=None)"
+    },
+    "isreal": {
+      "type": "function",
+      "params": [
+        "x"
+      ],
+      "signature": "(x)"
+    },
+    "isrealobj": {
+      "type": "function",
+      "params": [
+        "x"
+      ],
+      "signature": "(x)"
+    },
+    "isscalar": {
+      "type": "function",
+      "params": [
+        "element"
+      ],
+      "signature": "(element)"
+    },
+    "issctype": {
+      "type": "function",
+      "params": [
+        "rep"
+      ],
+      "signature": "(rep)"
+    },
+    "issubclass_": {
+      "type": "function",
+      "params": [
+        "arg1",
+        "arg2"
+      ],
+      "signature": "(arg1, arg2)"
+    },
+    "issubdtype": {
+      "type": "function",
+      "params": [
+        "arg1",
+        "arg2"
+      ],
+      "signature": "(arg1, arg2)"
+    },
+    "issubsctype": {
+      "type": "function",
+      "params": [
+        "arg1",
+        "arg2"
+      ],
+      "signature": "(arg1, arg2)"
+    },
+    "iterable": {
+      "type": "function",
+      "params": [
+        "y"
+      ],
+      "signature": "(y)"
+    },
+    "ix_": {
+      "type": "function",
+      "params": [
+        "args"
+      ],
+      "signature": "(*args)"
+    },
+    "kaiser": {
+      "type": "function",
+      "params": [
+        "M",
+        "beta"
+      ],
+      "signature": "(M, beta)"
+    },
+    "kron": {
+      "type": "function",
+      "params": [
+        "a",
+        "b"
+      ],
+      "signature": "(a, b)"
+    },
+    "lcm": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "ldexp": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "left_shift": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "less": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "less_equal": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "lexsort": {
+      "type": "function",
+      "params": null,
+      "signature": null
+    },
+    "lib": {
+      "type": "module",
+      "params": null,
+      "signature": null
+    },
+    "linalg": {
+      "type": "module",
+      "params": null,
+      "signature": null
+    },
+    "linspace": {
+      "type": "function",
+      "params": [
+        "start",
+        "stop",
+        "num",
+        "endpoint",
+        "retstep",
+        "dtype",
+        "axis"
+      ],
+      "signature": "(start, stop, num=50, endpoint=True, retstep=False, dtype=None, axis=0)"
+    },
+    "little_endian": {
+      "type": "constant",
+      "params": null,
+      "signature": null
+    },
+    "load": {
+      "type": "function",
+      "params": [
+        "file",
+        "mmap_mode",
+        "allow_pickle",
+        "fix_imports",
+        "encoding",
+        "max_header_size"
+      ],
+      "signature": "(file, mmap_mode=None, allow_pickle=False, fix_imports=True, encoding='ASCII', *, max_header_size=10000)"
+    },
+    "loadtxt": {
+      "type": "function",
+      "params": [
+        "fname",
+        "dtype",
+        "comments",
+        "delimiter",
+        "converters",
+        "skiprows",
+        "usecols",
+        "unpack",
+        "ndmin",
+        "encoding",
+        "max_rows",
+        "quotechar",
+        "like"
+      ],
+      "signature": "(fname, dtype=<class 'float'>, comments='#', delimiter=None, converters=None, skiprows=0, usecols=None, unpack=False, ndmin=0, encoding='bytes', max_rows=None, *, quotechar=None, like=None)"
+    },
+    "log": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "log10": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "log1p": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "log2": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "logaddexp": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "logaddexp2": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "logical_and": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "logical_not": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "logical_or": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "logical_xor": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "logspace": {
+      "type": "function",
+      "params": [
+        "start",
+        "stop",
+        "num",
+        "endpoint",
+        "base",
+        "dtype",
+        "axis"
+      ],
+      "signature": "(start, stop, num=50, endpoint=True, base=10.0, dtype=None, axis=0)"
+    },
+    "longcomplex": {
+      "type": "class",
+      "params": null,
+      "signature": null
+    },
+    "longdouble": {
+      "type": "class",
+      "params": null,
+      "signature": null
+    },
+    "longfloat": {
+      "type": "class",
+      "params": null,
+      "signature": null
+    },
+    "longlong": {
+      "type": "class",
+      "params": null,
+      "signature": null
+    },
+    "lookfor": {
+      "type": "function",
+      "params": [
+        "what",
+        "module",
+        "import_modules",
+        "regenerate",
+        "output"
+      ],
+      "signature": "(what, module=None, import_modules=True, regenerate=False, output=None)"
+    },
+    "ma": {
+      "type": "module",
+      "params": null,
+      "signature": null
+    },
+    "mask_indices": {
+      "type": "function",
+      "params": [
+        "n",
+        "mask_func",
+        "k"
+      ],
+      "signature": "(n, mask_func, k=0)"
+    },
+    "mat": {
+      "type": "function",
+      "params": [
+        "data",
+        "dtype"
+      ],
+      "signature": "(data, dtype=None)"
+    },
+    "matmul": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "matrix": {
+      "type": "class",
+      "params": null,
+      "signature": null
+    },
+    "max": {
+      "type": "function",
+      "params": [
+        "a",
+        "axis",
+        "out",
+        "keepdims",
+        "initial",
+        "where"
+      ],
+      "signature": "(a, axis=None, out=None, keepdims=<no value>, initial=<no value>, where=<no value>)"
+    },
+    "maximum": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "maximum_sctype": {
+      "type": "function",
+      "params": [
+        "t"
+      ],
+      "signature": "(t)"
+    },
+    "may_share_memory": {
+      "type": "function",
+      "params": null,
+      "signature": null
+    },
+    "mean": {
+      "type": "function",
+      "params": [
+        "a",
+        "axis",
+        "dtype",
+        "out",
+        "keepdims",
+        "where"
+      ],
+      "signature": "(a, axis=None, dtype=None, out=None, keepdims=<no value>, *, where=<no value>)"
+    },
+    "median": {
+      "type": "function",
+      "params": [
+        "a",
+        "axis",
+        "out",
+        "overwrite_input",
+        "keepdims"
+      ],
+      "signature": "(a, axis=None, out=None, overwrite_input=False, keepdims=False)"
+    },
+    "memmap": {
+      "type": "class",
+      "params": null,
+      "signature": null
+    },
+    "meshgrid": {
+      "type": "function",
+      "params": [
+        "xi",
+        "copy",
+        "sparse",
+        "indexing"
+      ],
+      "signature": "(*xi, copy=True, sparse=False, indexing='xy')"
+    },
+    "mgrid": {
+      "type": "constant",
+      "params": null,
+      "signature": null
+    },
+    "min": {
+      "type": "function",
+      "params": [
+        "a",
+        "axis",
+        "out",
+        "keepdims",
+        "initial",
+        "where"
+      ],
+      "signature": "(a, axis=None, out=None, keepdims=<no value>, initial=<no value>, where=<no value>)"
+    },
+    "min_scalar_type": {
+      "type": "function",
+      "params": null,
+      "signature": null
+    },
+    "minimum": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "mintypecode": {
+      "type": "function",
+      "params": [
+        "typechars",
+        "typeset",
+        "default"
+      ],
+      "signature": "(typechars, typeset='GDFgdf', default='d')"
+    },
+    "mod": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "modf": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "moveaxis": {
+      "type": "function",
+      "params": [
+        "a",
+        "source",
+        "destination"
+      ],
+      "signature": "(a, source, destination)"
+    },
+    "msort": {
+      "type": "function",
+      "params": [
+        "a"
+      ],
+      "signature": "(a)"
+    },
+    "multiply": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "nan": {
+      "type": "constant",
+      "params": null,
+      "signature": null
+    },
+    "nan_to_num": {
+      "type": "function",
+      "params": [
+        "x",
+        "copy",
+        "nan",
+        "posinf",
+        "neginf"
+      ],
+      "signature": "(x, copy=True, nan=0.0, posinf=None, neginf=None)"
+    },
+    "nanargmax": {
+      "type": "function",
+      "params": [
+        "a",
+        "axis",
+        "out",
+        "keepdims"
+      ],
+      "signature": "(a, axis=None, out=None, *, keepdims=<no value>)"
+    },
+    "nanargmin": {
+      "type": "function",
+      "params": [
+        "a",
+        "axis",
+        "out",
+        "keepdims"
+      ],
+      "signature": "(a, axis=None, out=None, *, keepdims=<no value>)"
+    },
+    "nancumprod": {
+      "type": "function",
+      "params": [
+        "a",
+        "axis",
+        "dtype",
+        "out"
+      ],
+      "signature": "(a, axis=None, dtype=None, out=None)"
+    },
+    "nancumsum": {
+      "type": "function",
+      "params": [
+        "a",
+        "axis",
+        "dtype",
+        "out"
+      ],
+      "signature": "(a, axis=None, dtype=None, out=None)"
+    },
+    "nanmax": {
+      "type": "function",
+      "params": [
+        "a",
+        "axis",
+        "out",
+        "keepdims",
+        "initial",
+        "where"
+      ],
+      "signature": "(a, axis=None, out=None, keepdims=<no value>, initial=<no value>, where=<no value>)"
+    },
+    "nanmean": {
+      "type": "function",
+      "params": [
+        "a",
+        "axis",
+        "dtype",
+        "out",
+        "keepdims",
+        "where"
+      ],
+      "signature": "(a, axis=None, dtype=None, out=None, keepdims=<no value>, *, where=<no value>)"
+    },
+    "nanmedian": {
+      "type": "function",
+      "params": [
+        "a",
+        "axis",
+        "out",
+        "overwrite_input",
+        "keepdims"
+      ],
+      "signature": "(a, axis=None, out=None, overwrite_input=False, keepdims=<no value>)"
+    },
+    "nanmin": {
+      "type": "function",
+      "params": [
+        "a",
+        "axis",
+        "out",
+        "keepdims",
+        "initial",
+        "where"
+      ],
+      "signature": "(a, axis=None, out=None, keepdims=<no value>, initial=<no value>, where=<no value>)"
+    },
+    "nanpercentile": {
+      "type": "function",
+      "params": [
+        "a",
+        "q",
+        "axis",
+        "out",
+        "overwrite_input",
+        "method",
+        "keepdims",
+        "interpolation"
+      ],
+      "signature": "(a, q, axis=None, out=None, overwrite_input=False, method='linear', keepdims=<no value>, *, interpolation=None)"
+    },
+    "nanprod": {
+      "type": "function",
+      "params": [
+        "a",
+        "axis",
+        "dtype",
+        "out",
+        "keepdims",
+        "initial",
+        "where"
+      ],
+      "signature": "(a, axis=None, dtype=None, out=None, keepdims=<no value>, initial=<no value>, where=<no value>)"
+    },
+    "nanquantile": {
+      "type": "function",
+      "params": [
+        "a",
+        "q",
+        "axis",
+        "out",
+        "overwrite_input",
+        "method",
+        "keepdims",
+        "interpolation"
+      ],
+      "signature": "(a, q, axis=None, out=None, overwrite_input=False, method='linear', keepdims=<no value>, *, interpolation=None)"
+    },
+    "nanstd": {
+      "type": "function",
+      "params": [
+        "a",
+        "axis",
+        "dtype",
+        "out",
+        "ddof",
+        "keepdims",
+        "where"
+      ],
+      "signature": "(a, axis=None, dtype=None, out=None, ddof=0, keepdims=<no value>, *, where=<no value>)"
+    },
+    "nansum": {
+      "type": "function",
+      "params": [
+        "a",
+        "axis",
+        "dtype",
+        "out",
+        "keepdims",
+        "initial",
+        "where"
+      ],
+      "signature": "(a, axis=None, dtype=None, out=None, keepdims=<no value>, initial=<no value>, where=<no value>)"
+    },
+    "nanvar": {
+      "type": "function",
+      "params": [
+        "a",
+        "axis",
+        "dtype",
+        "out",
+        "ddof",
+        "keepdims",
+        "where"
+      ],
+      "signature": "(a, axis=None, dtype=None, out=None, ddof=0, keepdims=<no value>, *, where=<no value>)"
+    },
+    "nbytes": {
+      "type": "constant",
+      "params": null,
+      "signature": null
+    },
+    "ndarray": {
+      "type": "class",
+      "params": null,
+      "signature": null
+    },
+    "ndenumerate": {
+      "type": "class",
+      "params": null,
+      "signature": null
+    },
+    "ndim": {
+      "type": "function",
+      "params": [
+        "a"
+      ],
+      "signature": "(a)"
+    },
+    "ndindex": {
+      "type": "class",
+      "params": null,
+      "signature": null
+    },
+    "nditer": {
+      "type": "class",
+      "params": null,
+      "signature": null
+    },
+    "negative": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "nested_iters": {
+      "type": "function",
+      "params": null,
+      "signature": null
+    },
+    "newaxis": {
+      "type": "constant",
+      "params": null,
+      "signature": null
+    },
+    "nextafter": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "nonzero": {
+      "type": "function",
+      "params": [
+        "a"
+      ],
+      "signature": "(a)"
+    },
+    "not_equal": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "numarray": {
+      "type": "constant",
+      "params": null,
+      "signature": null
+    },
+    "number": {
+      "type": "class",
+      "params": null,
+      "signature": null
+    },
+    "obj2sctype": {
+      "type": "function",
+      "params": [
+        "rep",
+        "default"
+      ],
+      "signature": "(rep, default=None)"
+    },
+    "object_": {
+      "type": "class",
+      "params": null,
+      "signature": null
+    },
+    "ogrid": {
+      "type": "constant",
+      "params": null,
+      "signature": null
+    },
+    "oldnumeric": {
+      "type": "constant",
+      "params": null,
+      "signature": null
+    },
+    "ones": {
+      "type": "function",
+      "params": [
+        "shape",
+        "dtype",
+        "order",
+        "like"
+      ],
+      "signature": "(shape, dtype=None, order='C', *, like=None)"
+    },
+    "ones_like": {
+      "type": "function",
+      "params": [
+        "a",
+        "dtype",
+        "order",
+        "subok",
+        "shape"
+      ],
+      "signature": "(a, dtype=None, order='K', subok=True, shape=None)"
+    },
+    "outer": {
+      "type": "function",
+      "params": [
+        "a",
+        "b",
+        "out"
+      ],
+      "signature": "(a, b, out=None)"
+    },
+    "packbits": {
+      "type": "function",
+      "params": null,
+      "signature": null
+    },
+    "pad": {
+      "type": "function",
+      "params": [
+        "array",
+        "pad_width",
+        "mode",
+        "kwargs"
+      ],
+      "signature": "(array, pad_width, mode='constant', **kwargs)"
+    },
+    "partition": {
+      "type": "function",
+      "params": [
+        "a",
+        "kth",
+        "axis",
+        "kind",
+        "order"
+      ],
+      "signature": "(a, kth, axis=-1, kind='introselect', order=None)"
+    },
+    "percentile": {
+      "type": "function",
+      "params": [
+        "a",
+        "q",
+        "axis",
+        "out",
+        "overwrite_input",
+        "method",
+        "keepdims",
+        "interpolation"
+      ],
+      "signature": "(a, q, axis=None, out=None, overwrite_input=False, method='linear', keepdims=False, *, interpolation=None)"
+    },
+    "pi": {
+      "type": "constant",
+      "params": null,
+      "signature": null
+    },
+    "piecewise": {
+      "type": "function",
+      "params": [
+        "x",
+        "condlist",
+        "funclist",
+        "args",
+        "kw"
+      ],
+      "signature": "(x, condlist, funclist, *args, **kw)"
+    },
+    "place": {
+      "type": "function",
+      "params": [
+        "arr",
+        "mask",
+        "vals"
+      ],
+      "signature": "(arr, mask, vals)"
+    },
+    "poly": {
+      "type": "function",
+      "params": [
+        "seq_of_zeros"
+      ],
+      "signature": "(seq_of_zeros)"
+    },
+    "poly1d": {
+      "type": "class",
+      "params": null,
+      "signature": null
+    },
+    "polyadd": {
+      "type": "function",
+      "params": [
+        "a1",
+        "a2"
+      ],
+      "signature": "(a1, a2)"
+    },
+    "polyder": {
+      "type": "function",
+      "params": [
+        "p",
+        "m"
+      ],
+      "signature": "(p, m=1)"
+    },
+    "polydiv": {
+      "type": "function",
+      "params": [
+        "u",
+        "v"
+      ],
+      "signature": "(u, v)"
+    },
+    "polyfit": {
+      "type": "function",
+      "params": [
+        "x",
+        "y",
+        "deg",
+        "rcond",
+        "full",
+        "w",
+        "cov"
+      ],
+      "signature": "(x, y, deg, rcond=None, full=False, w=None, cov=False)"
+    },
+    "polyint": {
+      "type": "function",
+      "params": [
+        "p",
+        "m",
+        "k"
+      ],
+      "signature": "(p, m=1, k=None)"
+    },
+    "polymul": {
+      "type": "function",
+      "params": [
+        "a1",
+        "a2"
+      ],
+      "signature": "(a1, a2)"
+    },
+    "polynomial": {
+      "type": "module",
+      "params": null,
+      "signature": null
+    },
+    "polysub": {
+      "type": "function",
+      "params": [
+        "a1",
+        "a2"
+      ],
+      "signature": "(a1, a2)"
+    },
+    "polyval": {
+      "type": "function",
+      "params": [
+        "p",
+        "x"
+      ],
+      "signature": "(p, x)"
+    },
+    "positive": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "power": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "printoptions": {
+      "type": "function",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "prod": {
+      "type": "function",
+      "params": [
+        "a",
+        "axis",
+        "dtype",
+        "out",
+        "keepdims",
+        "initial",
+        "where"
+      ],
+      "signature": "(a, axis=None, dtype=None, out=None, keepdims=<no value>, initial=<no value>, where=<no value>)"
+    },
+    "product": {
+      "type": "function",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "promote_types": {
+      "type": "function",
+      "params": null,
+      "signature": null
+    },
+    "ptp": {
+      "type": "function",
+      "params": [
+        "a",
+        "axis",
+        "out",
+        "keepdims"
+      ],
+      "signature": "(a, axis=None, out=None, keepdims=<no value>)"
+    },
+    "put": {
+      "type": "function",
+      "params": [
+        "a",
+        "ind",
+        "v",
+        "mode"
+      ],
+      "signature": "(a, ind, v, mode='raise')"
+    },
+    "put_along_axis": {
+      "type": "function",
+      "params": [
+        "arr",
+        "indices",
+        "values",
+        "axis"
+      ],
+      "signature": "(arr, indices, values, axis)"
+    },
+    "putmask": {
+      "type": "function",
+      "params": null,
+      "signature": null
+    },
+    "quantile": {
+      "type": "function",
+      "params": [
+        "a",
+        "q",
+        "axis",
+        "out",
+        "overwrite_input",
+        "method",
+        "keepdims",
+        "interpolation"
+      ],
+      "signature": "(a, q, axis=None, out=None, overwrite_input=False, method='linear', keepdims=False, *, interpolation=None)"
+    },
+    "r_": {
+      "type": "constant",
+      "params": null,
+      "signature": null
+    },
+    "rad2deg": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "radians": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "random": {
+      "type": "module",
+      "params": null,
+      "signature": null
+    },
+    "ravel": {
+      "type": "function",
+      "params": [
+        "a",
+        "order"
+      ],
+      "signature": "(a, order='C')"
+    },
+    "ravel_multi_index": {
+      "type": "function",
+      "params": null,
+      "signature": null
+    },
+    "real": {
+      "type": "function",
+      "params": [
+        "val"
+      ],
+      "signature": "(val)"
+    },
+    "real_if_close": {
+      "type": "function",
+      "params": [
+        "a",
+        "tol"
+      ],
+      "signature": "(a, tol=100)"
+    },
+    "rec": {
+      "type": "module",
+      "params": null,
+      "signature": null
+    },
+    "recarray": {
+      "type": "class",
+      "params": null,
+      "signature": null
+    },
+    "recfromcsv": {
+      "type": "function",
+      "params": [
+        "fname",
+        "kwargs"
+      ],
+      "signature": "(fname, **kwargs)"
+    },
+    "recfromtxt": {
+      "type": "function",
+      "params": [
+        "fname",
+        "kwargs"
+      ],
+      "signature": "(fname, **kwargs)"
+    },
+    "reciprocal": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "record": {
+      "type": "class",
+      "params": null,
+      "signature": null
+    },
+    "remainder": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "repeat": {
+      "type": "function",
+      "params": [
+        "a",
+        "repeats",
+        "axis"
+      ],
+      "signature": "(a, repeats, axis=None)"
+    },
+    "require": {
+      "type": "function",
+      "params": [
+        "a",
+        "dtype",
+        "requirements",
+        "like"
+      ],
+      "signature": "(a, dtype=None, requirements=None, *, like=None)"
+    },
+    "reshape": {
+      "type": "function",
+      "params": [
+        "a",
+        "newshape",
+        "order"
+      ],
+      "signature": "(a, newshape, order='C')"
+    },
+    "resize": {
+      "type": "function",
+      "params": [
+        "a",
+        "new_shape"
+      ],
+      "signature": "(a, new_shape)"
+    },
+    "result_type": {
+      "type": "function",
+      "params": null,
+      "signature": null
+    },
+    "right_shift": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "rint": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "roll": {
+      "type": "function",
+      "params": [
+        "a",
+        "shift",
+        "axis"
+      ],
+      "signature": "(a, shift, axis=None)"
+    },
+    "rollaxis": {
+      "type": "function",
+      "params": [
+        "a",
+        "axis",
+        "start"
+      ],
+      "signature": "(a, axis, start=0)"
+    },
+    "roots": {
+      "type": "function",
+      "params": [
+        "p"
+      ],
+      "signature": "(p)"
+    },
+    "rot90": {
+      "type": "function",
+      "params": [
+        "m",
+        "k",
+        "axes"
+      ],
+      "signature": "(m, k=1, axes=(0, 1))"
+    },
+    "round": {
+      "type": "function",
+      "params": [
+        "a",
+        "decimals",
+        "out"
+      ],
+      "signature": "(a, decimals=0, out=None)"
+    },
+    "round_": {
+      "type": "function",
+      "params": [
+        "a",
+        "decimals",
+        "out"
+      ],
+      "signature": "(a, decimals=0, out=None)"
+    },
+    "row_stack": {
+      "type": "function",
+      "params": [
+        "tup",
+        "dtype",
+        "casting"
+      ],
+      "signature": "(tup, *, dtype=None, casting='same_kind')"
+    },
+    "s_": {
+      "type": "constant",
+      "params": null,
+      "signature": null
+    },
+    "safe_eval": {
+      "type": "function",
+      "params": [
+        "source"
+      ],
+      "signature": "(source)"
+    },
+    "save": {
+      "type": "function",
+      "params": [
+        "file",
+        "arr",
+        "allow_pickle",
+        "fix_imports"
+      ],
+      "signature": "(file, arr, allow_pickle=True, fix_imports=True)"
+    },
+    "savetxt": {
+      "type": "function",
+      "params": [
+        "fname",
+        "X",
+        "fmt",
+        "delimiter",
+        "newline",
+        "header",
+        "footer",
+        "comments",
+        "encoding"
+      ],
+      "signature": "(fname, X, fmt='%.18e', delimiter=' ', newline='\\n', header='', footer='', comments='# ', encoding=None)"
+    },
+    "savez": {
+      "type": "function",
+      "params": [
+        "file",
+        "args",
+        "kwds"
+      ],
+      "signature": "(file, *args, **kwds)"
+    },
+    "savez_compressed": {
+      "type": "function",
+      "params": [
+        "file",
+        "args",
+        "kwds"
+      ],
+      "signature": "(file, *args, **kwds)"
+    },
+    "sctype2char": {
+      "type": "function",
+      "params": [
+        "sctype"
+      ],
+      "signature": "(sctype)"
+    },
+    "sctypeDict": {
+      "type": "constant",
+      "params": null,
+      "signature": null
+    },
+    "sctypes": {
+      "type": "constant",
+      "params": null,
+      "signature": null
+    },
+    "searchsorted": {
+      "type": "function",
+      "params": [
+        "a",
+        "v",
+        "side",
+        "sorter"
+      ],
+      "signature": "(a, v, side='left', sorter=None)"
+    },
+    "select": {
+      "type": "function",
+      "params": [
+        "condlist",
+        "choicelist",
+        "default"
+      ],
+      "signature": "(condlist, choicelist, default=0)"
+    },
+    "set_numeric_ops": {
+      "type": "function",
+      "params": null,
+      "signature": null
+    },
+    "set_printoptions": {
+      "type": "function",
+      "params": [
+        "precision",
+        "threshold",
+        "edgeitems",
+        "linewidth",
+        "suppress",
+        "nanstr",
+        "infstr",
+        "formatter",
+        "sign",
+        "floatmode",
+        "legacy"
+      ],
+      "signature": "(precision=None, threshold=None, edgeitems=None, linewidth=None, suppress=None, nanstr=None, infstr=None, formatter=None, sign=None, floatmode=None, *, legacy=None)"
+    },
+    "set_string_function": {
+      "type": "function",
+      "params": [
+        "f",
+        "repr"
+      ],
+      "signature": "(f, repr=True)"
+    },
+    "setbufsize": {
+      "type": "function",
+      "params": [
+        "size"
+      ],
+      "signature": "(size)"
+    },
+    "setdiff1d": {
+      "type": "function",
+      "params": [
+        "ar1",
+        "ar2",
+        "assume_unique"
+      ],
+      "signature": "(ar1, ar2, assume_unique=False)"
+    },
+    "seterr": {
+      "type": "function",
+      "params": [
+        "all",
+        "divide",
+        "over",
+        "under",
+        "invalid"
+      ],
+      "signature": "(all=None, divide=None, over=None, under=None, invalid=None)"
+    },
+    "seterrcall": {
+      "type": "function",
+      "params": [
+        "func"
+      ],
+      "signature": "(func)"
+    },
+    "seterrobj": {
+      "type": "function",
+      "params": null,
+      "signature": null
+    },
+    "setxor1d": {
+      "type": "function",
+      "params": [
+        "ar1",
+        "ar2",
+        "assume_unique"
+      ],
+      "signature": "(ar1, ar2, assume_unique=False)"
+    },
+    "shape": {
+      "type": "function",
+      "params": [
+        "a"
+      ],
+      "signature": "(a)"
+    },
+    "shares_memory": {
+      "type": "function",
+      "params": null,
+      "signature": null
+    },
+    "short": {
+      "type": "class",
+      "params": null,
+      "signature": null
+    },
+    "show_config": {
+      "type": "function",
+      "params": [
+        "mode"
+      ],
+      "signature": "(mode='stdout')"
+    },
+    "show_runtime": {
+      "type": "function",
+      "params": [],
+      "signature": "()"
+    },
+    "sign": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "signbit": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "signedinteger": {
+      "type": "class",
+      "params": null,
+      "signature": null
+    },
+    "sin": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "sinc": {
+      "type": "function",
+      "params": [
+        "x"
+      ],
+      "signature": "(x)"
+    },
+    "single": {
+      "type": "class",
+      "params": null,
+      "signature": null
+    },
+    "singlecomplex": {
+      "type": "class",
+      "params": null,
+      "signature": null
+    },
+    "sinh": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "size": {
+      "type": "function",
+      "params": [
+        "a",
+        "axis"
+      ],
+      "signature": "(a, axis=None)"
+    },
+    "sometrue": {
+      "type": "function",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "sort": {
+      "type": "function",
+      "params": [
+        "a",
+        "axis",
+        "kind",
+        "order"
+      ],
+      "signature": "(a, axis=-1, kind=None, order=None)"
+    },
+    "sort_complex": {
+      "type": "function",
+      "params": [
+        "a"
+      ],
+      "signature": "(a)"
+    },
+    "source": {
+      "type": "function",
+      "params": [
+        "object",
+        "output"
+      ],
+      "signature": "(object, output=<_io.TextIOWrapper name='<stdout>' mode='w' encoding='utf-8'>)"
+    },
+    "spacing": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "split": {
+      "type": "function",
+      "params": [
+        "ary",
+        "indices_or_sections",
+        "axis"
+      ],
+      "signature": "(ary, indices_or_sections, axis=0)"
+    },
+    "sqrt": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "square": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "squeeze": {
+      "type": "function",
+      "params": [
+        "a",
+        "axis"
+      ],
+      "signature": "(a, axis=None)"
+    },
+    "stack": {
+      "type": "function",
+      "params": [
+        "arrays",
+        "axis",
+        "out",
+        "dtype",
+        "casting"
+      ],
+      "signature": "(arrays, axis=0, out=None, *, dtype=None, casting='same_kind')"
+    },
+    "std": {
+      "type": "function",
+      "params": [
+        "a",
+        "axis",
+        "dtype",
+        "out",
+        "ddof",
+        "keepdims",
+        "where"
+      ],
+      "signature": "(a, axis=None, dtype=None, out=None, ddof=0, keepdims=<no value>, *, where=<no value>)"
+    },
+    "str_": {
+      "type": "class",
+      "params": null,
+      "signature": null
+    },
+    "string_": {
+      "type": "class",
+      "params": null,
+      "signature": null
+    },
+    "subtract": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "sum": {
+      "type": "function",
+      "params": [
+        "a",
+        "axis",
+        "dtype",
+        "out",
+        "keepdims",
+        "initial",
+        "where"
+      ],
+      "signature": "(a, axis=None, dtype=None, out=None, keepdims=<no value>, initial=<no value>, where=<no value>)"
+    },
+    "swapaxes": {
+      "type": "function",
+      "params": [
+        "a",
+        "axis1",
+        "axis2"
+      ],
+      "signature": "(a, axis1, axis2)"
+    },
+    "take": {
+      "type": "function",
+      "params": [
+        "a",
+        "indices",
+        "axis",
+        "out",
+        "mode"
+      ],
+      "signature": "(a, indices, axis=None, out=None, mode='raise')"
+    },
+    "take_along_axis": {
+      "type": "function",
+      "params": [
+        "arr",
+        "indices",
+        "axis"
+      ],
+      "signature": "(arr, indices, axis)"
+    },
+    "tan": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "tanh": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "tensordot": {
+      "type": "function",
+      "params": [
+        "a",
+        "b",
+        "axes"
+      ],
+      "signature": "(a, b, axes=2)"
+    },
+    "test": {
+      "type": "function",
+      "params": [
+        "label",
+        "verbose",
+        "extra_argv",
+        "doctests",
+        "coverage",
+        "durations",
+        "tests"
+      ],
+      "signature": "(label='fast', verbose=1, extra_argv=None, doctests=False, coverage=False, durations=-1, tests=None)"
+    },
+    "testing": {
+      "type": "module",
+      "params": null,
+      "signature": null
+    },
+    "tile": {
+      "type": "function",
+      "params": [
+        "A",
+        "reps"
+      ],
+      "signature": "(A, reps)"
+    },
+    "timedelta64": {
+      "type": "class",
+      "params": null,
+      "signature": null
+    },
+    "trace": {
+      "type": "function",
+      "params": [
+        "a",
+        "offset",
+        "axis1",
+        "axis2",
+        "dtype",
+        "out"
+      ],
+      "signature": "(a, offset=0, axis1=0, axis2=1, dtype=None, out=None)"
+    },
+    "tracemalloc_domain": {
+      "type": "constant",
+      "params": null,
+      "signature": null
+    },
+    "transpose": {
+      "type": "function",
+      "params": [
+        "a",
+        "axes"
+      ],
+      "signature": "(a, axes=None)"
+    },
+    "trapz": {
+      "type": "function",
+      "params": [
+        "y",
+        "x",
+        "dx",
+        "axis"
+      ],
+      "signature": "(y, x=None, dx=1.0, axis=-1)"
+    },
+    "tri": {
+      "type": "function",
+      "params": [
+        "N",
+        "M",
+        "k",
+        "dtype",
+        "like"
+      ],
+      "signature": "(N, M=None, k=0, dtype=<class 'float'>, *, like=None)"
+    },
+    "tril": {
+      "type": "function",
+      "params": [
+        "m",
+        "k"
+      ],
+      "signature": "(m, k=0)"
+    },
+    "tril_indices": {
+      "type": "function",
+      "params": [
+        "n",
+        "k",
+        "m"
+      ],
+      "signature": "(n, k=0, m=None)"
+    },
+    "tril_indices_from": {
+      "type": "function",
+      "params": [
+        "arr",
+        "k"
+      ],
+      "signature": "(arr, k=0)"
+    },
+    "trim_zeros": {
+      "type": "function",
+      "params": [
+        "filt",
+        "trim"
+      ],
+      "signature": "(filt, trim='fb')"
+    },
+    "triu": {
+      "type": "function",
+      "params": [
+        "m",
+        "k"
+      ],
+      "signature": "(m, k=0)"
+    },
+    "triu_indices": {
+      "type": "function",
+      "params": [
+        "n",
+        "k",
+        "m"
+      ],
+      "signature": "(n, k=0, m=None)"
+    },
+    "triu_indices_from": {
+      "type": "function",
+      "params": [
+        "arr",
+        "k"
+      ],
+      "signature": "(arr, k=0)"
+    },
+    "true_divide": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "trunc": {
+      "type": "ufunc",
+      "params": [
+        "args",
+        "kwargs"
+      ],
+      "signature": "(*args, **kwargs)"
+    },
+    "typecodes": {
+      "type": "constant",
+      "params": null,
+      "signature": null
+    },
+    "typename": {
+      "type": "function",
+      "params": [
+        "char"
+      ],
+      "signature": "(char)"
+    },
+    "ubyte": {
+      "type": "class",
+      "params": null,
+      "signature": null
+    },
+    "ufunc": {
+      "type": "class",
+      "params": null,
+      "signature": null
+    },
+    "uint": {
+      "type": "class",
+      "params": null,
+      "signature": null
+    },
+    "uint16": {
+      "type": "class",
+      "params": null,
+      "signature": null
+    },
+    "uint32": {
+      "type": "class",
+      "params": null,
+      "signature": null
+    },
+    "uint64": {
+      "type": "class",
+      "params": null,
+      "signature": null
+    },
+    "uint8": {
+      "type": "class",
+      "params": null,
+      "signature": null
+    },
+    "uintc": {
+      "type": "class",
+      "params": null,
+      "signature": null
+    },
+    "uintp": {
+      "type": "class",
+      "params": null,
+      "signature": null
+    },
+    "ulonglong": {
+      "type": "class",
+      "params": null,
+      "signature": null
+    },
+    "unicode_": {
+      "type": "class",
+      "params": null,
+      "signature": null
+    },
+    "union1d": {
+      "type": "function",
+      "params": [
+        "ar1",
+        "ar2"
+      ],
+      "signature": "(ar1, ar2)"
+    },
+    "unique": {
+      "type": "function",
+      "params": [
+        "ar",
+        "return_index",
+        "return_inverse",
+        "return_counts",
+        "axis",
+        "equal_nan"
+      ],
+      "signature": "(ar, return_index=False, return_inverse=False, return_counts=False, axis=None, *, equal_nan=True)"
+    },
+    "unpackbits": {
+      "type": "function",
+      "params": null,
+      "signature": null
+    },
+    "unravel_index": {
+      "type": "function",
+      "params": null,
+      "signature": null
+    },
+    "unsignedinteger": {
+      "type": "class",
+      "params": null,
+      "signature": null
+    },
+    "unwrap": {
+      "type": "function",
+      "params": [
+        "p",
+        "discont",
+        "axis",
+        "period"
+      ],
+      "signature": "(p, discont=None, axis=-1, *, period=6.283185307179586)"
+    },
+    "ushort": {
+      "type": "class",
+      "params": null,
+      "signature": null
+    },
+    "vander": {
+      "type": "function",
+      "params": [
+        "x",
+        "N",
+        "increasing"
+      ],
+      "signature": "(x, N=None, increasing=False)"
+    },
+    "var": {
+      "type": "function",
+      "params": [
+        "a",
+        "axis",
+        "dtype",
+        "out",
+        "ddof",
+        "keepdims",
+        "where"
+      ],
+      "signature": "(a, axis=None, dtype=None, out=None, ddof=0, keepdims=<no value>, *, where=<no value>)"
+    },
+    "vdot": {
+      "type": "function",
+      "params": null,
+      "signature": null
+    },
+    "vectorize": {
+      "type": "class",
+      "params": null,
+      "signature": null
+    },
+    "version": {
+      "type": "module",
+      "params": null,
+      "signature": null
+    },
+    "void": {
+      "type": "class",
+      "params": null,
+      "signature": null
+    },
+    "vsplit": {
+      "type": "function",
+      "params": [
+        "ary",
+        "indices_or_sections"
+      ],
+      "signature": "(ary, indices_or_sections)"
+    },
+    "vstack": {
+      "type": "function",
+      "params": [
+        "tup",
+        "dtype",
+        "casting"
+      ],
+      "signature": "(tup, *, dtype=None, casting='same_kind')"
+    },
+    "where": {
+      "type": "function",
+      "params": null,
+      "signature": null
+    },
+    "who": {
+      "type": "function",
+      "params": [
+        "vardict"
+      ],
+      "signature": "(vardict=None)"
+    },
+    "zeros": {
+      "type": "function",
+      "params": null,
+      "signature": null
+    },
+    "zeros_like": {
+      "type": "function",
+      "params": [
+        "a",
+        "dtype",
+        "order",
+        "subok",
+        "shape"
+      ],
+      "signature": "(a, dtype=None, order='K', subok=True, shape=None)"
+    }
+  },
+  "submodules": {
+    "linalg": {
+      "LinAlgError": {
+        "type": "class",
+        "params": null,
+        "signature": null
+      },
+      "cholesky": {
+        "type": "function",
+        "params": [
+          "a"
+        ],
+        "signature": "(a)"
+      },
+      "cond": {
+        "type": "function",
+        "params": [
+          "x",
+          "p"
+        ],
+        "signature": "(x, p=None)"
+      },
+      "det": {
+        "type": "function",
+        "params": [
+          "a"
+        ],
+        "signature": "(a)"
+      },
+      "eig": {
+        "type": "function",
+        "params": [
+          "a"
+        ],
+        "signature": "(a)"
+      },
+      "eigh": {
+        "type": "function",
+        "params": [
+          "a",
+          "UPLO"
+        ],
+        "signature": "(a, UPLO='L')"
+      },
+      "eigvals": {
+        "type": "function",
+        "params": [
+          "a"
+        ],
+        "signature": "(a)"
+      },
+      "eigvalsh": {
+        "type": "function",
+        "params": [
+          "a",
+          "UPLO"
+        ],
+        "signature": "(a, UPLO='L')"
+      },
+      "inv": {
+        "type": "function",
+        "params": [
+          "a"
+        ],
+        "signature": "(a)"
+      },
+      "linalg": {
+        "type": "module",
+        "params": null,
+        "signature": null
+      },
+      "lstsq": {
+        "type": "function",
+        "params": [
+          "a",
+          "b",
+          "rcond"
+        ],
+        "signature": "(a, b, rcond='warn')"
+      },
+      "matrix_power": {
+        "type": "function",
+        "params": [
+          "a",
+          "n"
+        ],
+        "signature": "(a, n)"
+      },
+      "matrix_rank": {
+        "type": "function",
+        "params": [
+          "A",
+          "tol",
+          "hermitian"
+        ],
+        "signature": "(A, tol=None, hermitian=False)"
+      },
+      "multi_dot": {
+        "type": "function",
+        "params": [
+          "arrays",
+          "out"
+        ],
+        "signature": "(arrays, *, out=None)"
+      },
+      "norm": {
+        "type": "function",
+        "params": [
+          "x",
+          "ord",
+          "axis",
+          "keepdims"
+        ],
+        "signature": "(x, ord=None, axis=None, keepdims=False)"
+      },
+      "pinv": {
+        "type": "function",
+        "params": [
+          "a",
+          "rcond",
+          "hermitian"
+        ],
+        "signature": "(a, rcond=1e-15, hermitian=False)"
+      },
+      "qr": {
+        "type": "function",
+        "params": [
+          "a",
+          "mode"
+        ],
+        "signature": "(a, mode='reduced')"
+      },
+      "slogdet": {
+        "type": "function",
+        "params": [
+          "a"
+        ],
+        "signature": "(a)"
+      },
+      "solve": {
+        "type": "function",
+        "params": [
+          "a",
+          "b"
+        ],
+        "signature": "(a, b)"
+      },
+      "svd": {
+        "type": "function",
+        "params": [
+          "a",
+          "full_matrices",
+          "compute_uv",
+          "hermitian"
+        ],
+        "signature": "(a, full_matrices=True, compute_uv=True, hermitian=False)"
+      },
+      "tensorinv": {
+        "type": "function",
+        "params": [
+          "a",
+          "ind"
+        ],
+        "signature": "(a, ind=2)"
+      },
+      "tensorsolve": {
+        "type": "function",
+        "params": [
+          "a",
+          "b",
+          "axes"
+        ],
+        "signature": "(a, b, axes=None)"
+      },
+      "test": {
+        "type": "function",
+        "params": [
+          "label",
+          "verbose",
+          "extra_argv",
+          "doctests",
+          "coverage",
+          "durations",
+          "tests"
+        ],
+        "signature": "(label='fast', verbose=1, extra_argv=None, doctests=False, coverage=False, durations=-1, tests=None)"
+      }
+    },
+    "fft": {
+      "fft": {
+        "type": "function",
+        "params": [
+          "a",
+          "n",
+          "axis",
+          "norm"
+        ],
+        "signature": "(a, n=None, axis=-1, norm=None)"
+      },
+      "fft2": {
+        "type": "function",
+        "params": [
+          "a",
+          "s",
+          "axes",
+          "norm"
+        ],
+        "signature": "(a, s=None, axes=(-2, -1), norm=None)"
+      },
+      "fftfreq": {
+        "type": "function",
+        "params": [
+          "n",
+          "d"
+        ],
+        "signature": "(n, d=1.0)"
+      },
+      "fftn": {
+        "type": "function",
+        "params": [
+          "a",
+          "s",
+          "axes",
+          "norm"
+        ],
+        "signature": "(a, s=None, axes=None, norm=None)"
+      },
+      "fftshift": {
+        "type": "function",
+        "params": [
+          "x",
+          "axes"
+        ],
+        "signature": "(x, axes=None)"
+      },
+      "helper": {
+        "type": "module",
+        "params": null,
+        "signature": null
+      },
+      "hfft": {
+        "type": "function",
+        "params": [
+          "a",
+          "n",
+          "axis",
+          "norm"
+        ],
+        "signature": "(a, n=None, axis=-1, norm=None)"
+      },
+      "ifft": {
+        "type": "function",
+        "params": [
+          "a",
+          "n",
+          "axis",
+          "norm"
+        ],
+        "signature": "(a, n=None, axis=-1, norm=None)"
+      },
+      "ifft2": {
+        "type": "function",
+        "params": [
+          "a",
+          "s",
+          "axes",
+          "norm"
+        ],
+        "signature": "(a, s=None, axes=(-2, -1), norm=None)"
+      },
+      "ifftn": {
+        "type": "function",
+        "params": [
+          "a",
+          "s",
+          "axes",
+          "norm"
+        ],
+        "signature": "(a, s=None, axes=None, norm=None)"
+      },
+      "ifftshift": {
+        "type": "function",
+        "params": [
+          "x",
+          "axes"
+        ],
+        "signature": "(x, axes=None)"
+      },
+      "ihfft": {
+        "type": "function",
+        "params": [
+          "a",
+          "n",
+          "axis",
+          "norm"
+        ],
+        "signature": "(a, n=None, axis=-1, norm=None)"
+      },
+      "irfft": {
+        "type": "function",
+        "params": [
+          "a",
+          "n",
+          "axis",
+          "norm"
+        ],
+        "signature": "(a, n=None, axis=-1, norm=None)"
+      },
+      "irfft2": {
+        "type": "function",
+        "params": [
+          "a",
+          "s",
+          "axes",
+          "norm"
+        ],
+        "signature": "(a, s=None, axes=(-2, -1), norm=None)"
+      },
+      "irfftn": {
+        "type": "function",
+        "params": [
+          "a",
+          "s",
+          "axes",
+          "norm"
+        ],
+        "signature": "(a, s=None, axes=None, norm=None)"
+      },
+      "rfft": {
+        "type": "function",
+        "params": [
+          "a",
+          "n",
+          "axis",
+          "norm"
+        ],
+        "signature": "(a, n=None, axis=-1, norm=None)"
+      },
+      "rfft2": {
+        "type": "function",
+        "params": [
+          "a",
+          "s",
+          "axes",
+          "norm"
+        ],
+        "signature": "(a, s=None, axes=(-2, -1), norm=None)"
+      },
+      "rfftfreq": {
+        "type": "function",
+        "params": [
+          "n",
+          "d"
+        ],
+        "signature": "(n, d=1.0)"
+      },
+      "rfftn": {
+        "type": "function",
+        "params": [
+          "a",
+          "s",
+          "axes",
+          "norm"
+        ],
+        "signature": "(a, s=None, axes=None, norm=None)"
+      },
+      "test": {
+        "type": "function",
+        "params": [
+          "label",
+          "verbose",
+          "extra_argv",
+          "doctests",
+          "coverage",
+          "durations",
+          "tests"
+        ],
+        "signature": "(label='fast', verbose=1, extra_argv=None, doctests=False, coverage=False, durations=-1, tests=None)"
+      }
+    },
+    "random": {
+      "BitGenerator": {
+        "type": "class",
+        "params": null,
+        "signature": null
+      },
+      "Generator": {
+        "type": "class",
+        "params": null,
+        "signature": null
+      },
+      "MT19937": {
+        "type": "class",
+        "params": null,
+        "signature": null
+      },
+      "PCG64": {
+        "type": "class",
+        "params": null,
+        "signature": null
+      },
+      "PCG64DXSM": {
+        "type": "class",
+        "params": null,
+        "signature": null
+      },
+      "Philox": {
+        "type": "class",
+        "params": null,
+        "signature": null
+      },
+      "RandomState": {
+        "type": "class",
+        "params": null,
+        "signature": null
+      },
+      "SFC64": {
+        "type": "class",
+        "params": null,
+        "signature": null
+      },
+      "SeedSequence": {
+        "type": "class",
+        "params": null,
+        "signature": null
+      },
+      "beta": {
+        "type": "function",
+        "params": null,
+        "signature": null
+      },
+      "binomial": {
+        "type": "function",
+        "params": null,
+        "signature": null
+      },
+      "bit_generator": {
+        "type": "module",
+        "params": null,
+        "signature": null
+      },
+      "bytes": {
+        "type": "function",
+        "params": null,
+        "signature": null
+      },
+      "chisquare": {
+        "type": "function",
+        "params": null,
+        "signature": null
+      },
+      "choice": {
+        "type": "function",
+        "params": null,
+        "signature": null
+      },
+      "default_rng": {
+        "type": "function",
+        "params": null,
+        "signature": null
+      },
+      "dirichlet": {
+        "type": "function",
+        "params": null,
+        "signature": null
+      },
+      "exponential": {
+        "type": "function",
+        "params": null,
+        "signature": null
+      },
+      "f": {
+        "type": "function",
+        "params": null,
+        "signature": null
+      },
+      "gamma": {
+        "type": "function",
+        "params": null,
+        "signature": null
+      },
+      "geometric": {
+        "type": "function",
+        "params": null,
+        "signature": null
+      },
+      "get_bit_generator": {
+        "type": "function",
+        "params": null,
+        "signature": null
+      },
+      "get_state": {
+        "type": "function",
+        "params": null,
+        "signature": null
+      },
+      "gumbel": {
+        "type": "function",
+        "params": null,
+        "signature": null
+      },
+      "hypergeometric": {
+        "type": "function",
+        "params": null,
+        "signature": null
+      },
+      "laplace": {
+        "type": "function",
+        "params": null,
+        "signature": null
+      },
+      "logistic": {
+        "type": "function",
+        "params": null,
+        "signature": null
+      },
+      "lognormal": {
+        "type": "function",
+        "params": null,
+        "signature": null
+      },
+      "logseries": {
+        "type": "function",
+        "params": null,
+        "signature": null
+      },
+      "mtrand": {
+        "type": "module",
+        "params": null,
+        "signature": null
+      },
+      "multinomial": {
+        "type": "function",
+        "params": null,
+        "signature": null
+      },
+      "multivariate_normal": {
+        "type": "function",
+        "params": null,
+        "signature": null
+      },
+      "negative_binomial": {
+        "type": "function",
+        "params": null,
+        "signature": null
+      },
+      "noncentral_chisquare": {
+        "type": "function",
+        "params": null,
+        "signature": null
+      },
+      "noncentral_f": {
+        "type": "function",
+        "params": null,
+        "signature": null
+      },
+      "normal": {
+        "type": "function",
+        "params": null,
+        "signature": null
+      },
+      "pareto": {
+        "type": "function",
+        "params": null,
+        "signature": null
+      },
+      "permutation": {
+        "type": "function",
+        "params": null,
+        "signature": null
+      },
+      "poisson": {
+        "type": "function",
+        "params": null,
+        "signature": null
+      },
+      "power": {
+        "type": "function",
+        "params": null,
+        "signature": null
+      },
+      "rand": {
+        "type": "function",
+        "params": null,
+        "signature": null
+      },
+      "randint": {
+        "type": "function",
+        "params": null,
+        "signature": null
+      },
+      "randn": {
+        "type": "function",
+        "params": null,
+        "signature": null
+      },
+      "random": {
+        "type": "function",
+        "params": null,
+        "signature": null
+      },
+      "random_integers": {
+        "type": "function",
+        "params": null,
+        "signature": null
+      },
+      "random_sample": {
+        "type": "function",
+        "params": null,
+        "signature": null
+      },
+      "ranf": {
+        "type": "function",
+        "params": null,
+        "signature": null
+      },
+      "rayleigh": {
+        "type": "function",
+        "params": null,
+        "signature": null
+      },
+      "sample": {
+        "type": "function",
+        "params": null,
+        "signature": null
+      },
+      "seed": {
+        "type": "function",
+        "params": null,
+        "signature": null
+      },
+      "set_bit_generator": {
+        "type": "function",
+        "params": null,
+        "signature": null
+      },
+      "set_state": {
+        "type": "function",
+        "params": null,
+        "signature": null
+      },
+      "shuffle": {
+        "type": "function",
+        "params": null,
+        "signature": null
+      },
+      "standard_cauchy": {
+        "type": "function",
+        "params": null,
+        "signature": null
+      },
+      "standard_exponential": {
+        "type": "function",
+        "params": null,
+        "signature": null
+      },
+      "standard_gamma": {
+        "type": "function",
+        "params": null,
+        "signature": null
+      },
+      "standard_normal": {
+        "type": "function",
+        "params": null,
+        "signature": null
+      },
+      "standard_t": {
+        "type": "function",
+        "params": null,
+        "signature": null
+      },
+      "test": {
+        "type": "function",
+        "params": [
+          "label",
+          "verbose",
+          "extra_argv",
+          "doctests",
+          "coverage",
+          "durations",
+          "tests"
+        ],
+        "signature": "(label='fast', verbose=1, extra_argv=None, doctests=False, coverage=False, durations=-1, tests=None)"
+      },
+      "triangular": {
+        "type": "function",
+        "params": null,
+        "signature": null
+      },
+      "uniform": {
+        "type": "function",
+        "params": null,
+        "signature": null
+      },
+      "vonmises": {
+        "type": "function",
+        "params": null,
+        "signature": null
+      },
+      "wald": {
+        "type": "function",
+        "params": null,
+        "signature": null
+      },
+      "weibull": {
+        "type": "function",
+        "params": null,
+        "signature": null
+      },
+      "zipf": {
+        "type": "function",
+        "params": null,
+        "signature": null
+      }
+    }
+  },
+  "ndarray_methods": {
+    "__abs__": {
+      "type": "operator",
+      "params": [
+        "self"
+      ]
+    },
+    "__add__": {
+      "type": "operator",
+      "params": [
+        "self",
+        "value"
+      ]
+    },
+    "__and__": {
+      "type": "operator",
+      "params": [
+        "self",
+        "value"
+      ]
+    },
+    "__array__": {
+      "type": "operator",
+      "params": null
+    },
+    "__array_finalize__": {
+      "type": "operator",
+      "params": null
+    },
+    "__array_function__": {
+      "type": "operator",
+      "params": null
+    },
+    "__array_prepare__": {
+      "type": "operator",
+      "params": null
+    },
+    "__array_ufunc__": {
+      "type": "operator",
+      "params": null
+    },
+    "__array_wrap__": {
+      "type": "operator",
+      "params": null
+    },
+    "__bool__": {
+      "type": "operator",
+      "params": [
+        "self"
+      ]
+    },
+    "__class__": {
+      "type": "operator",
+      "params": null
+    },
+    "__class_getitem__": {
+      "type": "operator",
+      "params": null
+    },
+    "__complex__": {
+      "type": "operator",
+      "params": null
+    },
+    "__contains__": {
+      "type": "operator",
+      "params": [
+        "self",
+        "key"
+      ]
+    },
+    "__copy__": {
+      "type": "operator",
+      "params": null
+    },
+    "__deepcopy__": {
+      "type": "operator",
+      "params": null
+    },
+    "__delattr__": {
+      "type": "operator",
+      "params": [
+        "self",
+        "name"
+      ]
+    },
+    "__delitem__": {
+      "type": "operator",
+      "params": [
+        "self",
+        "key"
+      ]
+    },
+    "__dir__": {
+      "type": "operator",
+      "params": [
+        "self"
+      ]
+    },
+    "__divmod__": {
+      "type": "operator",
+      "params": [
+        "self",
+        "value"
+      ]
+    },
+    "__dlpack__": {
+      "type": "operator",
+      "params": null
+    },
+    "__dlpack_device__": {
+      "type": "operator",
+      "params": null
+    },
+    "__eq__": {
+      "type": "operator",
+      "params": [
+        "self",
+        "value"
+      ]
+    },
+    "__float__": {
+      "type": "operator",
+      "params": [
+        "self"
+      ]
+    },
+    "__floordiv__": {
+      "type": "operator",
+      "params": [
+        "self",
+        "value"
+      ]
+    },
+    "__format__": {
+      "type": "operator",
+      "params": null
+    },
+    "__ge__": {
+      "type": "operator",
+      "params": [
+        "self",
+        "value"
+      ]
+    },
+    "__getattribute__": {
+      "type": "operator",
+      "params": [
+        "self",
+        "name"
+      ]
+    },
+    "__getitem__": {
+      "type": "operator",
+      "params": [
+        "self",
+        "key"
+      ]
+    },
+    "__getstate__": {
+      "type": "operator",
+      "params": [
+        "self"
+      ]
+    },
+    "__gt__": {
+      "type": "operator",
+      "params": [
+        "self",
+        "value"
+      ]
+    },
+    "__iadd__": {
+      "type": "operator",
+      "params": [
+        "self",
+        "value"
+      ]
+    },
+    "__iand__": {
+      "type": "operator",
+      "params": [
+        "self",
+        "value"
+      ]
+    },
+    "__ifloordiv__": {
+      "type": "operator",
+      "params": [
+        "self",
+        "value"
+      ]
+    },
+    "__ilshift__": {
+      "type": "operator",
+      "params": [
+        "self",
+        "value"
+      ]
+    },
+    "__imatmul__": {
+      "type": "operator",
+      "params": [
+        "self",
+        "value"
+      ]
+    },
+    "__imod__": {
+      "type": "operator",
+      "params": [
+        "self",
+        "value"
+      ]
+    },
+    "__imul__": {
+      "type": "operator",
+      "params": [
+        "self",
+        "value"
+      ]
+    },
+    "__index__": {
+      "type": "operator",
+      "params": [
+        "self"
+      ]
+    },
+    "__init__": {
+      "type": "operator",
+      "params": [
+        "self",
+        "args",
+        "kwargs"
+      ]
+    },
+    "__init_subclass__": {
+      "type": "operator",
+      "params": null
+    },
+    "__int__": {
+      "type": "operator",
+      "params": [
+        "self"
+      ]
+    },
+    "__invert__": {
+      "type": "operator",
+      "params": [
+        "self"
+      ]
+    },
+    "__ior__": {
+      "type": "operator",
+      "params": [
+        "self",
+        "value"
+      ]
+    },
+    "__ipow__": {
+      "type": "operator",
+      "params": [
+        "self",
+        "value"
+      ]
+    },
+    "__irshift__": {
+      "type": "operator",
+      "params": [
+        "self",
+        "value"
+      ]
+    },
+    "__isub__": {
+      "type": "operator",
+      "params": [
+        "self",
+        "value"
+      ]
+    },
+    "__iter__": {
+      "type": "operator",
+      "params": [
+        "self"
+      ]
+    },
+    "__itruediv__": {
+      "type": "operator",
+      "params": [
+        "self",
+        "value"
+      ]
+    },
+    "__ixor__": {
+      "type": "operator",
+      "params": [
+        "self",
+        "value"
+      ]
+    },
+    "__le__": {
+      "type": "operator",
+      "params": [
+        "self",
+        "value"
+      ]
+    },
+    "__len__": {
+      "type": "operator",
+      "params": [
+        "self"
+      ]
+    },
+    "__lshift__": {
+      "type": "operator",
+      "params": [
+        "self",
+        "value"
+      ]
+    },
+    "__lt__": {
+      "type": "operator",
+      "params": [
+        "self",
+        "value"
+      ]
+    },
+    "__matmul__": {
+      "type": "operator",
+      "params": [
+        "self",
+        "value"
+      ]
+    },
+    "__mod__": {
+      "type": "operator",
+      "params": [
+        "self",
+        "value"
+      ]
+    },
+    "__mul__": {
+      "type": "operator",
+      "params": [
+        "self",
+        "value"
+      ]
+    },
+    "__ne__": {
+      "type": "operator",
+      "params": [
+        "self",
+        "value"
+      ]
+    },
+    "__neg__": {
+      "type": "operator",
+      "params": [
+        "self"
+      ]
+    },
+    "__new__": {
+      "type": "operator",
+      "params": [
+        "args",
+        "kwargs"
+      ]
+    },
+    "__or__": {
+      "type": "operator",
+      "params": [
+        "self",
+        "value"
+      ]
+    },
+    "__pos__": {
+      "type": "operator",
+      "params": [
+        "self"
+      ]
+    },
+    "__pow__": {
+      "type": "operator",
+      "params": [
+        "self",
+        "value",
+        "mod"
+      ]
+    },
+    "__radd__": {
+      "type": "operator",
+      "params": [
+        "self",
+        "value"
+      ]
+    },
+    "__rand__": {
+      "type": "operator",
+      "params": [
+        "self",
+        "value"
+      ]
+    },
+    "__rdivmod__": {
+      "type": "operator",
+      "params": [
+        "self",
+        "value"
+      ]
+    },
+    "__reduce__": {
+      "type": "operator",
+      "params": null
+    },
+    "__reduce_ex__": {
+      "type": "operator",
+      "params": null
+    },
+    "__repr__": {
+      "type": "operator",
+      "params": [
+        "self"
+      ]
+    },
+    "__rfloordiv__": {
+      "type": "operator",
+      "params": [
+        "self",
+        "value"
+      ]
+    },
+    "__rlshift__": {
+      "type": "operator",
+      "params": [
+        "self",
+        "value"
+      ]
+    },
+    "__rmatmul__": {
+      "type": "operator",
+      "params": [
+        "self",
+        "value"
+      ]
+    },
+    "__rmod__": {
+      "type": "operator",
+      "params": [
+        "self",
+        "value"
+      ]
+    },
+    "__rmul__": {
+      "type": "operator",
+      "params": [
+        "self",
+        "value"
+      ]
+    },
+    "__ror__": {
+      "type": "operator",
+      "params": [
+        "self",
+        "value"
+      ]
+    },
+    "__rpow__": {
+      "type": "operator",
+      "params": [
+        "self",
+        "value",
+        "mod"
+      ]
+    },
+    "__rrshift__": {
+      "type": "operator",
+      "params": [
+        "self",
+        "value"
+      ]
+    },
+    "__rshift__": {
+      "type": "operator",
+      "params": [
+        "self",
+        "value"
+      ]
+    },
+    "__rsub__": {
+      "type": "operator",
+      "params": [
+        "self",
+        "value"
+      ]
+    },
+    "__rtruediv__": {
+      "type": "operator",
+      "params": [
+        "self",
+        "value"
+      ]
+    },
+    "__rxor__": {
+      "type": "operator",
+      "params": [
+        "self",
+        "value"
+      ]
+    },
+    "__setattr__": {
+      "type": "operator",
+      "params": [
+        "self",
+        "name",
+        "value"
+      ]
+    },
+    "__setitem__": {
+      "type": "operator",
+      "params": [
+        "self",
+        "key",
+        "value"
+      ]
+    },
+    "__setstate__": {
+      "type": "operator",
+      "params": null
+    },
+    "__sizeof__": {
+      "type": "operator",
+      "params": null
+    },
+    "__str__": {
+      "type": "operator",
+      "params": [
+        "self"
+      ]
+    },
+    "__sub__": {
+      "type": "operator",
+      "params": [
+        "self",
+        "value"
+      ]
+    },
+    "__subclasshook__": {
+      "type": "operator",
+      "params": null
+    },
+    "__truediv__": {
+      "type": "operator",
+      "params": [
+        "self",
+        "value"
+      ]
+    },
+    "__xor__": {
+      "type": "operator",
+      "params": [
+        "self",
+        "value"
+      ]
+    },
+    "all": {
+      "type": "method",
+      "params": null
+    },
+    "any": {
+      "type": "method",
+      "params": null
+    },
+    "argmax": {
+      "type": "method",
+      "params": null
+    },
+    "argmin": {
+      "type": "method",
+      "params": null
+    },
+    "argpartition": {
+      "type": "method",
+      "params": null
+    },
+    "argsort": {
+      "type": "method",
+      "params": null
+    },
+    "astype": {
+      "type": "method",
+      "params": null
+    },
+    "byteswap": {
+      "type": "method",
+      "params": null
+    },
+    "choose": {
+      "type": "method",
+      "params": null
+    },
+    "clip": {
+      "type": "method",
+      "params": null
+    },
+    "compress": {
+      "type": "method",
+      "params": null
+    },
+    "conj": {
+      "type": "method",
+      "params": null
+    },
+    "conjugate": {
+      "type": "method",
+      "params": null
+    },
+    "copy": {
+      "type": "method",
+      "params": null
+    },
+    "cumprod": {
+      "type": "method",
+      "params": null
+    },
+    "cumsum": {
+      "type": "method",
+      "params": null
+    },
+    "diagonal": {
+      "type": "method",
+      "params": null
+    },
+    "dot": {
+      "type": "method",
+      "params": null
+    },
+    "dump": {
+      "type": "method",
+      "params": null
+    },
+    "dumps": {
+      "type": "method",
+      "params": null
+    },
+    "fill": {
+      "type": "method",
+      "params": null
+    },
+    "flatten": {
+      "type": "method",
+      "params": null
+    },
+    "getfield": {
+      "type": "method",
+      "params": null
+    },
+    "item": {
+      "type": "method",
+      "params": null
+    },
+    "itemset": {
+      "type": "method",
+      "params": null
+    },
+    "max": {
+      "type": "method",
+      "params": null
+    },
+    "mean": {
+      "type": "method",
+      "params": null
+    },
+    "min": {
+      "type": "method",
+      "params": null
+    },
+    "newbyteorder": {
+      "type": "method",
+      "params": null
+    },
+    "nonzero": {
+      "type": "method",
+      "params": null
+    },
+    "partition": {
+      "type": "method",
+      "params": null
+    },
+    "prod": {
+      "type": "method",
+      "params": null
+    },
+    "ptp": {
+      "type": "method",
+      "params": null
+    },
+    "put": {
+      "type": "method",
+      "params": null
+    },
+    "ravel": {
+      "type": "method",
+      "params": null
+    },
+    "repeat": {
+      "type": "method",
+      "params": null
+    },
+    "reshape": {
+      "type": "method",
+      "params": null
+    },
+    "resize": {
+      "type": "method",
+      "params": null
+    },
+    "round": {
+      "type": "method",
+      "params": null
+    },
+    "searchsorted": {
+      "type": "method",
+      "params": null
+    },
+    "setfield": {
+      "type": "method",
+      "params": null
+    },
+    "setflags": {
+      "type": "method",
+      "params": null
+    },
+    "sort": {
+      "type": "method",
+      "params": null
+    },
+    "squeeze": {
+      "type": "method",
+      "params": null
+    },
+    "std": {
+      "type": "method",
+      "params": null
+    },
+    "sum": {
+      "type": "method",
+      "params": null
+    },
+    "swapaxes": {
+      "type": "method",
+      "params": null
+    },
+    "take": {
+      "type": "method",
+      "params": null
+    },
+    "tobytes": {
+      "type": "method",
+      "params": null
+    },
+    "tofile": {
+      "type": "method",
+      "params": null
+    },
+    "tolist": {
+      "type": "method",
+      "params": null
+    },
+    "tostring": {
+      "type": "method",
+      "params": null
+    },
+    "trace": {
+      "type": "method",
+      "params": null
+    },
+    "transpose": {
+      "type": "method",
+      "params": null
+    },
+    "var": {
+      "type": "method",
+      "params": null
+    },
+    "view": {
+      "type": "method",
+      "params": null
+    }
+  },
+  "ndarray_properties": {}
+}

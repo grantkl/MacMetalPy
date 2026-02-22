@@ -226,20 +226,23 @@ class TestArgpartition:
 class TestMsort:
     @pytest.mark.parametrize("dtype", NUMERIC_DTYPES)
     def test_1d(self, dtype):
+        from macmetalpy.sorting import msort
         np_arr = np.array([3, 1, 4, 1, 5], dtype=dtype)
-        result = cp.msort(cp.array(np_arr))
+        result = msort(cp.array(np_arr))
         npt.assert_array_equal(result.get(), np.sort(np_arr, axis=0))
 
     @pytest.mark.parametrize("dtype", NUMERIC_DTYPES)
     def test_2d(self, dtype):
+        from macmetalpy.sorting import msort
         np_arr = np.array([[3, 1], [2, 4]], dtype=dtype)
-        result = cp.msort(cp.array(np_arr))
+        result = msort(cp.array(np_arr))
         npt.assert_array_equal(result.get(), np.sort(np_arr, axis=0))
 
     @pytest.mark.parametrize("dtype", NUMERIC_DTYPES)
     def test_from_list(self, dtype):
+        from macmetalpy.sorting import msort
         data = [5, 3, 1, 4, 2]
-        result = cp.msort(data)
+        result = msort(data)
         expected = np.sort(np.array(data), axis=0)
         npt.assert_allclose(result.get(), expected, **tol_for(dtype))
 

@@ -286,7 +286,8 @@ class TestRound:
         np_arr = np.array([1.4, 1.5, 2.5, 3.6], dtype=np.float32)
         gpu = cp.array(np_arr)
         result_around = cp.around(gpu)
-        result_round = cp.round_(gpu)
+        from macmetalpy.math_ops import round_
+        result_round = round_(gpu)
         assert_allclose(result_round.get(), result_around.get(), rtol=1e-5)
 
 

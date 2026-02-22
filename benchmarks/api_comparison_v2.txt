@@ -1,0 +1,73 @@
+======================================================================
+NumPy 2 vs macmetalpy API Comparison Report
+======================================================================
+
+SUMMARY
+----------------------------------------
+Total APIs matched (in both):    552
+Missing from macmetalpy:         0
+Extra in macmetalpy only:         20
+Coverage:                         552/552 = 100.0%
+
+Per-module breakdown:
+  top-level   : 443 matched,   0 missing,  19 extra  (100.0% coverage)
+  linalg      :  32 matched,   0 missing,   0 extra  (100.0% coverage)
+  fft         :  18 matched,   0 missing,   0 extra  (100.0% coverage)
+  random      :  59 matched,   0 missing,   1 extra  (100.0% coverage)
+
+Exclusions (not counted as 'missing' from macmetalpy):
+  - Submodule namespace objects (testing, ma, char, polynomial, etc.)
+  - Abstract/internal base types (generic, flexible, character, etc.)
+  - Datetime/busday APIs (not applicable to GPU compute)
+  - Deprecated aliases (random_integers, long, ulong)
+  - Random internals (get/set_bit_generator, bit_generator, mtrand)
+  - Internal utilities (nested_iters, ufunc class, test())
+  - Non-numeric types (object_, void, record, str_, bytes_, recarray, memmap)
+
+======================================================================
+MISSING FROM macmetalpy (in NumPy 2 but not macmetalpy)
+======================================================================
+
+  (none -- macmetalpy covers all in-scope NumPy 2 APIs)
+
+======================================================================
+EXTRA IN macmetalpy (not in NumPy 2)
+======================================================================
+
+--- top-level (19 extra) ---
+  GPU-specific additions:
+    RawKernel
+    get_config
+    set_config
+    synchronize
+  Legacy NumPy aliases (removed in NumPy 2, kept for compat):
+    cfloat
+    clongfloat
+    complex_
+    float_
+    longcomplex
+    longfloat
+    singlecomplex
+  Abstract base types (exposed for isinstance checks):
+    complexfloating
+    floating
+    generic
+    inexact
+    integer
+    number
+    signedinteger
+    unsignedinteger
+
+--- random (1 extra) ---
+  Compatibility/moved APIs:
+    permuted
+
+======================================================================
+PRESENT IN BOTH (matched count per module)
+======================================================================
+  top-level   : 443 APIs
+  linalg      : 32 APIs
+  fft         : 18 APIs
+  random      : 59 APIs
+  TOTAL       : 552 APIs
+

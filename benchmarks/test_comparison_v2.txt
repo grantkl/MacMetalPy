@@ -1,0 +1,338 @@
+======================================================================
+macmetalpy Test Coverage Gap Analysis v2
+======================================================================
+Generated: 2026-02-21
+
+======================================================================
+1. OVERALL STATISTICS
+======================================================================
+
+API Coverage:
+  Total APIs exported:        575
+  APIs with test coverage:    512
+  APIs without test coverage: 63
+  Test coverage rate:         89.0%
+
+Per-Module Breakdown:
+  Module          Total  Tested  Untested  Coverage
+  -----------------------------------------------
+  top-level       462    406     56        87.9%
+  linalg           33     32      1        97.0%
+  fft              19     18      1        94.7%
+  random           61     56      5        91.8%
+
+API Comparison (vs NumPy 2):
+  Matched APIs:               552
+  Missing from macmetalpy:      0  (full NumPy 2 coverage)
+  Extra in macmetalpy:         20  (GPU-specific + legacy aliases)
+
+Test Suite Statistics:
+  Total test files:          80
+  Total test classes:      1153
+  Total test methods:      3416
+
+======================================================================
+2. UNTESTED APIs BY CATEGORY
+======================================================================
+
+The 63 untested APIs are categorized below with an assessment of
+whether each genuinely needs test coverage.
+
+----------------------------------------------------------------------
+2a. DTYPE / SCALAR TYPE ALIASES (30 items)
+----------------------------------------------------------------------
+These are re-exports of numpy scalar types used for dtype specification.
+They are typically used as `mp.float32`, `mp.int64`, etc.
+
+  Integer types:
+    int8, int16, int32, int64
+    uint8, uint16, uint32, uint64
+    intc, uintc, uint
+    short, ushort
+    longlong, ulonglong
+    byte, ubyte
+
+  Float types:
+    float16, float64
+    single, longdouble, longfloat
+
+  Complex types:
+    complex128
+    csingle, cdouble, clongdouble, clongfloat
+    singlecomplex
+
+  Boolean:
+    bool_
+
+  NEED TESTS? LOW PRIORITY. These are direct numpy re-exports.
+  A small smoke test confirming they are the correct numpy types
+  already exists in test_dtype_format_final.py for many of these
+  (int8, uint8, byte, ubyte, short, ushort, intc, uintc, uint,
+  longlong, ulonglong, single, double, half, longdouble, csingle,
+  cdouble, clongdouble, complex128). However, the audit script
+  did not find direct usage of some names (e.g., `mp.int32` used
+  as a standalone reference in a test assertion). Consider adding
+  a single parametrized test that verifies each alias identity.
+
+----------------------------------------------------------------------
+2b. ABSTRACT / BASE DTYPE CLASSES (7 items)
+----------------------------------------------------------------------
+  complexfloating, floating, integer, signedinteger,
+  unsignedinteger, number, generic, inexact
+
+  NEED TESTS? NO (already tested). These are tested in
+  test_dtype_format_final.py::TestAbstractTypes which verifies
+  each is the correct numpy abstract type. The audit may have
+  missed these because the test uses `isinstance` checks rather
+  than direct API calls. No additional tests needed.
+
+----------------------------------------------------------------------
+2c. COMPARISON FUNCTION OBJECTS (6 items)
+----------------------------------------------------------------------
+  equal, not_equal, less, less_equal, greater, greater_equal
+
+  NEED TESTS? YES -- MEDIUM PRIORITY. These are ufunc-style
+  comparison functions (e.g., `mp.equal(a, b)`). While comparison
+  *operators* (==, !=, <, <=, >, >=) are well-tested in
+  test_comparison.py, the function-call forms should have at least
+  basic smoke tests to confirm they work and return correct dtypes.
+  Note: test_comparison.py tests operator forms but not `mp.equal()`.
+
+----------------------------------------------------------------------
+2d. CONSTANTS (4 items)
+----------------------------------------------------------------------
+  inf, pi, newaxis, little_endian
+
+  NEED TESTS? LOW PRIORITY.
+  - `inf`: Used extensively in tests (test_creation.py, test_math_ops.py,
+    etc.) but never tested as `mp.inf` directly. A one-liner assertion
+    that `mp.inf == float('inf')` would suffice.
+  - `pi`: Same situation. Used indirectly but `mp.pi == numpy.pi`
+    not explicitly asserted.
+  - `newaxis`: A re-export of `numpy.newaxis` (which is just `None`).
+    Trivial to test but very low value.
+  - `little_endian`: A re-export of `numpy.little_endian`. Trivial
+    boolean constant. Very low value.
+
+----------------------------------------------------------------------
+2e. BITWISE SHIFT ALIASES (2 items)
+----------------------------------------------------------------------
+  bitwise_left_shift, bitwise_right_shift
+
+  NEED TESTS? MEDIUM PRIORITY. These are NumPy 2 names for
+  `left_shift` and `right_shift`, which ARE tested in
+  test_logic_bitwise.py. A quick alias-identity test
+  (`assert mp.bitwise_left_shift is mp.left_shift`) would suffice.
+
+----------------------------------------------------------------------
+2f. UTILITY / INTROSPECTION (3 items)
+----------------------------------------------------------------------
+  ScalarType, typecodes, flatiter
+
+  NEED TESTS? LOW PRIORITY.
+  - `ScalarType`: A tuple of scalar types. Re-export from numpy.
+  - `typecodes`: A dict of type code characters. Re-export from numpy.
+  - `flatiter`: Iterator type re-exported from numpy. Already tested
+    indirectly in test_dtype_format_final.py::TestUtilityReexports.
+
+----------------------------------------------------------------------
+2g. BOOLEAN CONSTANTS (2 items)
+----------------------------------------------------------------------
+  True_, False_
+
+  NEED TESTS? NO. These are `numpy.True_` and `numpy.False_`,
+  which are numpy scalar booleans. Testing them adds no value.
+
+----------------------------------------------------------------------
+2h. MODULE `annotations` ARTIFACTS (2 items)
+----------------------------------------------------------------------
+  macmetalpy.linalg.annotations
+  macmetalpy.fft.annotations
+
+  NEED TESTS? NO. These are Python `from __future__ import annotations`
+  artifacts that appear in the module namespace. They are not APIs.
+
+----------------------------------------------------------------------
+2i. RANDOM MODULE (5 items)
+----------------------------------------------------------------------
+  BitGenerator, Generator, annotations, ranf, sample
+
+  NEED TESTS?
+  - `BitGenerator`: Abstract base class. NO -- not directly usable.
+  - `Generator`: YES -- MEDIUM PRIORITY. This is numpy's recommended
+    new random API. A basic test creating a Generator and sampling
+    from it would be valuable.
+  - `annotations`: NO -- same `__future__` artifact.
+  - `ranf`: LOW PRIORITY. Legacy alias for `random_sample`. Already
+    tested via `random_sample`.
+  - `sample`: LOW PRIORITY. Legacy alias for `random_sample`. Already
+    tested via `random_sample`.
+
+======================================================================
+3. APIs THAT GENUINELY NEED TESTS (Priority-Ordered)
+======================================================================
+
+After filtering out noise (annotations artifacts, abstract base types,
+boolean constants, and items already indirectly tested), here are the
+APIs that would benefit from explicit test coverage:
+
+HIGH PRIORITY (functional gaps -- untested callable APIs):
+----------------------------------------------------------------------
+  1. equal          - Comparison ufunc (function form)
+  2. not_equal      - Comparison ufunc (function form)
+  3. less           - Comparison ufunc (function form)
+  4. less_equal     - Comparison ufunc (function form)
+  5. greater        - Comparison ufunc (function form)
+  6. greater_equal  - Comparison ufunc (function form)
+
+  These 6 comparison functions are the most significant gap.
+  They are core NumPy APIs used in many real-world codebases.
+  Recommendation: Add a single test class with parametrized tests
+  for all 6 functions, covering basic arrays, scalar broadcast,
+  NaN handling, and dtype combinations.
+
+MEDIUM PRIORITY (alias verification):
+----------------------------------------------------------------------
+  7. bitwise_left_shift   - Alias for left_shift
+  8. bitwise_right_shift  - Alias for right_shift
+  9. random.Generator     - New-style random API
+
+  Recommendation: Add alias identity assertions and a basic
+  Generator usage test.
+
+LOW PRIORITY (type/constant smoke tests):
+----------------------------------------------------------------------
+  10-39. Dtype aliases (30 items): int8, int16, int32, int64,
+         uint8, uint16, uint32, uint64, float16, float64,
+         bool_, byte, ubyte, short, ushort, intc, uintc, uint,
+         longlong, ulonglong, single, longdouble, longfloat,
+         complex128, csingle, cdouble, clongdouble, clongfloat,
+         singlecomplex
+
+  40-43. Constants: inf, pi, newaxis, little_endian
+
+  44-46. Utility: ScalarType, typecodes, flatiter
+
+  47-48. Random aliases: ranf, sample
+
+  Recommendation: A single parametrized test file that asserts
+  each dtype alias `is` the corresponding numpy type, and each
+  constant matches the numpy value. Quick to write, catches
+  accidental omissions in __init__.py.
+
+NO TESTS NEEDED:
+----------------------------------------------------------------------
+  - True_, False_ (boolean scalar constants)
+  - linalg.annotations, fft.annotations, random.annotations
+    (Python __future__ import artifacts)
+  - BitGenerator (abstract base class, not directly callable)
+  - complexfloating, floating, integer, signedinteger,
+    unsignedinteger, number, generic, inexact
+    (already tested in test_dtype_format_final.py::TestAbstractTypes)
+
+======================================================================
+4. TEST SUITE STATISTICS
+======================================================================
+
+Total test files:        80
+Total test classes:    1153
+Total test methods:    3416
+
+Top test files by method count (estimated from report):
+  test_ndarray.py           - Core ndarray operations
+  test_creation.py          - Array creation functions
+  test_math_ops.py          - Math operations
+  test_sorting.py           - Sort/search operations
+  test_manipulation.py      - Array manipulation
+  test_linalg.py            - Linear algebra
+  test_fft.py               - FFT operations
+  test_random.py            - Random number generation
+  test_indexing.py          - Indexing operations
+  test_reductions.py        - Reduction operations
+
+Module coverage distribution:
+  Module      Files  Coverage
+  ---------------------------
+  top-level    ~70    87.9%
+  linalg        ~5    97.0%
+  fft           ~3    94.7%
+  random        ~5    91.8%
+
+======================================================================
+5. RECOMMENDATIONS
+======================================================================
+
+IMMEDIATE ACTIONS (to reach ~95% coverage):
+----------------------------------------------------------------------
+
+1. Add comparison function tests (covers 6 untested APIs)
+   Create test_comparison_funcs.py with tests for:
+     mp.equal, mp.not_equal, mp.less, mp.less_equal,
+     mp.greater, mp.greater_equal
+   Expected effort: ~30 min
+   Coverage impact: +6 APIs -> 518/575 = 90.1%
+
+2. Add dtype alias smoke tests (covers 30 untested APIs)
+   Create a parametrized test in test_dtype_aliases.py:
+     @pytest.mark.parametrize("name,expected", [
+         ("int8", numpy.int8), ("int16", numpy.int16), ...
+     ])
+     def test_dtype_alias(name, expected):
+         assert getattr(mp, name) is expected
+   Expected effort: ~15 min
+   Coverage impact: +30 APIs -> 548/575 = 95.3%
+
+3. Add constant/utility smoke tests (covers 7 untested APIs)
+   Test inf, pi, newaxis, little_endian, ScalarType, typecodes
+   Expected effort: ~10 min
+   Coverage impact: +7 APIs -> 555/575 = 96.5%
+
+4. Add alias identity tests (covers 4 untested APIs)
+   bitwise_left_shift, bitwise_right_shift, ranf, sample
+   Expected effort: ~10 min
+   Coverage impact: +4 APIs -> 559/575 = 97.2%
+
+5. Add random.Generator basic test (covers 1 untested API)
+   Expected effort: ~10 min
+   Coverage impact: +1 API -> 560/575 = 97.4%
+
+ITEMS TO SKIP (6 untested APIs -- no tests needed):
+----------------------------------------------------------------------
+  - True_, False_ (trivial boolean constants)
+  - linalg.annotations, fft.annotations, random.annotations
+    (__future__ import artifacts, not real APIs)
+  - BitGenerator (abstract base class)
+
+  These 6 items cannot meaningfully be tested or are not real APIs.
+  Excluding them, effective coverage is:
+    512 / (575 - 6) = 512/569 = 90.0% current
+    560 / 569 = 98.4% after recommended additions
+
+TOTAL EFFORT ESTIMATE:
+  All 5 recommended actions: ~75 minutes of work
+  Result: 97.4% raw coverage, 98.4% effective coverage
+
+======================================================================
+6. SUMMARY
+======================================================================
+
+macmetalpy has strong test coverage at 89% (512/575 APIs tested)
+across 80 test files with 3416 test methods. The 63 untested items
+are predominantly:
+
+  - 30 dtype scalar type aliases (re-exports from numpy)
+  - 7 abstract base types (already indirectly tested)
+  - 6 comparison ufunc functions (genuine gap)
+  - 6 noise items (annotations artifacts, boolean constants)
+  - 5 random module items (1 genuine gap, rest are aliases/abstract)
+  - 4 constants (trivially testable)
+  - 3 utility re-exports
+  - 2 bitwise shift aliases
+
+The most impactful action is adding tests for the 6 comparison
+functions (equal, not_equal, less, less_equal, greater, greater_equal),
+which represent the only significant functional test gap.
+
+After excluding noise (6 items) and applying all recommendations,
+effective coverage reaches 98.4%.
+======================================================================

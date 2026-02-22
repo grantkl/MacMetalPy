@@ -179,22 +179,19 @@ class TestUnwrap:
 class TestTrapezoid:
     def test_basic(self):
         y = cp.array([1.0, 2.0, 3.0, 4.0])
-        _trap = getattr(np, 'trapezoid', np.trapz)
-        expected = _trap(np.array([1.0, 2.0, 3.0, 4.0]))
+        expected = np.trapezoid(np.array([1.0, 2.0, 3.0, 4.0]))
         result = trapezoid(y)
         assert_allclose(result.get(), np.array(expected), rtol=1e-5)
 
     def test_with_x(self):
         y = cp.array([1.0, 2.0, 3.0])
         x = cp.array([0.0, 1.0, 3.0])
-        _trap = getattr(np, 'trapezoid', np.trapz)
-        expected = _trap(np.array([1.0, 2.0, 3.0]), x=np.array([0.0, 1.0, 3.0]))
+        expected = np.trapezoid(np.array([1.0, 2.0, 3.0]), x=np.array([0.0, 1.0, 3.0]))
         result = trapezoid(y, x=x)
         assert_allclose(result.get(), np.array(expected), rtol=1e-5)
 
     def test_with_dx(self):
         y = cp.array([1.0, 2.0, 3.0])
-        _trap = getattr(np, 'trapezoid', np.trapz)
-        expected = _trap(np.array([1.0, 2.0, 3.0]), dx=0.5)
+        expected = np.trapezoid(np.array([1.0, 2.0, 3.0]), dx=0.5)
         result = trapezoid(y, dx=0.5)
         assert_allclose(result.get(), np.array(expected), rtol=1e-5)

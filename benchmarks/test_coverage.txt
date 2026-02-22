@@ -1,0 +1,5077 @@
+=== test_broadcasting.py ===
+  TestBroadcastShapes
+    test_same_shapes -> [dtype casting]
+    test_trailing_broadcast -> [broadcasting]
+    test_leading_broadcast -> [broadcasting]
+    test_3d_broadcast -> [broadcasting]
+    test_scalar_broadcast -> [broadcasting]
+    test_empty_shapes -> [np.empty]
+    test_single_shape -> [ndarray.shape]
+    test_multiple_shapes -> [dtype casting]
+    test_complex_broadcast -> [broadcasting]
+    test_incompatible_raises -> [dtype casting]
+    test_incompatible_2d_raises -> [dtype casting]
+
+  TestBroadcastedOperations
+    test_2d_plus_1d -> [dtype casting]
+    test_column_plus_row -> [dtype casting]
+    test_3d_plus_1d -> [dtype casting]
+    test_scalar_broadcast -> [broadcasting]
+    test_mul_broadcast -> [operator *]
+    test_sub_broadcast -> [operator -]
+    test_incompatible_shapes_raise -> [dtype casting]
+
+
+=== test_comparison.py ===
+  TestComparisonFloat
+    test_less_than -> [np.less]
+    test_less_equal -> [np.less_equal]
+    test_greater_than -> [np.greater]
+    test_greater_equal -> [np.greater_equal]
+    test_equal -> [np.equal]
+    test_not_equal -> [np.not_equal]
+
+  TestComparisonScalar
+    test_less_equal_scalar -> [np.equal]
+    test_greater_scalar -> [np.greater]
+    test_equal_scalar -> [np.equal]
+    test_not_equal_scalar -> [np.equal]
+
+  TestBooleanLogic
+    test_and -> [np.log]
+    test_or -> [np.log]
+    test_invert -> [np.invert]
+    test_ior -> [np.log]
+
+  TestMixedDtypeComparison
+    test_float32_vs_int32 -> [dtype system]
+    test_int32_vs_float32 -> [dtype system]
+
+  TestTradingBotPatterns
+    test_trading_bot_fill_mask -> [ndarray.fill]
+    test_bool_slice_assignment -> [np.sign]
+    test_ior_slice -> [I/O operations]
+    test_comparison_returns_bool_dtype -> [dtype system]
+
+
+=== test_complex_ops.py ===
+  TestAngle
+    test_basic -> [np.tan]
+    test_deg -> [np.tan]
+    test_real_input -> [np.tan]
+    test_single_value -> [np.tan]
+
+  TestReal
+    test_complex_input -> [complex number ops]
+    test_real_input -> [ndarray.__str__]
+    test_2d_complex -> [complex number ops]
+    test_scalar_complex -> [complex number ops]
+
+  TestImag
+    test_complex_input -> [complex number ops]
+    test_real_input -> [unknown]
+    test_2d_complex -> [complex number ops]
+
+  TestConj
+    test_complex_input -> [complex number ops]
+    test_real_input -> [unknown]
+    test_2d -> [unknown]
+    test_conjugate_alias -> [unknown]
+
+  TestRealIfClose
+    test_close_to_real -> [ndarray.__str__]
+    test_not_close_to_real -> [ndarray.__str__]
+    test_custom_tol -> [ndarray.__str__]
+    test_real_input -> [ndarray.__str__]
+
+  TestRoundAlias
+    test_round_exists -> [np.round]
+    test_round_matches_around -> [np.round]
+
+
+=== test_config.py ===
+  TestMacMetalConfigSingleton
+    test_singleton_identity -> [np.identity]
+    test_get_config_returns_singleton -> [ndarray.get (device->host)]
+
+  TestGetConfig
+    test_default_float64_behavior -> [ndarray.get (device->host)]
+    test_default_warn_on_downcast -> [ndarray.get (device->host)]
+    test_default_float_dtype -> [dtype system]
+
+  TestSetConfig
+    test_set_float64_behavior_downcast -> [configuration]
+    test_set_float64_behavior_cpu_fallback -> [configuration]
+    test_set_warn_on_downcast_false -> [configuration]
+    test_set_warn_on_downcast_true -> [configuration]
+    test_set_default_float_dtype -> [dtype system]
+    test_set_multiple_values -> [configuration]
+
+  TestSetConfigValidation
+    test_invalid_float64_behavior_raises -> [configuration]
+    test_invalid_float64_behavior_none_string_raises -> [configuration]
+    test_none_values_do_not_change_config -> [configuration]
+
+
+=== test_config_integration.py ===
+  TestFloat64Downcast
+    test_array_downcasts_float64 -> [np.array]
+    test_array_float64_without_explicit_dtype -> [np.array]
+
+  TestWarnOnDowncast
+    test_warn_on_downcast_true_emits_warning -> [dtype casting]
+    test_warn_on_downcast_false_silent -> [dtype casting]
+    test_no_warning_for_float32 -> [dtype casting]
+
+  TestDefaultFloatDtype
+    test_default_float32 -> [np.std]
+    test_default_float16 -> [np.std]
+
+  TestConfigMidSession
+    test_change_default_dtype_mid_session -> [dtype system]
+    test_change_warn_setting_mid_session -> [configuration]
+
+
+=== test_creation.py ===
+  TestZeros
+    test_values -> [np.zeros]
+    test_default_dtype -> [dtype system]
+    test_1d -> [np.zeros]
+    test_2d -> [np.zeros]
+    test_3d -> [np.zeros]
+
+  TestOnes
+    test_values -> [np.ones]
+    test_default_dtype -> [dtype system]
+    test_1d -> [np.ones]
+    test_2d -> [np.ones]
+
+  TestEmpty
+    test_shape_dtype -> [dtype system]
+    test_default_dtype -> [dtype system]
+    test_does_not_error -> [error handling]
+
+  TestFull
+    test_scalar -> [np.full]
+    test_zero -> [np.full]
+    test_nan -> [np.full]
+    test_inf -> [np.full]
+    test_negative -> [np.negative]
+    test_default_dtype -> [dtype system]
+    test_float_fill -> [ndarray.fill]
+
+  TestArange
+    test_int_step -> [np.arange]
+    test_float_step -> [np.arange]
+    test_negative_step -> [np.negative]
+    test_large_range -> [np.arange]
+    test_start_equals_stop -> [np.arange]
+    test_stop_only -> [np.arange]
+    test_start_stop -> [np.arange]
+
+  TestArray
+    test_from_list -> [np.array]
+    test_from_nested_list -> [np.array]
+    test_from_tuple -> [np.array]
+    test_from_ndarray -> [np.array]
+    test_scalar -> [np.array]
+    test_empty -> [np.empty]
+    test_dtype_override -> [dtype system]
+    test_roundtrip -> [np.array]
+    test_from_macmetalpy -> [np.array]
+
+  TestAsarray
+    test_from_numpy -> [np.array]
+    test_preserves_dtype -> [dtype system]
+    test_conversion -> [np.array]
+    test_passthrough -> [np.array]
+
+  TestZerosLike
+    test_same_dtype -> [dtype system]
+    test_override_dtype -> [dtype system]
+
+  TestOnesLike
+    test_same_dtype -> [dtype system]
+    test_override_dtype -> [dtype system]
+
+  TestEmptyLike
+    test_same_dtype -> [dtype system]
+    test_override_dtype -> [dtype system]
+
+  TestFullLike
+    test_same_dtype -> [dtype system]
+    test_override_dtype -> [dtype system]
+
+  TestLinspace
+    test_basic -> [np.linspace]
+    test_num_1 -> [np.linspace]
+    test_num_0 -> [np.linspace]
+    test_negative_range -> [np.negative]
+
+  TestEye
+    test_square -> [np.square]
+    test_non_square -> [np.square]
+    test_n1 -> [np.eye]
+    test_n4_default -> [np.eye]
+    test_default_dtype -> [dtype system]
+
+  TestDiag
+    test_1d_to_2d -> [np.std]
+    test_2d_to_1d -> [np.std]
+    test_k_offset -> [np.std]
+
+  TestIdentity
+    test_n1 -> [np.identity]
+    test_n4 -> [np.identity]
+
+  TestTri
+    test_square -> [np.square]
+    test_non_square -> [np.square]
+    test_k_offset -> [np.tri]
+
+  TestTriu
+    test_k0 -> [np.tri]
+    test_k_positive -> [np.positive]
+    test_k_negative -> [np.negative]
+
+  TestTril
+    test_k0 -> [np.tri]
+    test_k_positive -> [np.positive]
+    test_k_negative -> [np.negative]
+
+  TestLogspace
+    test_basic -> [np.logspace]
+    test_num_small -> [np.logspace]
+
+  TestMeshgrid
+    test_2args -> [np.meshgrid]
+    test_3args -> [np.meshgrid]
+    test_ij_indexing -> [np.meshgrid]
+    test_xy_indexing -> [np.meshgrid]
+
+  TestIndices
+    test_2d -> [np.indices]
+    test_3d -> [np.indices]
+    test_shapes -> [np.indices]
+
+  TestFromfunction
+    test_1d -> [np.fromfunction]
+    test_2d -> [np.fromfunction]
+
+  TestDiagflat
+    test_basic -> [np.std]
+    test_k_offset -> [np.std]
+
+  TestVander
+    test_basic -> [unknown]
+    test_n -> [unknown]
+    test_increasing -> [np.sin]
+
+  TestAsanyarray
+    test_passthrough -> [np.any]
+    test_from_list -> [np.any]
+
+
+=== test_creation_gaps.py ===
+  TestGeomspace
+    test_basic -> [np.geomspace]
+    test_num_50 -> [np.geomspace]
+    test_num_1 -> [np.geomspace]
+    test_fractional_endpoints -> [np.geomspace]
+    test_same_start_stop -> [np.geomspace]
+    test_default_num -> [np.geomspace]
+
+  TestFrombuffer
+    test_basic -> [np.frombuffer]
+    test_with_count -> [np.frombuffer]
+    test_with_offset -> [np.frombuffer]
+    test_with_count_and_offset -> [np.frombuffer]
+    test_bytearray_input -> [np.frombuffer]
+
+  TestLinspaceEndpoint
+    test_endpoint_true -> [np.linspace]
+    test_endpoint_false -> [np.linspace]
+    test_endpoint_false_num_1 -> [np.linspace]
+    test_endpoint_false_large -> [np.linspace]
+
+  TestLinspaceRetstep
+    test_retstep_true -> [np.linspace]
+    test_retstep_false -> [np.linspace]
+    test_retstep_endpoint_false -> [np.linspace]
+    test_retstep_num_0 -> [np.linspace]
+
+
+=== test_creation_linalg.py ===
+  TestDiag
+    test_diag_from_1d -> [np.diag]
+    test_diag_from_2d -> [np.diag]
+    test_diag_offset_positive -> [np.diag]
+    test_diag_offset_negative -> [np.diag]
+    test_diag_from_numpy_array -> [np.diag]
+
+  TestIdentity
+    test_identity_3 -> [np.identity]
+    test_identity_dtype -> [np.identity]
+
+  TestTri
+    test_tri_square -> [np.tri]
+    test_tri_rect -> [np.tri]
+    test_tri_with_offset -> [np.tri]
+    test_tri_dtype -> [np.tri]
+
+  TestTriu
+    test_triu_basic -> [np.triu]
+    test_triu_offset -> [np.triu]
+    test_triu_from_numpy -> [np.triu]
+
+  TestTril
+    test_tril_basic -> [np.tril]
+    test_tril_offset -> [np.tril]
+
+  TestLogspace
+    test_logspace_basic -> [np.logspace]
+    test_logspace_dtype -> [np.logspace]
+    test_logspace_default_num -> [np.logspace]
+
+  TestMeshgrid
+    test_meshgrid_2d -> [np.meshgrid]
+    test_meshgrid_indexing_ij -> [np.meshgrid]
+    test_meshgrid_numpy_input -> [np.meshgrid]
+
+  TestIndices
+    test_indices_2d -> [np.indices]
+    test_indices_3d -> [np.indices]
+
+  TestLinalgNorm
+    test_vector_norm -> [np.linalg.norm]
+    test_matrix_frobenius_norm -> [np.linalg.norm]
+    test_norm_axis -> [np.linalg.norm]
+
+  TestLinalgInv
+    test_inv_2x2 -> [np.linalg.inv]
+    test_inv_identity -> [np.linalg.inv]
+
+  TestLinalgDet
+    test_det_2x2 -> [np.linalg.det]
+    test_det_identity -> [np.linalg.det]
+
+  TestLinalgSolve
+    test_solve_simple -> [np.linalg.solve]
+    test_solve_identity -> [np.linalg.solve]
+
+  TestLinalgEigh
+    test_eigh_symmetric -> [np.linalg.eigh]
+
+  TestLinalgSVD
+    test_svd_basic -> [np.linalg.svd]
+    test_svd_square -> [np.linalg.svd]
+
+  TestLinalgCholesky
+    test_cholesky_spd -> [np.linalg.cholesky]
+    test_cholesky_reconstruction -> [np.linalg.cholesky]
+
+  TestCopy
+    test_copy_values -> [np.copy]
+    test_copy_is_independent -> [np.copy]
+
+  TestAscontiguousarray
+    test_ascontiguousarray_basic -> [np.array]
+    test_ascontiguousarray_from_numpy -> [np.array]
+
+  TestTrace
+    test_trace_basic -> [unknown]
+    test_trace_offset -> [unknown]
+
+  TestDiagonal
+    test_diagonal_basic -> [np.std]
+    test_diagonal_offset -> [np.std]
+    test_diagonal_negative_offset -> [np.negative]
+
+
+=== test_creation_linalg_ext.py ===
+  TestFromfunction
+    test_basic -> [np.fromfunction]
+    test_1d -> [np.fromfunction]
+
+  TestDiagflat
+    test_basic -> [np.std]
+    test_with_k -> [np.std]
+    test_negative_k -> [np.negative]
+
+  TestVander
+    test_basic -> [unknown]
+    test_increasing -> [np.sin]
+    test_with_N -> [unknown]
+
+  TestAsanyarray
+    test_ndarray_passthrough -> [np.any]
+    test_list_input -> [np.any]
+    test_with_dtype -> [dtype system]
+
+  TestMatrixPower
+    test_square -> [np.square]
+    test_zero_power -> [np.power]
+
+  TestQR
+    test_reduced -> [np.linalg.qr]
+    test_mode_r -> [np.linalg.qr]
+
+  TestEig
+    test_basic -> [unknown]
+
+  TestEigvals
+    test_basic -> [unknown]
+
+  TestEigvalsh
+    test_symmetric -> [np.linalg.eigvalsh]
+
+  TestCond
+    test_basic -> [unknown]
+
+  TestMatrixRank
+    test_full_rank -> [np.full]
+    test_rank_deficient -> [np.tri]
+
+  TestSlogdet
+    test_basic -> [np.linalg.slogdet]
+
+  TestLstsq
+    test_overdetermined -> [np.linalg.lstsq]
+
+  TestPinv
+    test_basic -> [np.linalg.pinv]
+
+  TestVdot
+    test_basic -> [np.vdot]
+
+  TestInner
+    test_1d -> [np.inner]
+
+  TestOuter
+    test_basic -> [np.outer]
+
+  TestTensordot
+    test_basic -> [np.tensordot]
+
+  TestEinsum
+    test_matrix_multiply -> [np.multiply]
+    test_trace -> [np.einsum]
+
+  TestKron
+    test_basic -> [np.kron]
+
+  TestMatmul
+    test_basic -> [np.matmul]
+
+  TestCross
+    test_3d -> [np.cross]
+
+
+=== test_creation_params_final.py ===
+  TestAsarrayChkfinite
+    test_basic_list -> [np.array]
+    test_with_dtype -> [dtype system]
+    test_raises_on_nan -> [np.array]
+    test_raises_on_inf -> [np.array]
+    test_raises_on_neg_inf -> [operator - (unary)]
+    test_from_ndarray -> [np.array]
+
+  TestFromiter
+    test_basic -> [unknown]
+    test_with_count -> [unknown]
+    test_int_dtype -> [dtype system]
+
+  TestFromstring
+    test_basic_sep -> [np.tri]
+    test_comma_sep -> [np.tri]
+    test_with_count -> [np.tri]
+
+  TestIndicesSparse
+    test_dense_default -> [np.indices]
+    test_sparse_true -> [np.indices]
+    test_sparse_false -> [np.indices]
+
+  TestAsfarray
+    test_basic_list -> [np.array]
+    test_from_int_array -> [np.array]
+    test_with_float32_dtype -> [dtype system]
+
+  TestInterpPeriod
+    test_basic_no_period -> [I/O operations]
+    test_with_period -> [I/O operations]
+
+  TestUnwrapPeriod
+    test_basic_no_period -> [I/O operations]
+    test_with_period -> [I/O operations]
+
+  TestPiecewise
+    test_basic -> [unknown]
+    test_with_ndarray_conditions -> [np.array]
+
+  TestLoadParams
+    test_load_with_encoding -> [np.load]
+    test_load_with_fix_imports -> [np.fix]
+    test_load_with_all_params -> [np.all]
+
+  TestSpacing
+    test_basic -> [np.spacing]
+    test_multiple_values -> [np.spacing]
+
+  TestIsnat
+    test_nat -> [unknown]
+
+
+=== test_dtype_format_final.py ===
+  TestIntegerDtypeAliases
+    test_int8_is_numpy_int8 -> [dtype system]
+    test_uint8_is_numpy_uint8 -> [dtype system]
+    test_byte_is_numpy_byte -> [dtype system]
+    test_ubyte_is_numpy_ubyte -> [dtype system]
+    test_short_is_numpy_short -> [dtype system]
+    test_ushort_is_numpy_ushort -> [dtype system]
+    test_intc_is_numpy_intc -> [dtype system]
+    test_uintc_is_numpy_uintc -> [dtype system]
+    test_uint_is_numpy_uint -> [dtype system]
+    test_longlong_is_numpy_longlong -> [dtype system]
+    test_ulonglong_is_numpy_ulonglong -> [dtype system]
+
+  TestFloatDtypeAliases
+    test_single_is_numpy_single -> [dtype system]
+    test_double_is_numpy_double -> [dtype system]
+    test_half_is_numpy_half -> [dtype system]
+    test_longdouble_is_numpy_longdouble -> [dtype system]
+
+  TestComplexDtypeAliases
+    test_csingle_is_numpy_csingle -> [dtype system]
+    test_cdouble_is_numpy_cdouble -> [dtype system]
+    test_clongdouble_is_numpy_clongdouble -> [dtype system]
+    test_complex128_is_numpy_complex128 -> [dtype system]
+
+  TestAbstractTypes
+    test_complexfloating -> [np.abs]
+    test_floating -> [np.abs]
+    test_integer -> [np.abs]
+    test_signedinteger -> [np.abs]
+    test_unsignedinteger -> [np.abs]
+    test_number -> [np.abs]
+    test_generic -> [np.abs]
+    test_inexact -> [np.abs]
+
+  TestUtilityReexports
+    test_dtype_is_numpy_dtype -> [dtype system]
+    test_dtype_can_create -> [dtype system]
+    test_broadcast_is_numpy_broadcast -> [broadcasting]
+    test_broadcast_usage -> [broadcasting]
+    test_flatiter_is_numpy_flatiter -> [np.exp]
+    test_nditer_is_numpy_nditer -> [np.exp]
+    test_nditer_usage -> [np.exp]
+
+  TestArray2String
+    test_basic -> [np.tri]
+    test_separator -> [np.tri]
+    test_precision -> [np.tri]
+    test_2d -> [np.tri]
+    test_matches_numpy -> [np.tri]
+
+  TestArrayRepr
+    test_basic -> [np.array]
+    test_precision -> [np.array]
+    test_matches_numpy -> [np.array]
+
+  TestArrayStr
+    test_basic -> [np.array]
+    test_matches_numpy -> [np.array]
+
+  TestBaseRepr
+    test_binary -> [ndarray.__repr__]
+    test_hex -> [ndarray.__repr__]
+    test_octal -> [ndarray.__repr__]
+    test_with_padding -> [ndarray.__repr__]
+
+  TestBinaryRepr
+    test_basic -> [ndarray.__repr__]
+    test_with_width -> [ndarray.__repr__]
+    test_negative -> [np.negative]
+    test_zero -> [ndarray.__repr__]
+
+  TestFormatFloatPositional
+    test_basic -> [I/O operations]
+    test_precision -> [I/O operations]
+    test_trim -> [I/O operations]
+    test_sign -> [np.sign]
+
+  TestFormatFloatScientific
+    test_basic -> [unknown]
+    test_precision -> [I/O operations]
+    test_exp_digits -> [np.exp]
+
+  TestTypename
+    test_float -> [unknown]
+    test_double -> [unknown]
+    test_int -> [unknown]
+    test_long -> [unknown]
+
+  TestMintypecode
+    test_basic -> [np.min / ndarray.min]
+    test_with_default -> [np.min / ndarray.min]
+    test_complex -> [complex number ops]
+
+
+=== test_dtype_system.py ===
+  TestResolveDtype
+    test_supported_dtype_passthrough -> [dtype system]
+    test_none_defaults_to_float32 -> [np.linalg.solve]
+    test_float64_downcast_to_float32 -> [np.linalg.solve]
+    test_float64_downcast_emits_warning -> [np.linalg.solve]
+    test_float64_downcast_no_warning_when_disabled -> [np.linalg.solve]
+    test_complex128_downcast_to_complex64 -> [np.linalg.solve]
+    test_complex64_accepted -> [np.linalg.solve]
+    test_unsupported_dtype_raises_typeerror -> [dtype system]
+    test_string_dtype_passthrough -> [dtype system]
+
+  TestResultDtype
+    test_result_dtype_matches_numpy -> [dtype system]
+
+  TestTypeMapping
+    test_numpy_to_metal_roundtrip -> [np.tri]
+    test_numpy_to_metal_unsupported_raises -> [unknown]
+    test_metal_to_numpy_unknown_raises -> [unknown]
+    test_metal_type_names_exist -> [unknown]
+
+  TestArrayRoundtrip
+    test_create_and_get -> [ndarray.get (device->host)]
+
+  TestBinaryOpCrossDtype
+    test_add_result_dtype -> [np.add]
+
+
+=== test_dtype_utils.py ===
+  TestCanCast
+    test_safe_cast_int16_to_float32 -> [dtype casting]
+    test_unsafe_cast -> [dtype casting]
+    test_same_type_cast -> [dtype casting]
+    test_no_cast -> [dtype casting]
+    test_with_macmetalpy_array -> [np.array]
+    test_equiv_cast -> [dtype casting]
+    test_safe_downcast_fails -> [dtype casting]
+
+  TestPromoteTypes
+    test_int_float_promotion -> [I/O operations]
+    test_same_type -> [unknown]
+    test_int_types -> [unknown]
+    test_bool_int -> [unknown]
+
+  TestResultType
+    test_two_dtypes -> [ndarray.__str__]
+    test_with_macmetalpy_array -> [np.array]
+    test_multiple_types -> [ndarray.__str__]
+
+  TestCommonType
+    test_float_arrays -> [np.array]
+    test_int_array -> [np.array]
+
+  TestMinScalarType
+    test_small_int -> [np.min / ndarray.min]
+    test_float -> [np.min / ndarray.min]
+    test_large_int -> [np.min / ndarray.min]
+
+  TestFinfo
+    test_float32 -> [unknown]
+    test_float16 -> [unknown]
+    test_float64 -> [unknown]
+    test_dtype_object -> [dtype system]
+
+  TestIinfo
+    test_int32 -> [unknown]
+    test_int64 -> [unknown]
+    test_uint32 -> [unknown]
+    test_int16 -> [unknown]
+
+  TestIssubdtype
+    test_float_is_floating -> [dtype system]
+    test_int_is_integer -> [dtype system]
+    test_float_is_not_integer -> [dtype system]
+    test_bool_is_generic -> [dtype system]
+    test_complex_is_number -> [complex number ops]
+
+  TestNdim
+    test_macmetalpy_1d -> [ndarray.ndim]
+    test_macmetalpy_2d -> [ndarray.ndim]
+    test_macmetalpy_scalar -> [ndarray.ndim]
+    test_python_scalar -> [ndarray.ndim]
+    test_python_list -> [ndarray.ndim]
+
+  TestShape
+    test_macmetalpy_1d -> [ndarray.shape]
+    test_macmetalpy_2d -> [ndarray.shape]
+    test_macmetalpy_scalar -> [ndarray.shape]
+    test_python_scalar -> [ndarray.shape]
+    test_python_list -> [ndarray.shape]
+
+  TestSize
+    test_macmetalpy_1d -> [ndarray.size]
+    test_macmetalpy_2d -> [ndarray.size]
+    test_macmetalpy_2d_axis0 -> [ndarray.size]
+    test_macmetalpy_2d_axis1 -> [ndarray.size]
+    test_python_list -> [ndarray.size]
+    test_scalar -> [ndarray.size]
+
+  TestConstants
+    test_euler_gamma -> [np.tan]
+    test_euler_gamma_value -> [np.tan]
+
+  TestDtypeAliases
+    test_complex64 -> [np.std]
+    test_int_ -> [np.std]
+    test_float_ -> [np.std]
+    test_complex_ -> [complex number ops]
+    test_intp -> [np.std]
+    test_uintp -> [np.std]
+
+
+=== test_edge_shapes.py ===
+  TestZeroSize1D
+    test_zeros_empty_1d -> [np.zeros]
+    test_array_empty_list -> [np.empty]
+
+  TestZeroSize2D
+    test_zeros_0_3 -> [np.zeros]
+    test_zeros_3_0 -> [np.zeros]
+
+  TestZeroSizeReductions
+    test_sum_empty_returns_zero -> [np.sum]
+    test_mean_empty_returns_nan -> [np.mean]
+
+  TestZeroSizeConcatStack
+    test_concatenate_with_empty -> [np.empty]
+    test_concatenate_two_empty -> [np.empty]
+
+  TestZeroSizeElementwise
+    test_add_empty_arrays -> [np.empty]
+    test_sqrt_empty -> [np.empty]
+    test_neg_empty -> [np.empty]
+
+  TestScalar0D
+    test_scalar_creation -> [I/O operations]
+    test_scalar_get_roundtrip -> [ndarray.get (device->host)]
+
+  TestScalar0DArithmetic
+    test_scalar_add -> [np.add]
+    test_scalar_mul -> [operator *]
+
+  TestScalar0DReduction
+    test_sum_0d -> [np.sum]
+    test_max_0d -> [np.max / ndarray.max]
+    test_min_0d -> [np.min / ndarray.min]
+    test_mean_0d -> [np.mean]
+
+  TestSingleElementReductions
+    test_sum_single -> [np.sum]
+    test_max_single -> [np.max / ndarray.max]
+    test_min_single -> [np.min / ndarray.min]
+
+  TestShapeDifferences
+    test_shape_1_tuple -> [ndarray.shape]
+    test_shape_1_1_tuple -> [ndarray.shape]
+    test_shape_scalar -> [ndarray.shape]
+    test_squeeze_1_1_to_scalar -> [np.squeeze]
+    test_reshape_scalar_to_1 -> [np.reshape / ndarray.reshape]
+    test_size_comparison -> [ndarray.size]
+    test_strides_size1 -> [ndarray.strides]
+
+  TestLargeArray
+    test_large_creation -> [np.array]
+    test_large_sum -> [np.sum]
+    test_large_elementwise -> [np.array]
+
+
+=== test_elementwise.py ===
+  TestArithmeticFloat
+    test_add -> [np.add]
+    test_sub -> [operator -]
+    test_mul -> [operator *]
+    test_div -> [operator /]
+    test_pow -> [operator **]
+
+  TestArithmeticScalar
+    test_add_scalar -> [np.add]
+    test_sub_scalar -> [operator -]
+    test_mul_scalar -> [operator *]
+    test_div_scalar -> [operator /]
+    test_pow_scalar -> [operator **]
+
+  TestReverseOperators
+    test_radd -> [ndarray.__str__]
+    test_rsub -> [ndarray.__str__]
+    test_rmul -> [ndarray.__str__]
+    test_rtruediv -> [ndarray.__str__]
+    test_rpow -> [ndarray.__str__]
+
+  TestUnaryOperators
+    test_neg -> [operator - (unary)]
+    test_abs -> [np.abs]
+
+  TestMathFunctions
+    test_sqrt -> [np.sqrt]
+    test_exp -> [np.exp]
+    test_log -> [np.log]
+    test_abs_function -> [np.abs]
+    test_power -> [np.power]
+
+  TestArithmeticInt
+    test_add_int -> [np.add]
+    test_sub_int -> [operator -]
+    test_mul_int -> [operator *]
+
+
+=== test_error_handling.py ===
+  TestCreationErrors
+    test_arange_step_zero -> [np.arange]
+    test_array_unsupported_dtype -> [np.array]
+    test_array_unsupported_dtype_uint8 -> [np.array]
+
+  TestReshapeErrors
+    test_reshape_incompatible_size -> [np.reshape / ndarray.reshape]
+    test_reshape_two_negative_ones -> [np.ones]
+    test_reshape_incompatible_with_neg1 -> [np.reshape / ndarray.reshape]
+    test_reshape_zero_size_incompatible -> [np.reshape / ndarray.reshape]
+
+  TestSqueezeErrors
+    test_squeeze_non_size1_axis -> [np.squeeze]
+    test_squeeze_non_size1_axis_negative -> [np.squeeze]
+
+  TestMatmulErrors
+    test_matmul_shape_mismatch -> [np.matmul]
+    test_matmul_1d_inner_product -> [np.matmul]
+    test_matmul_3d_raises -> [np.matmul]
+
+  TestLinalgErrors
+    test_inv_non_square -> [np.linalg.inv]
+    test_inv_singular -> [np.linalg.inv]
+    test_det_non_square -> [np.linalg.det]
+    test_solve_singular -> [np.linalg.solve]
+    test_cholesky_non_positive_definite -> [np.linalg.cholesky]
+    test_cholesky_non_square -> [np.linalg.cholesky]
+
+  TestBroadcastErrors
+    test_incompatible_shapes_add -> [np.add]
+    test_incompatible_shapes_mul -> [operator *]
+    test_broadcast_to_incompatible -> [np.broadcast_to]
+
+  TestConcatStackErrors
+    test_concatenate_shape_mismatch -> [np.concatenate]
+    test_stack_shape_mismatch -> [np.stack]
+    test_concatenate_empty_list -> [np.empty]
+
+  TestIndexErrors
+    test_getitem_out_of_bounds_positive -> [np.positive]
+    test_getitem_out_of_bounds_negative -> [np.negative]
+
+  TestScalarConversionErrors
+    test_float_on_multi_element -> [error handling]
+    test_int_on_multi_element -> [error handling]
+    test_len_on_0d -> [error handling]
+    test_float_on_size1_ok -> [error handling]
+    test_int_on_size1_ok -> [error handling]
+
+  TestSplitErrors
+    test_split_uneven -> [np.split]
+    test_split_too_many_sections -> [np.split]
+
+  TestInvalidAxisErrors
+    test_sum_invalid_axis -> [np.sum]
+    test_concatenate_invalid_axis -> [np.concatenate]
+
+  TestRawKernelErrors
+    test_bad_grid_tuple_4_elements -> [ndarray.__str__]
+    test_bad_grid_tuple_5_elements -> [ndarray.__str__]
+
+
+=== test_extra.py ===
+  TestLinspace
+    test_basic -> [np.linspace]
+    test_dtype -> [dtype system]
+    test_single_element -> [np.linspace]
+    test_many_elements -> [np.linspace]
+
+  TestEye
+    test_basic -> [np.eye]
+    test_non_square -> [np.square]
+    test_dtype -> [dtype system]
+
+  TestDot
+    test_dot_2d -> [np.dot]
+    test_dot_1d -> [np.dot]
+
+  TestWhere
+    test_basic -> [np.where]
+    test_scalar_values -> [np.where]
+
+  TestClip
+    test_basic -> [np.clip]
+    test_no_clip_needed -> [np.clip]
+
+  TestConcatenate
+    test_basic -> [np.concatenate]
+    test_three_arrays -> [np.concatenate]
+    test_2d_axis0 -> [np.concatenate]
+
+  TestStack
+    test_basic -> [np.stack]
+    test_axis1 -> [np.stack]
+
+  TestVstackHstack
+    test_vstack -> [np.vstack]
+    test_hstack -> [np.hstack]
+
+
+=== test_fft.py ===
+  TestFft
+    test_power_of_2 -> [np.power]
+    test_prime_length -> [np.fft.fft]
+    test_odd_length -> [np.fft.fft]
+    test_with_n -> [np.fft.fft]
+    test_single_element -> [np.fft.fft]
+    test_axis -> [np.fft.fft]
+
+  TestIfft
+    test_basic -> [np.fft.ifft]
+    test_roundtrip_power_of_2 -> [np.power]
+    test_roundtrip_prime -> [np.fft.ifft]
+    test_roundtrip_odd -> [np.fft.ifft]
+
+  TestFft2
+    test_basic -> [np.fft.fft2]
+    test_with_s -> [np.fft.fft2]
+    test_roundtrip -> [np.fft.fft2]
+
+  TestIfft2
+    test_basic -> [np.fft.ifft2]
+
+  TestFftn
+    test_basic -> [np.fft.fftn]
+    test_with_s -> [np.fft.fftn]
+    test_roundtrip -> [np.fft.fftn]
+
+  TestIfftn
+    test_basic -> [np.fft.ifftn]
+
+  TestRfft
+    test_basic -> [np.fft.rfft]
+    test_with_n -> [np.fft.rfft]
+    test_roundtrip -> [np.fft.rfft]
+
+  TestIrfft
+    test_basic -> [np.fft.irfft]
+
+  TestRfft2
+    test_basic -> [np.fft.rfft2]
+    test_roundtrip -> [np.fft.rfft2]
+
+  TestIrfft2
+    test_basic -> [np.fft.irfft2]
+
+  TestRfftn
+    test_basic -> [np.fft.rfftn]
+    test_roundtrip -> [np.fft.rfftn]
+
+  TestIrfftn
+    test_basic -> [np.fft.irfftn]
+
+  TestHfft
+    test_basic -> [np.fft.fft]
+    test_roundtrip -> [np.fft.fft]
+
+  TestIhfft
+    test_basic -> [np.fft.fft]
+
+  TestFftfreq
+    test_basic -> [np.fft.fftfreq]
+    test_with_d -> [np.fft.fftfreq]
+    test_values_check -> [np.fft.fftfreq]
+    test_odd_n -> [np.fft.fftfreq]
+
+  TestRfftfreq
+    test_basic -> [np.fft.rfft]
+    test_with_d -> [np.fft.rfft]
+    test_values_check -> [np.fft.rfft]
+
+  TestFftshift
+    test_1d -> [np.fft.fftshift]
+    test_2d -> [np.fft.fftshift]
+    test_axes -> [np.fft.fftshift]
+
+  TestIfftshift
+    test_1d -> [np.fft.ifft]
+    test_2d -> [np.fft.ifft]
+    test_roundtrip -> [np.fft.ifft]
+    test_axes -> [np.fft.ifft]
+
+
+=== test_fft_sort_idx_params.py ===
+  TestFftNorm
+    test_fft_norm -> [np.linalg.norm]
+    test_ifft_norm -> [np.linalg.norm]
+    test_fft2_norm -> [np.linalg.norm]
+    test_ifft2_norm -> [np.linalg.norm]
+    test_fftn_norm -> [np.linalg.norm]
+    test_ifftn_norm -> [np.linalg.norm]
+    test_rfft_norm -> [np.linalg.norm]
+    test_irfft_norm -> [np.linalg.norm]
+    test_rfft2_norm -> [np.linalg.norm]
+    test_irfft2_norm -> [np.linalg.norm]
+    test_rfftn_norm -> [np.linalg.norm]
+    test_irfftn_norm -> [np.linalg.norm]
+    test_hfft_norm -> [np.linalg.norm]
+    test_ihfft_norm -> [np.linalg.norm]
+    test_fft_norm_default_matches_none -> [np.linalg.norm]
+
+  TestSortParams
+    test_sort_kind -> [np.sort]
+    test_sort_kind_default_unchanged -> [np.sort]
+    test_argsort_kind -> [np.argsort]
+    test_argsort_kind_default_unchanged -> [np.argsort]
+    test_partition_kind -> [np.partition]
+    test_partition_default_unchanged -> [np.partition]
+    test_argpartition_kind -> [np.argpartition]
+    test_argpartition_default_unchanged -> [np.argpartition]
+    test_sort_order_param_accepted -> [np.sort]
+    test_argsort_order_param_accepted -> [np.argsort]
+
+  TestSearchsortedParams
+    test_sorter -> [np.sort]
+    test_sorter_none_default -> [np.sort]
+    test_sorter_with_side -> [np.sort]
+
+  TestTakeParams
+    test_take_mode -> [np.mod]
+    test_take_mode_default_is_raise -> [np.mod]
+    test_take_out -> [unknown]
+    test_take_out_with_axis -> [unknown]
+
+  TestChooseParams
+    test_choose_mode -> [np.mod]
+    test_choose_out -> [unknown]
+    test_choose_default_mode_is_raise -> [np.mod]
+
+  TestCompressParams
+    test_compress_out -> [unknown]
+    test_compress_out_with_axis -> [unknown]
+    test_compress_default_no_out -> [unknown]
+
+  TestPutParams
+    test_put_mode -> [np.mod]
+    test_put_default_mode_is_raise -> [np.mod]
+
+
+=== test_final_param_gaps.py ===
+  TestFixOut
+    test_fix_basic -> [np.fix]
+    test_fix_out -> [np.fix]
+
+  TestGradientAxis
+    test_gradient_1d -> [unknown]
+    test_gradient_2d_axis0 -> [unknown]
+    test_gradient_2d_axis1 -> [unknown]
+    test_gradient_edge_order -> [edge cases]
+
+  TestAllWhere
+    test_all_basic -> [np.all]
+    test_all_where_mask -> [np.all]
+    test_all_where_axis -> [np.all]
+
+  TestAnyWhere
+    test_any_basic -> [np.any]
+    test_any_where_mask -> [np.any]
+    test_any_where_axis -> [np.any]
+
+  TestAmaxInitialWhere
+    test_amax_initial -> [np.max / ndarray.max]
+    test_amax_initial_smaller -> [np.max / ndarray.max]
+    test_amax_where -> [np.where]
+    test_amax_where_axis -> [np.where]
+
+  TestAminInitialWhere
+    test_amin_initial -> [np.min / ndarray.min]
+    test_amin_initial_larger -> [np.min / ndarray.min]
+    test_amin_where -> [np.where]
+    test_amin_where_axis -> [np.where]
+
+
+=== test_functional.py ===
+  TestVectorize
+    test_basic_scalar_function -> [I/O operations]
+    test_two_arguments -> [unknown]
+    test_otypes -> [unknown]
+    test_excluded -> [unknown]
+    test_2d_input -> [unknown]
+    test_preserves_shape -> [ndarray.shape]
+    test_with_numpy_array_input -> [np.array]
+
+  TestApplyAlongAxis
+    test_1d_function_axis0 -> [I/O operations]
+    test_1d_function_axis1 -> [I/O operations]
+    test_sorted_along_axis -> [np.sort]
+    test_custom_function -> [I/O operations]
+    test_3d_input -> [unknown]
+
+  TestApplyOverAxes
+    test_sum_over_single_axis -> [np.sum]
+    test_sum_over_two_axes -> [np.sum]
+    test_preserves_ndim -> [ndarray.ndim]
+
+
+=== test_index_tricks.py ===
+  TestC
+    test_basic_arrays -> [np.array]
+    test_slice_range -> [unknown]
+    test_same_length_arrays -> [np.array]
+    test_single_element_arrays -> [np.array]
+    test_2d_arrays -> [np.array]
+
+  TestR
+    test_basic_arrays -> [ndarray.__str__]
+    test_slice_range -> [ndarray.__str__]
+    test_multiple_slices -> [ndarray.__str__]
+    test_with_step -> [ndarray.__str__]
+    test_scalar -> [ndarray.__str__]
+    test_string_directive -> [ndarray.__str__]
+
+  TestS
+    test_single_slice -> [np.sin]
+    test_multi_dim_slice -> [operator *]
+    test_integer_index -> [unknown]
+    test_ellipsis -> [unknown]
+    test_step -> [unknown]
+    test_newaxis -> [unknown]
+
+  TestMgrid
+    test_basic_2d -> [np.mgrid]
+    test_1d -> [np.mgrid]
+    test_with_step -> [np.mgrid]
+    test_float_step -> [np.mgrid]
+    test_complex_step -> [complex number ops]
+
+  TestOgrid
+    test_basic_2d -> [np.ogrid]
+    test_1d -> [np.ogrid]
+    test_with_step -> [np.ogrid]
+    test_shape_2d -> [ndarray.shape]
+    test_complex_step -> [complex number ops]
+
+
+=== test_indexing.py ===
+  TestTake
+    test_basic -> [unknown]
+    test_axis0 -> [unknown]
+    test_axis1 -> [unknown]
+    test_negative_idx -> [np.negative]
+    test_ndarray_indices -> [np.indices]
+
+  TestTakeAlongAxis
+    test_axis0 -> [unknown]
+    test_axis1 -> [unknown]
+    test_argmax_usage -> [np.argmax]
+
+  TestPut
+    test_basic -> [unknown]
+    test_returns_none -> [unknown]
+    test_ndarray_indices -> [np.indices]
+
+  TestPutAlongAxis
+    test_basic -> [unknown]
+
+  TestPutmask
+    test_basic -> [unknown]
+    test_returns_none -> [unknown]
+    test_2d -> [unknown]
+
+  TestPlace
+    test_basic -> [unknown]
+    test_returns_none -> [unknown]
+
+  TestChoose
+    test_basic -> [unknown]
+    test_two_choices -> [np.random.choice]
+
+  TestCompress
+    test_basic -> [unknown]
+    test_with_axis -> [unknown]
+
+  TestSelect
+    test_basic -> [unknown]
+
+  TestExtract
+    test_basic -> [unknown]
+    test_2d -> [unknown]
+
+  TestDiagIndices
+    test_basic -> [np.std]
+    test_ndim3 -> [np.std]
+
+  TestDiagIndicesFrom
+    test_basic -> [np.std]
+
+  TestTrilIndices
+    test_basic -> [np.tri]
+    test_with_k -> [np.tri]
+    test_with_m -> [np.tri]
+
+  TestTrilIndicesFrom
+    test_basic -> [np.tri]
+    test_with_k -> [np.tri]
+
+  TestTriuIndices
+    test_basic -> [np.tri]
+    test_with_k -> [np.tri]
+    test_with_m -> [np.tri]
+
+  TestTriuIndicesFrom
+    test_basic -> [np.tri]
+    test_with_k -> [np.tri]
+
+  TestRavelMultiIndex
+    test_2d -> [np.ravel / ndarray.ravel]
+    test_3d -> [np.ravel / ndarray.ravel]
+    test_plain_lists -> [np.ravel / ndarray.ravel]
+
+  TestUnravelIndex
+    test_2d -> [np.ravel / ndarray.ravel]
+    test_3d -> [np.ravel / ndarray.ravel]
+    test_plain_indices -> [np.indices]
+
+  TestFillDiagonal
+    test_square -> [np.square]
+    test_rectangular -> [np.diag]
+    test_returns_none -> [np.diag]
+
+  TestNonzero
+    test_basic -> [np.nonzero]
+    test_all_zero -> [np.all]
+    test_all_nonzero -> [np.all]
+
+  TestFlatnonzero
+    test_basic -> [np.nonzero]
+    test_all_zero -> [np.all]
+    test_all_nonzero -> [np.all]
+
+  TestArgwhere
+    test_basic -> [np.argwhere]
+    test_all_zero -> [np.all]
+    test_all_nonzero -> [np.all]
+
+  TestIx
+    test_2d -> [unknown]
+    test_3d -> [unknown]
+    test_plain_arrays -> [np.array]
+    test_single_arg -> [np.sin]
+
+
+=== test_indexing_funcs.py ===
+  TestTake
+    test_take_1d -> [unknown]
+    test_take_axis -> [unknown]
+    test_take_plain_indices -> [np.indices]
+
+  TestTakeAlongAxis
+    test_basic -> [unknown]
+
+  TestPut
+    test_put_basic -> [unknown]
+    test_put_returns_none -> [unknown]
+    test_put_ndarray_indices -> [np.indices]
+
+  TestPutAlongAxis
+    test_basic -> [unknown]
+
+  TestPutmask
+    test_basic -> [unknown]
+    test_returns_none -> [unknown]
+
+  TestPlace
+    test_basic -> [unknown]
+    test_returns_none -> [unknown]
+
+  TestChoose
+    test_basic -> [unknown]
+
+  TestCompress
+    test_basic -> [unknown]
+    test_with_axis -> [unknown]
+
+  TestSelect
+    test_basic -> [unknown]
+
+  TestExtract
+    test_basic -> [unknown]
+
+  TestDiagIndices
+    test_basic -> [np.std]
+    test_ndim3 -> [np.std]
+
+  TestDiagIndicesFrom
+    test_basic -> [np.std]
+
+  TestTrilIndices
+    test_basic -> [np.tri]
+    test_with_k -> [np.tri]
+    test_with_m -> [np.tri]
+
+  TestTrilIndicesFrom
+    test_basic -> [np.tri]
+
+  TestTriuIndices
+    test_basic -> [np.tri]
+    test_with_k -> [np.tri]
+    test_with_m -> [np.tri]
+
+  TestTriuIndicesFrom
+    test_basic -> [np.tri]
+    test_with_k -> [np.tri]
+
+  TestRavelMultiIndex
+    test_basic -> [np.ravel / ndarray.ravel]
+
+  TestUnravelIndex
+    test_basic -> [np.ravel / ndarray.ravel]
+    test_plain_indices -> [np.indices]
+
+  TestFillDiagonal
+    test_basic -> [np.diag]
+    test_returns_none -> [np.diag]
+    test_rectangular -> [np.diag]
+
+  TestNonzero
+    test_basic -> [np.nonzero]
+    test_2d -> [np.nonzero]
+
+  TestFlatnonzero
+    test_basic -> [np.nonzero]
+
+  TestArgwhere
+    test_basic -> [np.argwhere]
+    test_2d -> [np.argwhere]
+
+  TestIx
+    test_basic -> [unknown]
+    test_plain_arrays -> [np.array]
+
+
+=== test_inplace_ops.py ===
+  TestInplaceArrayArray
+    test_array_array -> [np.array]
+
+  TestInplaceScalar
+    test_scalar_rhs -> [in-place operations]
+
+  TestInplaceBroadcast
+    test_broadcast_rhs -> [broadcasting]
+
+  TestInplacePreservesDtype
+    test_dtype_preserved -> [dtype system]
+
+  TestInplaceBool
+    test_ior_bool -> [in-place operations]
+    test_iand_bool -> [in-place operations]
+
+  TestInplaceOnView
+    test_reshape_view_iadd -> [np.reshape / ndarray.reshape]
+    test_slice_view_iadd -> [ndarray (views)]
+
+
+=== test_interop.py ===
+  TestLen
+    test_len_1d -> [unknown]
+    test_len_2d -> [unknown]
+    test_len_0d_error -> [error handling]
+
+  TestFloat
+    test_float_size1_ok -> [ndarray.size]
+    test_float_sizeN_error -> [error handling]
+
+  TestInt
+    test_int_size1_ok -> [ndarray.size]
+    test_int_sizeN_error -> [error handling]
+
+  TestReprStr
+    test_repr_includes_values -> [ndarray.__repr__]
+    test_str_matches_values -> [ndarray.__str__]
+    test_repr_scalar -> [ndarray.__repr__]
+    test_str_scalar -> [ndarray.__str__]
+
+
+=== test_io_gaps.py ===
+  TestSaveLoad
+    test_roundtrip_1d -> [np.save]
+    test_roundtrip_2d -> [np.save]
+    test_roundtrip_float16 -> [np.save]
+    test_auto_npy_extension -> [np.save]
+
+  TestSavezLoad
+    test_roundtrip_positional -> [np.save]
+    test_roundtrip_keyword -> [np.save]
+
+  TestSavezCompressed
+    test_roundtrip -> [np.save]
+    test_compressed_smaller -> [np.save]
+
+
+=== test_linalg.py ===
+  TestNorm
+    test_vector_norm_default -> [np.linalg.norm]
+    test_vector_norm_ord -> [np.linalg.norm]
+    test_matrix_frobenius -> [np.linalg.norm]
+    test_matrix_norm_ord -> [np.linalg.norm]
+    test_norm_axis -> [np.linalg.norm]
+
+  TestInv
+    test_basic -> [np.linalg.inv]
+    test_1x1 -> [np.linalg.inv]
+    test_identity -> [np.identity]
+    test_singular_error -> [error handling]
+    test_non_square_error -> [np.square]
+
+  TestDet
+    test_basic -> [np.linalg.det]
+    test_identity_equals_one -> [np.identity]
+    test_singular_equals_zero -> [np.linalg.det]
+    test_1x1 -> [np.linalg.det]
+
+  TestSolve
+    test_basic -> [np.linalg.solve]
+    test_identity -> [np.identity]
+    test_singular_error -> [error handling]
+
+  TestEigh
+    test_basic -> [np.linalg.eigh]
+    test_identity -> [np.identity]
+    test_diagonal -> [np.linalg.eigh]
+
+  TestSVD
+    test_basic -> [np.linalg.svd]
+    test_full_matrices_false -> [np.full]
+    test_full_matrices_true -> [np.full]
+
+  TestCholesky
+    test_basic -> [np.linalg.cholesky]
+    test_non_pd_error -> [error handling]
+
+  TestMatrixPower
+    test_powers -> [np.tri]
+    test_inverse_power -> [np.power]
+
+  TestQR
+    test_reduced -> [np.linalg.qr]
+    test_tall -> [np.linalg.qr]
+    test_wide -> [np.linalg.qr]
+    test_mode_r -> [np.linalg.qr]
+
+  TestEig
+    test_basic -> [unknown]
+    test_diagonal -> [np.diag]
+    test_symmetric -> [np.tri]
+
+  TestEigvals
+    test_basic -> [unknown]
+    test_diagonal -> [np.diag]
+
+  TestEigvalsh
+    test_symmetric -> [np.linalg.eigvalsh]
+    test_diagonal -> [np.linalg.eigvalsh]
+
+  TestCond
+    test_basic -> [unknown]
+    test_identity -> [np.identity]
+
+  TestMatrixRank
+    test_full_rank -> [np.full]
+    test_rank_deficient -> [np.tri]
+    test_singular -> [np.tri]
+
+  TestSlogdet
+    test_basic -> [np.linalg.slogdet]
+    test_singular -> [np.linalg.slogdet]
+
+  TestLstsq
+    test_overdetermined -> [np.linalg.lstsq]
+    test_underdetermined -> [np.linalg.lstsq]
+
+  TestPinv
+    test_basic -> [np.linalg.pinv]
+    test_non_square -> [np.square]
+
+  TestVdot
+    test_basic -> [np.vdot]
+    test_2d -> [np.vdot]
+
+  TestInner
+    test_1d -> [np.inner]
+    test_2d -> [np.inner]
+
+  TestOuter
+    test_basic -> [np.outer]
+    test_large -> [np.outer]
+
+  TestTensordot
+    test_basic -> [np.tensordot]
+    test_axes_tuple -> [np.tensordot]
+
+  TestEinsum
+    test_matrix_multiply -> [np.multiply]
+    test_trace -> [np.einsum]
+    test_diagonal -> [np.einsum]
+
+  TestKron
+    test_basic -> [np.kron]
+    test_1d -> [np.kron]
+
+  TestMatmul
+    test_basic -> [np.matmul]
+    test_vector_matrix -> [np.matmul]
+    test_square -> [np.square]
+
+  TestCross
+    test_3d -> [np.cross]
+    test_2d -> [np.cross]
+
+
+=== test_linalg_gaps.py ===
+  TestLinAlgError
+    test_is_exception -> [error handling]
+    test_can_raise -> [error handling]
+    test_message -> [error handling]
+
+  TestMultiDot
+    test_two_matrices -> [np.dot]
+    test_three_matrices -> [np.dot]
+    test_four_matrices -> [np.dot]
+    test_with_out -> [np.dot]
+
+  TestTensorsolve
+    test_basic -> [np.linalg.solve]
+    test_2x2_identity -> [np.identity]
+
+  TestTensorinv
+    test_ind1 -> [np.linalg.inv]
+    test_identity_like -> [np.identity]
+
+
+=== test_linalg_logic_params.py ===
+  TestOuterOut
+    test_outer_default_no_out -> [np.outer]
+    test_outer_with_out -> [np.outer]
+
+  TestEinsumParams
+    test_einsum_default -> [np.einsum]
+    test_einsum_with_out -> [np.einsum]
+    test_einsum_with_optimize -> [np.einsum]
+    test_einsum_out_and_optimize -> [np.einsum]
+
+  TestIn1dKind
+    test_in1d_default -> [np.in1d]
+    test_in1d_with_kind_none -> [np.in1d]
+    test_in1d_with_kind_sort -> [np.sort]
+    test_in1d_with_invert_and_kind -> [np.in1d]
+
+  TestIsinKind
+    test_isin_default -> [np.isin]
+    test_isin_with_kind_none -> [np.isin]
+    test_isin_with_kind_sort -> [np.sort]
+    test_isin_with_invert_and_kind -> [np.isin]
+
+  TestSvdParams
+    test_svd_default -> [np.linalg.svd]
+    test_svd_compute_uv_false -> [np.linalg.svd]
+    test_svd_hermitian -> [np.linalg.svd]
+
+  TestNormKeepdims
+    test_norm_default -> [np.linalg.norm]
+    test_norm_keepdims_false -> [np.linalg.norm]
+    test_norm_keepdims_true -> [np.linalg.norm]
+
+  TestEighUplo
+    test_eigh_default -> [np.linalg.eigh]
+    test_eigh_uplo_L -> [np.linalg.eigh]
+    test_eigh_uplo_U -> [np.linalg.eigh]
+
+  TestEigvalshUplo
+    test_eigvalsh_default -> [np.linalg.eigvalsh]
+    test_eigvalsh_uplo_L -> [np.linalg.eigvalsh]
+    test_eigvalsh_uplo_U -> [np.linalg.eigvalsh]
+
+
+=== test_logic_bitwise.py ===
+  TestLogicalAnd
+    test_basic -> [np.log]
+    test_mixed_truthy -> [np.log]
+
+  TestLogicalOr
+    test_basic -> [np.log]
+    test_mixed_truthy -> [np.log]
+
+  TestLogicalNot
+    test_basic -> [np.log]
+    test_zeros -> [np.zeros]
+
+  TestLogicalXor
+    test_basic -> [np.log]
+
+  TestComparisonDtypePairs
+    test_dtype_pair -> [dtype system]
+
+  TestComparisonEdgeCases
+    test_nan -> [edge cases]
+    test_inf -> [edge cases]
+
+  TestIsneginf
+    test_special_values -> [np.isneginf]
+
+  TestIsposinf
+    test_special_values -> [np.sin]
+
+  TestIscomplex
+    test_real_array -> [np.array]
+    test_complex_array -> [np.array]
+
+  TestIsreal
+    test_real_array -> [np.array]
+    test_complex_array -> [np.array]
+
+  TestIsscalar
+    test_python_scalar -> [unknown]
+    test_array_not_scalar -> [np.array]
+    test_0d_array -> [np.array]
+
+  TestArrayEquiv
+    test_equal -> [np.equal]
+    test_not_equal -> [np.not_equal]
+    test_broadcast_equiv -> [broadcasting]
+
+  TestBitwiseAnd
+    test_basic -> [unknown]
+
+  TestBitwiseOr
+    test_basic -> [unknown]
+
+  TestBitwiseXor
+    test_basic -> [unknown]
+
+  TestInvert
+    test_basic -> [np.linalg.inv]
+    test_specific_values -> [np.linalg.inv]
+
+  TestLeftShift
+    test_basic -> [unknown]
+    test_shift_amounts -> [unknown]
+
+  TestRightShift
+    test_basic -> [np.tri]
+    test_shift_amounts -> [np.tri]
+
+  TestPackbits
+    test_basic -> [unknown]
+    test_all_ones -> [np.all]
+    test_all_zeros -> [np.all]
+
+  TestUnpackbits
+    test_basic -> [unknown]
+    test_roundtrip -> [np.tri]
+
+  TestGcd
+    test_basic -> [unknown]
+    test_zero -> [unknown]
+    test_negative -> [np.negative]
+
+  TestLcm
+    test_basic -> [unknown]
+    test_zero -> [unknown]
+    test_negative -> [np.negative]
+
+
+=== test_logic_gaps.py ===
+  TestIscomplexobj
+    test_real_array_is_not_complex -> [np.array]
+    test_int_array_is_not_complex -> [np.array]
+    test_complex_array_is_complex -> [np.array]
+    test_bool_array_is_not_complex -> [np.array]
+    test_python_float -> [np.iscomplex]
+    test_python_complex -> [complex number ops]
+    test_python_int -> [np.iscomplex]
+    test_numpy_complex_array -> [np.array]
+    test_numpy_real_array -> [np.array]
+
+  TestIsrealobj
+    test_real_array_is_real -> [np.array]
+    test_int_array_is_real -> [np.array]
+    test_complex_array_is_not_real -> [np.array]
+    test_bool_array_is_real -> [np.array]
+    test_python_float -> [np.isreal]
+    test_python_complex -> [complex number ops]
+    test_python_int -> [np.isreal]
+    test_numpy_complex_array -> [np.array]
+    test_numpy_real_array -> [np.array]
+
+  TestIsfortran
+    test_c_contiguous_array -> [np.array]
+    test_1d_array -> [np.array]
+    test_scalar_array -> [np.array]
+    test_always_false -> [unknown]
+    test_3d_array -> [np.array]
+
+
+=== test_manip_ext.py ===
+  (module-level)
+    test_reshape -> [np.reshape / ndarray.reshape]
+    test_reshape_plain -> [np.reshape / ndarray.reshape]
+    test_transpose -> [np.transpose / ndarray.T]
+    test_transpose_axes -> [np.transpose / ndarray.T]
+    test_rollaxis -> [np.rollaxis]
+    test_atleast_1d_scalar -> [np.atleast_1d]
+    test_atleast_1d_multi -> [np.atleast_1d]
+    test_atleast_2d -> [np.atleast_2d]
+    test_atleast_3d -> [np.atleast_3d]
+    test_dstack -> [np.dstack]
+    test_column_stack -> [np.column_stack]
+    test_concat -> [unknown]
+    test_concat_axis1 -> [unknown]
+    test_dsplit -> [np.dsplit]
+    test_hsplit -> [np.hsplit]
+    test_vsplit -> [np.vsplit]
+    test_delete -> [np.delete]
+    test_delete_axis -> [np.delete]
+    test_append -> [np.append]
+    test_append_axis -> [np.append]
+    test_resize -> [np.resize]
+    test_trim_zeros -> [np.trim_zeros]
+    test_trim_zeros_front -> [np.zeros]
+    test_fliplr -> [np.fliplr]
+    test_flipud -> [np.flipud]
+    test_rot90 -> [np.rot90]
+    test_rot90_k2 -> [np.rot90]
+    test_broadcast_arrays -> [np.broadcast_arrays]
+    test_copyto -> [np.copy]
+    test_pad_constant -> [np.pad]
+    test_pad_2d -> [np.pad]
+
+
+=== test_manipulation.py ===
+  TestReshape
+    test_1d_to_2d -> [np.reshape / ndarray.reshape]
+    test_2d_to_1d -> [np.reshape / ndarray.reshape]
+    test_infer_dim -> [np.reshape / ndarray.reshape]
+    test_3d_reshape -> [np.reshape / ndarray.reshape]
+
+  TestTranspose
+    test_default_2d -> [np.transpose / ndarray.T]
+    test_axes_3d -> [np.transpose / ndarray.T]
+    test_reverse_axes -> [np.transpose / ndarray.T]
+
+  TestRavel
+    test_basic -> [np.ravel / ndarray.ravel]
+
+  TestSqueeze
+    test_all_dims -> [np.all]
+    test_specific_axis -> [np.squeeze]
+    test_no_squeeze_needed -> [np.squeeze]
+
+  TestTile
+    test_scalar_reps_1d -> [np.tile]
+    test_tuple_reps_2d -> [np.tile]
+    test_1d_to_2d_reps -> [np.tile]
+    test_3d -> [np.tile]
+
+  TestRepeat
+    test_flat -> [np.repeat]
+    test_axis0 -> [np.repeat]
+    test_axis1 -> [np.repeat]
+    test_no_axis_2d -> [np.repeat]
+
+  TestFlip
+    test_1d -> [np.flip]
+    test_2d_no_axis -> [np.flip]
+    test_2d_axis0 -> [np.flip]
+    test_2d_axis1 -> [np.flip]
+
+  TestFliplr
+    test_basic -> [np.flip]
+
+  TestFlipud
+    test_basic -> [np.flip]
+
+  TestRot90
+    test_k1 -> [np.rot90]
+    test_k_values -> [np.rot90]
+
+  TestRoll
+    test_int_shift -> [np.roll]
+    test_negative_shift -> [np.negative]
+    test_with_axis -> [np.roll]
+
+  TestSplit
+    test_equal_1d -> [np.equal]
+    test_indices_1d -> [np.indices]
+    test_2d_axis0 -> [np.split]
+
+  TestArraySplit
+    test_unequal -> [np.array]
+    test_equal -> [np.equal]
+
+  TestHsplit
+    test_basic -> [np.split]
+
+  TestVsplit
+    test_basic -> [np.split]
+
+  TestDsplit
+    test_basic -> [np.std]
+
+  TestConcatenate
+    test_1d -> [np.concatenate]
+    test_2d_axis0 -> [np.concatenate]
+    test_2d_axis1 -> [np.concatenate]
+    test_three_arrays -> [np.concatenate]
+
+  TestStack
+    test_1d -> [np.stack]
+    test_axis1 -> [np.stack]
+
+  TestVstack
+    test_1d -> [np.stack]
+    test_2d -> [np.stack]
+
+  TestHstack
+    test_1d -> [np.stack]
+    test_2d -> [np.stack]
+
+  TestDstack
+    test_1d -> [np.std]
+    test_2d -> [np.std]
+
+  TestColumnStack
+    test_1d -> [np.stack]
+    test_2d -> [np.stack]
+
+  TestConcat
+    test_1d -> [unknown]
+    test_axis1 -> [unknown]
+
+  TestMoveaxis
+    test_basic -> [np.moveaxis]
+    test_swap -> [np.moveaxis]
+    test_noop -> [np.moveaxis]
+
+  TestSwapaxes
+    test_2d -> [np.swapaxes]
+    test_3d -> [np.swapaxes]
+    test_noop -> [np.swapaxes]
+
+  TestRollaxis
+    test_basic -> [np.rollaxis]
+    test_to_end -> [np.rollaxis]
+
+  TestBroadcastTo
+    test_basic -> [dtype casting]
+    test_1d_to_2d -> [dtype casting]
+    test_scalar_like -> [dtype casting]
+
+  TestBroadcastArrays
+    test_basic -> [np.array]
+    test_same_shape -> [ndarray.shape]
+
+  TestAtleast1d
+    test_scalar -> [unknown]
+    test_1d -> [unknown]
+    test_2d -> [unknown]
+    test_multi -> [operator *]
+
+  TestAtleast2d
+    test_1d -> [unknown]
+    test_2d_noop -> [unknown]
+    test_3d_noop -> [unknown]
+
+  TestAtleast3d
+    test_1d -> [unknown]
+    test_2d -> [unknown]
+    test_3d_noop -> [unknown]
+
+  TestDelete
+    test_1d -> [np.std]
+    test_axis0 -> [np.std]
+    test_single_index -> [np.std]
+
+  TestAppend
+    test_1d -> [np.append]
+    test_axis0 -> [np.append]
+
+  TestResize
+    test_basic -> [np.resize]
+    test_larger -> [np.resize]
+
+  TestTrimZeros
+    test_both -> [np.zeros]
+    test_front -> [np.zeros]
+    test_back -> [np.zeros]
+
+  TestCopyto
+    test_basic -> [np.copy]
+    test_2d -> [np.copy]
+
+  TestPad
+    test_constant_1d -> [np.pad]
+    test_constant_2d -> [np.pad]
+    test_edge_1d -> [edge cases]
+
+
+=== test_manipulation_gaps.py ===
+  TestBlock
+    test_1d_list -> [unknown]
+    test_2d_blocks -> [unknown]
+    test_single_array -> [np.array]
+    test_nested_2x2 -> [unknown]
+    test_mixed_numpy_macmetalpy -> [unknown]
+
+  TestInsert
+    test_1d_single -> [np.insert]
+    test_1d_multiple_values -> [np.insert]
+    test_at_beginning -> [np.insert]
+    test_at_end -> [np.insert]
+    test_2d_axis0 -> [np.insert]
+    test_2d_axis1 -> [np.insert]
+    test_no_axis_flattens -> [np.insert]
+
+  TestBroadcastShapes
+    test_simple -> [dtype casting]
+    test_1d_broadcast -> [broadcasting]
+    test_2d_broadcast -> [broadcasting]
+    test_different_ndim -> [ndarray.ndim]
+    test_three_shapes -> [dtype casting]
+    test_scalar -> [dtype casting]
+    test_incompatible -> [dtype casting]
+    test_3d_broadcast -> [broadcasting]
+
+  TestAsfortranarray
+    test_basic -> [np.array]
+    test_1d -> [np.array]
+    test_dtype_override -> [dtype system]
+    test_from_numpy_input -> [np.array]
+
+
+=== test_manipulation_gpu.py ===
+  TestManipulationGPU
+    test_flip_1d -> [np.flip]
+    test_flip_2d_axis0 -> [np.flip]
+    test_fliplr -> [np.fliplr]
+    test_flipud -> [np.flipud]
+    test_roll_1d -> [np.roll]
+    test_roll_negative -> [np.roll]
+    test_tile_1d -> [np.tile]
+    test_repeat_1d -> [np.repeat]
+    test_rot90_k1 -> [np.rot90]
+    test_rot90_k2 -> [np.rot90]
+    test_rot90_k3 -> [np.rot90]
+    test_broadcast_to_scalar -> [np.broadcast_to]
+    test_broadcast_to_1d -> [np.broadcast_to]
+    test_pad_1d_constant -> [np.pad]
+    test_pad_1d_nonzero_fill -> [np.nonzero]
+
+
+=== test_math_ext.py ===
+  TestSign
+    test_sign_positive -> [np.sign]
+    test_sign_negative -> [np.sign]
+    test_sign_zero -> [np.sign]
+    test_sign_mixed -> [np.sign]
+
+  TestFloor
+    test_floor_positive -> [np.positive]
+    test_floor_negative -> [np.negative]
+    test_floor_mixed -> [np.floor]
+
+  TestCeil
+    test_ceil_positive -> [np.positive]
+    test_ceil_negative -> [np.negative]
+    test_ceil_mixed -> [np.ceil]
+
+  TestSin
+    test_sin_basic -> [np.sin]
+    test_sin_zero -> [np.sin]
+
+  TestCos
+    test_cos_basic -> [np.cos]
+    test_cos_zero -> [np.cos]
+
+  TestTan
+    test_tan_basic -> [np.tan]
+
+  TestArcsin
+    test_arcsin_basic -> [np.arcsin]
+    test_arcsin_zero -> [np.arcsin]
+
+  TestArccos
+    test_arccos_basic -> [np.arccos]
+    test_arccos_one -> [np.arccos]
+
+  TestArctan
+    test_arctan_basic -> [np.arctan]
+    test_arctan_zero -> [np.arctan]
+
+  TestSinh
+    test_sinh_basic -> [np.sinh]
+
+  TestCosh
+    test_cosh_basic -> [np.cosh]
+
+  TestTanh
+    test_tanh_basic -> [np.tanh]
+    test_tanh_zero -> [np.tanh]
+
+  TestLog2
+    test_log2_basic -> [np.log2]
+    test_log2_powers_of_two -> [np.log2]
+
+  TestLog10
+    test_log10_basic -> [np.log10]
+    test_log10_powers_of_ten -> [np.log10]
+
+  TestSquare
+    test_square_positive -> [np.square]
+    test_square_negative -> [np.square]
+    test_square_zero -> [np.square]
+
+  TestNegative
+    test_negative_basic -> [np.negative]
+    test_negative_zero -> [np.negative]
+
+  TestAround
+    test_around_default -> [np.around]
+    test_around_decimals -> [np.around]
+    test_around_negative_decimals -> [np.negative]
+
+  TestRound
+    test_round_alias -> [np.round]
+
+  TestMod
+    test_mod_basic -> [np.mod]
+    test_mod_negative -> [np.negative]
+
+  TestRemainder
+    test_remainder_alias -> [np.remainder]
+
+
+=== test_math_ops.py ===
+  TestSqrt
+    test_basic -> [np.linalg.qr]
+    test_zero -> [np.linalg.qr]
+    test_one -> [np.linalg.qr]
+
+  TestExp
+    test_basic -> [np.exp]
+    test_zero -> [np.exp]
+
+  TestLog
+    test_basic -> [np.log]
+    test_one -> [np.log]
+
+  TestSign
+    test_basic -> [np.sign]
+    test_zero -> [np.sign]
+
+  TestFloor
+    test_basic -> [np.floor]
+    test_negative -> [np.negative]
+
+  TestCeil
+    test_basic -> [np.ceil]
+    test_negative -> [np.negative]
+
+  TestSin
+    test_basic -> [np.sin]
+    test_zero -> [np.sin]
+
+  TestCos
+    test_basic -> [np.cos]
+    test_zero -> [np.cos]
+
+  TestTan
+    test_basic -> [np.tan]
+    test_zero -> [np.tan]
+
+  TestArcsin
+    test_basic -> [np.arcsin]
+    test_zero -> [np.arcsin]
+    test_boundary -> [np.arcsin]
+
+  TestArccos
+    test_basic -> [np.arccos]
+    test_boundary -> [np.arccos]
+
+  TestArctan
+    test_basic -> [np.arctan]
+    test_zero -> [np.arctan]
+
+  TestSinh
+    test_basic -> [np.sinh]
+    test_zero -> [np.sinh]
+
+  TestCosh
+    test_basic -> [np.cosh]
+    test_zero -> [np.cosh]
+
+  TestTanh
+    test_basic -> [np.tanh]
+    test_zero -> [np.tanh]
+
+  TestLog2
+    test_basic -> [np.log2]
+    test_powers_of_two -> [np.log2]
+
+  TestLog10
+    test_basic -> [np.log10]
+    test_powers_of_ten -> [np.log10]
+
+  TestSquare
+    test_basic -> [np.square]
+    test_zero -> [np.square]
+    test_negative -> [np.negative]
+
+  TestNegative
+    test_basic -> [np.negative]
+    test_zero -> [np.negative]
+
+  TestAbs
+    test_basic -> [np.abs]
+    test_zero -> [np.abs]
+
+  TestPower
+    test_basic -> [np.power]
+    test_scalar -> [np.power]
+    test_zero_exponent -> [np.power]
+
+  TestDot
+    test_1d -> [np.dot]
+    test_2d -> [np.dot]
+
+  TestMod
+    test_basic -> [np.mod]
+    test_negative -> [np.negative]
+
+  TestRemainder
+    test_alias -> [np.remainder]
+
+  TestAround
+    test_basic -> [np.round]
+    test_decimals -> [np.round]
+    test_negative_decimals -> [np.negative]
+    test_round_alias -> [np.round]
+
+  TestWhere
+    test_basic -> [np.where]
+    test_scalar_condition -> [np.where]
+
+  TestClip
+    test_basic -> [np.clip]
+    test_float_bounds -> [np.clip]
+
+  TestConcatenate
+    test_basic -> [np.concatenate]
+    test_multiple_arrays -> [np.concatenate]
+
+  TestStack
+    test_basic -> [np.stack]
+    test_axis1 -> [np.stack]
+
+  TestVstack
+    test_basic -> [np.stack]
+
+  TestHstack
+    test_basic -> [np.stack]
+
+  TestIsnan
+    test_basic -> [np.isnan]
+    test_no_nan -> [np.isnan]
+    test_all_nan -> [np.all]
+
+  TestIsinf
+    test_basic -> [np.isin]
+    test_no_inf -> [np.isin]
+
+  TestIsfinite
+    test_basic -> [np.isfinite]
+    test_all_finite -> [np.all]
+
+  TestIsclose
+    test_basic -> [np.isclose]
+    test_nan_not_close -> [np.isclose]
+
+  TestAllclose
+    test_close -> [np.all]
+    test_not_close -> [np.all]
+
+  TestNanToNum
+    test_basic -> [unknown]
+    test_custom_values -> [unknown]
+
+  TestArrayEqual
+    test_equal -> [np.equal]
+    test_not_equal -> [np.not_equal]
+
+  TestCountNonzero
+    test_basic -> [np.nonzero]
+    test_with_zeros -> [np.zeros]
+
+  TestCopy
+    test_basic -> [np.copy]
+
+  TestAscontiguousarray
+    test_basic -> [np.array]
+
+  TestTrace
+    test_basic -> [unknown]
+    test_offset -> [unknown]
+
+  TestDiagonal
+    test_basic -> [np.std]
+    test_offset -> [np.std]
+
+  TestSinc
+    test_basic -> [np.sin]
+    test_zero -> [np.sin]
+
+  TestI0
+    test_basic -> [unknown]
+
+  TestConvolve
+    test_full -> [np.full]
+    test_same -> [unknown]
+    test_valid -> [unknown]
+
+  TestInterp
+    test_basic -> [unknown]
+    test_boundary -> [unknown]
+
+  TestFix
+    test_basic -> [np.fix]
+    test_negative -> [np.negative]
+
+  TestUnwrap
+    test_basic -> [unknown]
+    test_phase_wrap -> [unknown]
+
+  TestTrapezoid
+    test_basic -> [unknown]
+    test_with_x -> [unknown]
+    test_dx -> [unknown]
+
+
+=== test_mathops_gpu.py ===
+  TestMathOpsGPU
+    test_around_decimals0 -> [np.around]
+    test_around_decimals2 -> [np.around]
+    test_nan_to_num -> [np.nan_to_num]
+    test_nan_to_num_custom -> [np.nan_to_num]
+    test_copy -> [np.copy]
+    test_count_nonzero -> [np.count_nonzero]
+    test_isclose -> [np.isclose]
+    test_allclose -> [np.allclose]
+    test_array_equal -> [np.array_equal]
+    test_trace_2d -> [unknown]
+    test_diagonal_2d -> [np.diag]
+    test_concatenate_1d -> [np.concatenate]
+
+
+=== test_misc_params.py ===
+  TestAroundOut
+    test_around_out_basic -> [np.around]
+    test_around_no_out_unchanged -> [np.around]
+
+  TestRound_Out
+    test_round__out_basic -> [np.round]
+
+  TestClipOut
+    test_clip_out_basic -> [np.clip]
+    test_clip_no_out_unchanged -> [np.clip]
+
+  TestTraceDtypeOut
+    test_trace_dtype -> [dtype system]
+    test_trace_out -> [dtype system]
+    test_trace_no_extra_params_unchanged -> [dtype system]
+
+  TestNanToNumCopy
+    test_nan_to_num_copy_true -> [np.nan_to_num]
+    test_nan_to_num_copy_false -> [np.nan_to_num]
+    test_nan_to_num_default_copy -> [np.nan_to_num]
+
+  TestIsNegInfOut
+    test_isneginf_out -> [np.isneginf]
+    test_isneginf_no_out -> [np.isneginf]
+
+  TestIsPosInfOut
+    test_isposinf_out -> [np.isposinf]
+    test_isposinf_no_out -> [np.isposinf]
+
+  TestCopyOrder
+    test_copy_order_param_accepted -> [np.copy]
+    test_copy_order_K_accepted -> [np.copy]
+    test_copy_default_unchanged -> [np.copy]
+
+  TestAllcloseEqualNan
+    test_allclose_equal_nan_true -> [np.equal]
+    test_allclose_equal_nan_false -> [np.equal]
+    test_allclose_default_equal_nan -> [np.equal]
+
+  TestIscloseEqualNan
+    test_isclose_equal_nan_true -> [np.equal]
+    test_isclose_equal_nan_false -> [np.equal]
+    test_isclose_default -> [np.isclose]
+
+  TestArrayEqualEqualNan
+    test_array_equal_equal_nan_true -> [np.array]
+    test_array_equal_equal_nan_false -> [np.array]
+    test_array_equal_default -> [np.array]
+
+  TestGeomspaceEndpointAxis
+    test_geomspace_endpoint_false -> [np.geomspace]
+    test_geomspace_endpoint_true_default -> [np.geomspace]
+    test_geomspace_axis -> [np.geomspace]
+
+  TestLinspaceAxis
+    test_linspace_axis_0 -> [np.linspace]
+    test_linspace_axis_1 -> [np.linspace]
+    test_linspace_default_axis -> [np.linspace]
+
+  TestLogspaceBaseEndpointAxis
+    test_logspace_base -> [np.logspace]
+    test_logspace_endpoint_false -> [np.logspace]
+    test_logspace_axis -> [np.logspace]
+    test_logspace_default_unchanged -> [np.logspace]
+
+  TestMeshgridCopySparse
+    test_meshgrid_copy_false -> [np.copy]
+    test_meshgrid_sparse_true -> [np.meshgrid]
+    test_meshgrid_default_unchanged -> [np.meshgrid]
+
+  TestEyeOrder
+    test_eye_k_and_order -> [np.eye]
+    test_eye_default_unchanged -> [np.eye]
+
+  TestFullOrder
+    test_full_order -> [np.full]
+
+  TestFullLikeOrder
+    test_full_like_order -> [np.full_like]
+
+  TestOnesOrder
+    test_ones_order -> [np.ones]
+
+  TestOnesLikeOrder
+    test_ones_like_order -> [np.ones_like]
+
+  TestZerosLikeOrder
+    test_zeros_like_order -> [np.zeros_like]
+
+  TestStackOutDtype
+    test_stack_out -> [np.stack]
+    test_stack_dtype -> [np.stack]
+    test_stack_default_unchanged -> [np.stack]
+
+  TestHstackDtype
+    test_hstack_dtype -> [np.hstack]
+    test_hstack_default_unchanged -> [np.hstack]
+
+  TestVstackDtype
+    test_vstack_dtype -> [np.vstack]
+    test_vstack_default_unchanged -> [np.vstack]
+
+  TestStackCasting
+    test_stack_casting_param_accepted -> [np.stack]
+
+  TestHstackCasting
+    test_hstack_casting_param_accepted -> [np.hstack]
+
+  TestVstackCasting
+    test_vstack_casting_param_accepted -> [np.vstack]
+
+  TestReshapeOrder
+    test_reshape_order -> [np.reshape / ndarray.reshape]
+    test_reshape_default_unchanged -> [np.reshape / ndarray.reshape]
+
+  TestRavelOrder
+    test_ravel_order -> [np.ravel / ndarray.ravel]
+    test_ravel_default_unchanged -> [np.ravel / ndarray.ravel]
+
+
+=== test_nan_ops.py ===
+  TestNanSum
+    test_basic -> [np.nansum]
+    test_no_nan -> [np.nansum]
+    test_all_nan -> [np.all]
+    test_axis -> [np.nansum]
+
+  TestNanProd
+    test_basic -> [np.nanprod]
+    test_all_nan -> [np.all]
+    test_axis -> [np.nanprod]
+
+  TestNanMax
+    test_basic -> [np.nanmax]
+    test_no_nan -> [np.nanmax]
+    test_axis -> [np.nanmax]
+
+  TestNanMin
+    test_basic -> [np.nanmin]
+    test_axis -> [np.nanmin]
+
+  TestNanMean
+    test_basic -> [np.nanmean]
+    test_no_nan -> [np.nanmean]
+    test_axis -> [np.nanmean]
+
+  TestNanMedian
+    test_basic -> [np.nanmedian]
+    test_no_nan -> [np.nanmedian]
+
+  TestNanStd
+    test_basic -> [np.nanstd]
+    test_axis -> [np.nanstd]
+
+  TestNanVar
+    test_basic -> [np.nanvar]
+    test_axis -> [np.nanvar]
+
+  TestNanArgmax
+    test_basic -> [np.nanargmax]
+    test_axis -> [np.nanargmax]
+
+  TestNanArgmin
+    test_basic -> [np.nanargmin]
+    test_axis -> [np.nanargmin]
+
+  TestNanCumsum
+    test_basic -> [np.cumsum]
+    test_axis -> [np.cumsum]
+
+  TestNanCumprod
+    test_basic -> [np.cumprod]
+
+  TestHistogram
+    test_basic -> [unknown]
+    test_with_bins -> [unknown]
+    test_with_range -> [unknown]
+
+  TestHistogram2d
+    test_basic -> [unknown]
+    test_with_bins -> [unknown]
+
+  TestHistogramdd
+    test_basic -> [unknown]
+    test_with_bins -> [unknown]
+
+  TestBincount
+    test_basic -> [unknown]
+    test_with_weights -> [np.linalg.eigh]
+    test_empty -> [np.empty]
+
+  TestDigitize
+    test_basic -> [np.std]
+    test_right -> [np.std]
+
+  TestCorrcoef
+    test_single -> [np.sin]
+    test_xy -> [unknown]
+
+  TestCov
+    test_single -> [np.sin]
+    test_xy -> [unknown]
+
+  TestCorrelate
+    test_valid -> [unknown]
+    test_full -> [np.full]
+    test_same -> [unknown]
+
+  TestEdiff1d
+    test_basic -> [unknown]
+    test_with_endpoints -> [unknown]
+
+  TestGradient
+    test_1d -> [unknown]
+    test_2d -> [unknown]
+    test_with_spacing -> [np.spacing]
+
+
+=== test_nan_ops_gaps.py ===
+  TestNanpercentile
+    test_basic -> [np.nanpercentile]
+    test_no_nan -> [np.nanpercentile]
+    test_axis0 -> [np.nanpercentile]
+    test_axis1 -> [np.nanpercentile]
+    test_multiple_q -> [np.nanpercentile]
+    test_keepdims -> [np.nanpercentile]
+
+  TestNanquantile
+    test_basic -> [np.nanquantile]
+    test_no_nan -> [np.nanquantile]
+    test_axis0 -> [np.nanquantile]
+    test_axis1 -> [np.nanquantile]
+    test_multiple_q -> [np.nanquantile]
+    test_keepdims -> [np.nanquantile]
+
+  TestHistogramBinEdges
+    test_basic -> [edge cases]
+    test_custom_bins -> [edge cases]
+    test_with_range -> [edge cases]
+    test_random_data -> [np.random]
+    test_string_bins -> [edge cases]
+
+
+=== test_nan_stats.py ===
+  TestNanSum
+    test_1d -> [np.nansum]
+    test_2d_axis -> [np.nansum]
+    test_2d_full -> [np.full]
+
+  TestNanProd
+    test_1d -> [np.nanprod]
+    test_2d_axis -> [np.nanprod]
+
+  TestNanCumsum
+    test_1d -> [np.cumsum]
+    test_2d_axis -> [np.cumsum]
+
+  TestNanCumprod
+    test_1d -> [np.cumprod]
+
+  TestNanMax
+    test_1d -> [np.nanmax]
+    test_2d_axis -> [np.nanmax]
+
+  TestNanMin
+    test_1d -> [np.nanmin]
+    test_2d_axis -> [np.nanmin]
+
+  TestNanMean
+    test_1d -> [np.nanmean]
+    test_2d_axis -> [np.nanmean]
+
+  TestNanMedian
+    test_1d -> [np.nanmedian]
+
+  TestNanStd
+    test_1d -> [np.nanstd]
+
+  TestNanVar
+    test_1d -> [np.nanvar]
+
+  TestNanArgmax
+    test_1d -> [np.nanargmax]
+    test_2d_axis -> [np.nanargmax]
+
+  TestNanArgmin
+    test_1d -> [np.nanargmin]
+    test_2d_axis -> [np.nanargmin]
+
+  TestPtp
+    test_1d -> [unknown]
+    test_2d_axis -> [unknown]
+
+  TestQuantile
+    test_scalar_q -> [np.quantile]
+    test_array_q -> [np.array]
+
+  TestAverage
+    test_unweighted -> [np.average]
+    test_weighted -> [np.average]
+
+  TestCorrcoef
+    test_single -> [np.sin]
+    test_xy -> [unknown]
+
+  TestCorrelate
+    test_valid -> [unknown]
+    test_full -> [np.full]
+
+  TestCov
+    test_single -> [np.sin]
+    test_xy -> [unknown]
+
+  TestHistogram
+    test_basic -> [unknown]
+
+  TestHistogram2d
+    test_basic -> [unknown]
+
+  TestHistogramdd
+    test_basic -> [unknown]
+
+  TestBincount
+    test_basic -> [unknown]
+    test_with_weights -> [np.linalg.eigh]
+
+  TestDigitize
+    test_basic -> [np.std]
+
+  TestEdiff1d
+    test_basic -> [unknown]
+    test_with_endpoints -> [unknown]
+
+  TestGradient
+    test_1d -> [unknown]
+    test_2d -> [unknown]
+
+
+=== test_nanops_gpu.py ===
+  TestNanOpsGPU
+    test_nansum -> [np.nansum]
+    test_nansum_axis -> [np.nansum]
+    test_nanprod -> [np.nanprod]
+    test_nanmax -> [np.nanmax]
+    test_nanmin -> [np.nanmin]
+    test_nanmean -> [np.nanmean]
+    test_nancumsum -> [np.cumsum]
+    test_nancumprod -> [np.cumprod]
+    test_nanargmax -> [np.nanargmax]
+    test_nanargmin -> [np.nanargmin]
+    test_nanstd -> [np.nanstd]
+    test_nanvar -> [np.nanvar]
+    test_nansum_no_nan -> [np.nansum]
+    test_nansum_all_nan -> [np.nansum]
+    test_nansum_int -> [np.nansum]
+    test_nanmean_axis -> [np.nanmean]
+
+
+=== test_nanops_params.py ===
+  TestNansumParams
+    test_keepdims -> [np.nansum]
+    test_dtype -> [dtype system]
+    test_out -> [np.nansum]
+    test_initial -> [np.nansum]
+    test_where -> [np.where]
+    test_default_behavior_unchanged -> [np.nansum]
+
+  TestNanprodParams
+    test_keepdims -> [np.nanprod]
+    test_dtype -> [dtype system]
+    test_out -> [np.nanprod]
+    test_initial -> [np.nanprod]
+    test_where -> [np.where]
+    test_default_behavior_unchanged -> [np.nanprod]
+
+  TestNanmaxParams
+    test_keepdims -> [np.nanmax]
+    test_out -> [np.nanmax]
+    test_initial -> [np.nanmax]
+    test_where -> [np.where]
+    test_default_behavior_unchanged -> [np.nanmax]
+
+  TestNanminParams
+    test_keepdims -> [np.nanmin]
+    test_out -> [np.nanmin]
+    test_initial -> [np.nanmin]
+    test_where -> [np.where]
+    test_default_behavior_unchanged -> [np.nanmin]
+
+  TestNanmeanParams
+    test_keepdims -> [np.nanmean]
+    test_dtype -> [dtype system]
+    test_out -> [np.nanmean]
+    test_where -> [np.where]
+    test_default_behavior_unchanged -> [np.nanmean]
+
+  TestNanmedianParams
+    test_keepdims -> [np.nanmedian]
+    test_out -> [np.nanmedian]
+    test_default_behavior_unchanged -> [np.nanmedian]
+
+  TestNanstdParams
+    test_keepdims -> [np.nanstd]
+    test_ddof -> [np.nanstd]
+    test_dtype -> [dtype system]
+    test_out -> [np.nanstd]
+    test_where -> [np.where]
+    test_default_behavior_unchanged -> [np.nanstd]
+
+  TestNanvarParams
+    test_keepdims -> [np.nanvar]
+    test_ddof -> [np.nanvar]
+    test_dtype -> [dtype system]
+    test_out -> [np.nanvar]
+    test_where -> [np.where]
+    test_default_behavior_unchanged -> [np.nanvar]
+
+  TestNanargmaxParams
+    test_keepdims -> [np.nanargmax]
+    test_out -> [np.nanargmax]
+    test_default_behavior_unchanged -> [np.nanargmax]
+
+  TestNanargminParams
+    test_keepdims -> [np.nanargmin]
+    test_out -> [np.nanargmin]
+    test_default_behavior_unchanged -> [np.nanargmin]
+
+  TestNancumsumParams
+    test_dtype -> [dtype system]
+    test_out -> [np.cumsum]
+    test_default_behavior_unchanged -> [np.cumsum]
+
+  TestNancumprodParams
+    test_dtype -> [dtype system]
+    test_out -> [np.cumprod]
+    test_default_behavior_unchanged -> [np.cumprod]
+
+  TestCorrcoefParams
+    test_rowvar_true -> [np.var]
+    test_rowvar_false -> [np.var]
+    test_dtype -> [dtype system]
+    test_default_behavior_unchanged -> [I/O operations]
+
+  TestCovParams
+    test_rowvar_true -> [np.var]
+    test_rowvar_false -> [np.var]
+    test_bias -> [unknown]
+    test_fweights -> [np.linalg.eigh]
+    test_aweights -> [np.linalg.eigh]
+    test_dtype -> [dtype system]
+    test_default_behavior_unchanged -> [I/O operations]
+
+
+=== test_ndarray.py ===
+  TestProperties
+    test_shape -> [ndarray.shape]
+    test_ndim -> [ndarray.ndim]
+    test_size -> [ndarray.size]
+    test_nbytes -> [ndarray.nbytes]
+    test_itemsize -> [ndarray.itemsize]
+    test_dtype_matches -> [dtype system]
+    test_strides -> [ndarray.strides]
+    test_T -> [unknown]
+
+  TestDataTransfer
+    test_get_roundtrip -> [ndarray.get (device->host)]
+    test_get_transposed -> [ndarray.get (device->host)]
+    test_get_sliced -> [ndarray.get (device->host)]
+    test_set_roundtrip -> [np.std]
+
+  TestReshape
+    test_reshape_compatible -> [np.reshape / ndarray.reshape]
+    test_reshape_minus1 -> [np.reshape / ndarray.reshape]
+    test_reshape_error_two_minus1 -> [np.reshape / ndarray.reshape]
+    test_reshape_error_bad_size -> [np.reshape / ndarray.reshape]
+
+  TestTranspose
+    test_transpose_default_2d -> [np.transpose / ndarray.T]
+    test_transpose_explicit_axes_3d -> [np.transpose / ndarray.T]
+
+  TestFlatten
+    test_flatten_contiguous -> [ndarray.flatten]
+    test_flatten_noncontiguous -> [ndarray.flatten]
+
+  TestRavel
+    test_ravel_contiguous -> [np.ravel / ndarray.ravel]
+    test_ravel_noncontiguous -> [np.ravel / ndarray.ravel]
+
+  TestSqueeze
+    test_squeeze_all -> [np.all]
+    test_squeeze_specific_axis -> [np.squeeze]
+    test_squeeze_no_change -> [np.squeeze]
+    test_squeeze_error_nonsize1 -> [np.squeeze]
+
+  TestExpandDims
+    test_expand_dims_axis0 -> [np.expand_dims]
+    test_expand_dims_negative -> [np.expand_dims]
+
+  TestAstype
+    test_astype_pairs -> [ndarray.astype]
+
+  TestCopy
+    test_copy_independence -> [np.copy]
+
+  TestArithmeticBinary
+    test_array_array -> [np.array]
+    test_array_scalar -> [np.array]
+    test_scalar_array -> [np.array]
+
+  TestArithmeticCrossDtype
+    test_cross_dtype_basic -> [np.cross]
+    test_cross_dtype_div -> [np.cross]
+    test_cross_dtype_pow -> [np.cross]
+
+  TestArithmeticReverse
+    test_radd -> [np.add]
+    test_rsub -> [operator -]
+    test_rtruediv -> [operator /]
+    test_rpow -> [operator **]
+
+  TestArithmeticUnary
+    test_neg -> [operator - (unary)]
+    test_abs -> [np.abs]
+
+  TestMatmul
+    test_matmul_basic -> [np.matmul]
+    test_matmul_square -> [np.matmul]
+    test_matmul_shape_error -> [np.matmul]
+
+  TestArithmeticBroadcast
+    test_broadcast_binary -> [broadcasting]
+
+  TestComparison
+    test_array_array -> [np.array]
+    test_array_scalar -> [np.array]
+
+  TestComparisonCrossDtype
+    test_cross_dtype -> [np.cross]
+
+  TestComparisonSpecial
+    test_nan -> [unknown]
+    test_inf -> [unknown]
+
+  TestBooleanOps
+    test_and_bool -> [unknown]
+    test_or_bool -> [unknown]
+    test_invert_bool -> [np.invert]
+    test_and_int -> [unknown]
+    test_or_int -> [unknown]
+
+  TestReductions
+    test_axis_none -> [ndarray.__str__]
+    test_axis_0 -> [ndarray.__str__]
+    test_axis_neg1 -> [ndarray.__str__]
+    test_keepdims -> [ndarray.__str__]
+
+  TestReductionStdVar
+    test_axis_none -> [np.std]
+    test_axis_0 -> [np.std]
+    test_keepdims -> [np.std]
+
+  TestReductionProd
+    test_prod_axis_none -> [np.prod]
+    test_prod_axis_0 -> [np.prod]
+    test_prod_keepdims -> [np.prod]
+
+  TestReductionCumsumCumprod
+    test_axis_none -> [np.cumsum]
+    test_axis_0 -> [np.cumsum]
+    test_axis_neg1 -> [np.cumsum]
+
+  TestReductionAnyAll
+    test_any_mixed -> [np.any]
+    test_any_all_false -> [np.all]
+    test_all_true -> [np.all]
+    test_all_mixed -> [np.all]
+
+  TestGetitem
+    test_int_index -> [ndarray.__getitem__]
+    test_neg_index -> [operator - (unary)]
+    test_slice -> [ndarray.__getitem__]
+    test_step_slice -> [ndarray.__getitem__]
+    test_2d_int -> [ndarray.__getitem__]
+    test_2d_slice -> [ndarray.__getitem__]
+    test_ellipsis -> [ndarray.__getitem__]
+    test_newaxis -> [ndarray.__getitem__]
+    test_bool_mask -> [ndarray.__getitem__]
+    test_fancy_index -> [ndarray.__getitem__]
+    test_3d_int -> [ndarray.__getitem__]
+    test_3d_slice -> [ndarray.__getitem__]
+    test_negative_step -> [np.negative]
+    test_2d_bool_mask -> [ndarray.__getitem__]
+    test_2d_fancy -> [ndarray.__getitem__]
+    test_scalar_result -> [ndarray.__getitem__]
+
+  TestSetitem
+    test_int_setitem -> [ndarray.__setitem__]
+    test_slice_setitem -> [ndarray.__setitem__]
+    test_bool_mask_setitem -> [ndarray.__setitem__]
+    test_scalar_setitem -> [ndarray.__setitem__]
+    test_broadcast_setitem -> [ndarray.__setitem__]
+    test_2d_row_setitem -> [ndarray.__setitem__]
+    test_fancy_setitem -> [ndarray.__setitem__]
+    test_step_setitem -> [ndarray.__setitem__]
+
+  TestDunderFloat
+    test_float_size1 -> [np.std]
+    test_float_sizeN_error -> [error handling]
+
+  TestDunderInt
+    test_int_size1 -> [np.std]
+    test_int_sizeN_error -> [error handling]
+
+  TestDunderLen
+    test_len_1d -> [np.std]
+    test_len_2d -> [np.std]
+    test_len_0d_error -> [error handling]
+
+  TestReprStr
+    test_repr -> [ndarray.__repr__]
+    test_str -> [ndarray.__str__]
+
+
+=== test_ndarray_final.py ===
+  TestConjugate
+    test_conjugate_complex -> [complex number ops]
+    test_conjugate_real -> [unknown]
+
+  TestDot
+    test_dot_1d -> [np.dot]
+    test_dot_2d -> [np.dot]
+    test_dot_with_numpy_array -> [np.dot]
+
+  TestSwapaxes
+    test_swapaxes_2d -> [np.swapaxes]
+    test_swapaxes_3d -> [np.swapaxes]
+
+  TestByteswap
+    test_byteswap_int32 -> [unknown]
+    test_byteswap_returns_new_array -> [np.array]
+
+  TestItemset
+    test_itemset_flat_index -> [ndarray.item]
+    test_itemset_multi_index -> [ndarray.item]
+
+  TestDump
+    test_dump_load -> [np.load]
+
+  TestDumps
+    test_dumps_roundtrip -> [np.std]
+
+  TestTofile
+    test_tofile_binary -> [unknown]
+    test_tofile_text -> [unknown]
+
+  TestTostring
+    test_tostring_matches_tobytes -> [ndarray.tobytes]
+    test_tostring_with_order -> [np.tri]
+
+  TestNewbyteorder
+    test_newbyteorder -> [unknown]
+
+  TestGetfield
+    test_getfield_basic -> [ndarray.get (device->host)]
+
+  TestSetfield
+    test_setfield_basic -> [unknown]
+
+  TestSetflags
+    test_setflags_no_error -> [error handling]
+
+  TestResize
+    test_resize_grow -> [np.resize]
+    test_resize_shrink -> [np.resize]
+    test_resize_2d -> [np.resize]
+
+  TestIlshift
+    test_ilshift_basic -> [unknown]
+    test_ilshift_array -> [np.array]
+
+  TestIrshift
+    test_irshift_basic -> [unknown]
+    test_irshift_array -> [np.array]
+
+  TestRand
+    test_rand_direct_call -> [np.random.rand]
+    test_rand_both_gpu -> [np.random.rand]
+
+  TestRor
+    test_ror_direct_call -> [ndarray.__str__]
+    test_ror_both_gpu -> [ndarray.__str__]
+
+  TestRxor
+    test_rxor_direct_call -> [ndarray.__str__]
+    test_rxor_both_gpu -> [ndarray.__str__]
+
+  TestRdivmod
+    test_rdivmod -> [np.divmod]
+
+  TestIter
+    test_iter_1d -> [unknown]
+    test_iter_2d -> [unknown]
+
+  TestCopy
+    test_copy -> [np.copy]
+    test_deepcopy -> [np.copy]
+
+
+=== test_ndarray_gaps.py ===
+  TestPropertyReal
+    test_real_non_complex -> [complex number ops]
+    test_real_complex -> [complex number ops]
+    test_real_scalar -> [unknown]
+
+  TestPropertyImag
+    test_imag_non_complex -> [complex number ops]
+    test_imag_complex -> [complex number ops]
+
+  TestPropertyFlat
+    test_flat_1d -> [unknown]
+    test_flat_2d -> [unknown]
+
+  TestPropertyBase
+    test_base_original -> [unknown]
+    test_base_view -> [ndarray (views)]
+
+  TestItem
+    test_item_0d -> [ndarray.item]
+    test_item_1d -> [ndarray.item]
+    test_item_2d -> [ndarray.item]
+    test_item_error_multi_element -> [ndarray.item]
+
+  TestTolist
+    test_tolist_1d -> [ndarray.tolist]
+    test_tolist_2d -> [ndarray.tolist]
+    test_tolist_0d -> [ndarray.tolist]
+
+  TestFill
+    test_fill_basic -> [ndarray.fill]
+    test_fill_2d -> [ndarray.fill]
+
+  TestRound
+    test_round_default -> [np.round]
+    test_round_decimals -> [np.round]
+
+  TestClipMethod
+    test_clip_basic -> [np.clip]
+
+  TestConj
+    test_conj_complex -> [complex number ops]
+    test_conj_real -> [unknown]
+
+  TestDiagonalMethod
+    test_diagonal_basic -> [np.std]
+    test_diagonal_offset -> [np.std]
+
+  TestTraceMethod
+    test_trace_basic -> [unknown]
+    test_trace_offset -> [unknown]
+
+  TestRepeatMethod
+    test_repeat_flat -> [np.repeat]
+    test_repeat_axis -> [np.repeat]
+
+  TestTakeMethod
+    test_take_flat -> [unknown]
+    test_take_axis -> [unknown]
+
+  TestPutMethod
+    test_put_basic -> [unknown]
+
+  TestChooseMethod
+    test_choose_basic -> [unknown]
+
+  TestCompressMethod
+    test_compress_basic -> [unknown]
+    test_compress_axis -> [unknown]
+
+  TestSearchsortedMethod
+    test_searchsorted_left -> [np.searchsorted]
+    test_searchsorted_right -> [np.searchsorted]
+
+  TestNonzeroMethod
+    test_nonzero_1d -> [np.nonzero]
+    test_nonzero_2d -> [np.nonzero]
+
+  TestSortMethod
+    test_sort_1d -> [np.sort]
+    test_sort_2d_axis -> [np.sort]
+
+  TestArgsortMethod
+    test_argsort_1d -> [np.argsort]
+    test_argsort_axis0 -> [np.argsort]
+
+  TestArgmaxMethod
+    test_argmax_flat -> [np.argmax]
+    test_argmax_axis -> [np.argmax]
+
+  TestArgminMethod
+    test_argmin_flat -> [np.argmin]
+    test_argmin_axis -> [np.argmin]
+
+  TestPtpMethod
+    test_ptp_flat -> [unknown]
+    test_ptp_axis -> [unknown]
+
+  TestPartitionMethod
+    test_partition_basic -> [np.partition]
+
+  TestArgpartitionMethod
+    test_argpartition_basic -> [np.argpartition]
+
+  TestTobytes
+    test_tobytes_float32 -> [ndarray.tobytes]
+    test_tobytes_int32 -> [ndarray.tobytes]
+
+  TestView
+    test_view_float32_to_int32 -> [ndarray (views)]
+    test_view_int32_to_float32 -> [ndarray (views)]
+
+  TestBoolOperator
+    test_bool_true -> [unknown]
+    test_bool_false -> [unknown]
+    test_bool_multi_element_error -> [error handling]
+
+  TestPosOperator
+    test_pos_float -> [unknown]
+    test_pos_int -> [unknown]
+
+  TestComplexOperator
+    test_complex_0d -> [complex number ops]
+    test_complex_multi_error -> [error handling]
+
+  TestIndexOperator
+    test_index_int -> [unknown]
+    test_index_float_error -> [error handling]
+    test_index_multi_error -> [error handling]
+
+  TestContainsOperator
+    test_contains_present -> [unknown]
+    test_contains_absent -> [np.abs]
+
+  TestFloorDivOperator
+    test_floordiv_basic -> [operator //]
+    test_rfloordiv -> [np.floor]
+    test_ifloordiv -> [np.floor]
+
+  TestModOperator
+    test_mod_basic -> [np.mod]
+    test_rmod -> [np.mod]
+    test_imod -> [np.mod]
+
+  TestShiftOperators
+    test_lshift -> [unknown]
+    test_rshift -> [unknown]
+    test_rlshift -> [unknown]
+    test_rrshift -> [unknown]
+
+  TestInplaceBoolOps
+    test_iand -> [in-place operations]
+    test_ixor -> [in-place operations]
+
+  TestRmatmul
+    test_rmatmul -> [np.matmul]
+
+  TestImatmul
+    test_imatmul -> [np.matmul]
+
+  TestDivmod
+    test_divmod_basic -> [np.divmod]
+
+  TestXorOperator
+    test_xor -> [unknown]
+
+
+=== test_numeric_edges.py ===
+  TestFloat32SpecialsUnary
+    test_unary_special -> [unknown]
+
+  TestFloat32SpecialsBinary
+    test_binary_special -> [unknown]
+
+  TestFloat16Precision
+    test_f16_near_epsilon_add -> [np.add]
+    test_f16_near_epsilon_sub -> [operator -]
+    test_f16_overflow_to_inf -> [I/O operations]
+    test_f16_large_multiply_overflow -> [np.multiply]
+    test_f16_underflow_to_zero -> [I/O operations]
+    test_f16_smallest_subnormal -> [I/O operations]
+
+  TestInt32Overflow
+    test_int32_max_plus_one -> [np.max / ndarray.max]
+    test_int32_min_minus_one -> [np.min / ndarray.min]
+    test_int16_overflow -> [unknown]
+    test_uint16_overflow -> [unknown]
+    test_uint32_overflow -> [unknown]
+
+  TestPredicatesOnSpecials
+    test_isnan -> [np.isnan]
+    test_isinf -> [np.isinf]
+    test_isfinite -> [np.isfinite]
+
+  TestSignbit
+    test_signbit -> [np.sign]
+
+  TestCopysignNextafter
+    test_copysign -> [np.copysign]
+    test_nextafter -> [np.nextafter]
+
+  TestNanToNum
+    test_nan_to_num_defaults -> [np.nan_to_num]
+    test_nan_to_num_custom_nan -> [np.nan_to_num]
+    test_nan_to_num_custom_posinf -> [np.nan_to_num]
+    test_nan_to_num_custom_neginf -> [np.nan_to_num]
+    test_nan_to_num_all_custom -> [np.nan_to_num]
+
+  TestNanPropagation
+    test_nan_plus_one -> [I/O operations]
+    test_nan_times_zero -> [I/O operations]
+    test_nan_eq_nan -> [I/O operations]
+    test_nan_ne_nan -> [I/O operations]
+    test_nan_gt_one -> [I/O operations]
+    test_nan_lt_one -> [I/O operations]
+    test_nan_sub_nan -> [operator -]
+    test_nan_div_one -> [operator /]
+
+  TestInfArithmetic
+    test_inf_plus_one -> [unknown]
+    test_inf_minus_inf -> [np.min / ndarray.min]
+    test_inf_times_zero -> [unknown]
+    test_one_div_zero -> [operator /]
+    test_neg_one_div_zero -> [operator /]
+    test_zero_div_zero -> [operator /]
+    test_inf_times_inf -> [unknown]
+    test_inf_div_inf -> [operator /]
+
+  TestNegativeZero
+    test_neg_zero_eq_pos_zero -> [operator - (unary)]
+    test_neg_zero_ne_pos_zero -> [operator - (unary)]
+    test_neg_zero_roundtrip -> [operator - (unary)]
+
+  TestMixedSpecials
+    test_isnan_mixed -> [np.isnan]
+    test_isinf_mixed -> [np.isinf]
+    test_isfinite_mixed -> [np.isfinite]
+    test_add_with_nan_positions -> [np.add]
+    test_sum_with_nan -> [np.sum]
+    test_max_with_nan -> [np.max / ndarray.max]
+
+
+=== test_params_final.py ===
+  TestHistogramParams
+    test_histogram_range -> [unknown]
+    test_histogram_density -> [unknown]
+    test_histogram_weights -> [np.linalg.eigh]
+    test_histogram_range_density_weights -> [np.linalg.eigh]
+
+  TestHistogram2dParams
+    test_histogram2d_range -> [unknown]
+    test_histogram2d_density -> [unknown]
+    test_histogram2d_weights -> [np.linalg.eigh]
+
+  TestHistogramddParams
+    test_histogramdd_range -> [unknown]
+    test_histogramdd_density -> [unknown]
+    test_histogramdd_weights -> [np.linalg.eigh]
+
+  TestDiffParams
+    test_diff_prepend -> [np.std]
+    test_diff_append -> [np.append]
+    test_diff_prepend_and_append -> [np.append]
+    test_diff_prepend_scalar -> [np.std]
+
+  TestDiagonalParams
+    test_diagonal_axis1_axis2 -> [np.std]
+    test_diagonal_different_axes -> [np.std]
+    test_diagonal_2d_default -> [np.std]
+
+  TestFillDiagonalParams
+    test_fill_diagonal_wrap_false -> [ndarray.fill]
+    test_fill_diagonal_wrap_true -> [ndarray.fill]
+
+  TestMatrixRankHermitian
+    test_matrix_rank_hermitian -> [np.linalg.matrix_rank]
+    test_matrix_rank_hermitian_false -> [np.linalg.matrix_rank]
+
+  TestPinvHermitian
+    test_pinv_hermitian -> [np.linalg.pinv]
+    test_pinv_hermitian_false -> [np.linalg.pinv]
+
+  TestEinsumPath
+    test_einsum_path_basic -> [np.einsum]
+    test_einsum_path_optimize -> [np.einsum]
+
+  TestDivmod
+    test_divmod_basic -> [np.divmod]
+
+  TestBitwiseNot
+    test_bitwise_not_exists -> [unknown]
+
+  TestMaskIndices
+    test_mask_indices_triu -> [np.triu]
+    test_mask_indices_triu_k -> [np.triu]
+
+
+=== test_random.py ===
+  TestSeed
+    test_reproducible -> [np.random.seed]
+    test_different_seeds -> [np.random.seed]
+
+  TestRand
+    test_shape_1d -> [ndarray.shape]
+    test_shape_2d -> [ndarray.shape]
+    test_range -> [np.random.rand]
+    test_dtype -> [dtype system]
+    test_moments -> [np.random.rand]
+
+  TestRandn
+    test_shape -> [ndarray.shape]
+    test_dtype -> [dtype system]
+    test_moments -> [np.random.rand]
+
+  TestRandint
+    test_shape -> [ndarray.shape]
+    test_range -> [np.random.rand]
+    test_dtype -> [dtype system]
+
+  TestRandom
+    test_shape -> [ndarray.shape]
+    test_range -> [np.random]
+    test_dtype -> [dtype system]
+
+  TestShuffle
+    test_modifies -> [np.random.shuffle]
+    test_preserves_elements -> [np.random.shuffle]
+
+  TestPermutation
+    test_int_input -> [np.random.permutation]
+    test_dtype_int -> [dtype system]
+
+  TestChoice
+    test_from_int -> [np.random.choice]
+    test_no_replace -> [np.random.choice]
+
+  TestNormal
+    test_shape -> [ndarray.shape]
+    test_dtype -> [dtype system]
+    test_moments -> [np.linalg.norm]
+
+  TestUniform
+    test_shape -> [ndarray.shape]
+    test_range -> [np.random.uniform]
+    test_dtype -> [dtype system]
+    test_moments -> [np.random.uniform]
+
+  TestBeta
+    test_shape -> [ndarray.shape]
+    test_range -> [unknown]
+    test_dtype -> [dtype system]
+    test_moments -> [unknown]
+
+  TestExponential
+    test_shape -> [ndarray.shape]
+    test_positive -> [np.positive]
+    test_dtype -> [dtype system]
+    test_moments -> [np.exp]
+
+  TestGamma
+    test_shape -> [ndarray.shape]
+    test_positive -> [np.positive]
+    test_dtype -> [dtype system]
+    test_moments -> [unknown]
+
+  TestLognormal
+    test_shape -> [ndarray.shape]
+    test_positive -> [np.positive]
+    test_dtype -> [dtype system]
+
+  TestStandardNormal
+    test_shape -> [ndarray.shape]
+    test_dtype -> [dtype system]
+
+  TestStandardCauchy
+    test_shape -> [ndarray.shape]
+    test_dtype -> [dtype system]
+
+  TestStandardExponential
+    test_shape -> [ndarray.shape]
+    test_dtype -> [dtype system]
+
+  TestStandardGamma
+    test_shape -> [ndarray.shape]
+    test_dtype -> [dtype system]
+
+  TestStandardT
+    test_shape -> [ndarray.shape]
+    test_dtype -> [dtype system]
+
+  TestChisquare
+    test_shape -> [ndarray.shape]
+    test_positive -> [np.positive]
+    test_dtype -> [dtype system]
+    test_moments -> [np.square]
+
+  TestLaplace
+    test_shape -> [ndarray.shape]
+    test_dtype -> [dtype system]
+
+  TestLogistic
+    test_shape -> [ndarray.shape]
+    test_dtype -> [dtype system]
+
+  TestGumbel
+    test_shape -> [ndarray.shape]
+    test_dtype -> [dtype system]
+
+  TestRayleigh
+    test_shape -> [ndarray.shape]
+    test_positive -> [np.positive]
+    test_dtype -> [dtype system]
+
+  TestTriangular
+    test_shape -> [ndarray.shape]
+    test_range -> [np.tri]
+    test_dtype -> [dtype system]
+
+  TestWeibull
+    test_shape -> [ndarray.shape]
+    test_positive -> [np.positive]
+    test_dtype -> [dtype system]
+
+  TestVonmises
+    test_shape -> [ndarray.shape]
+    test_dtype -> [dtype system]
+
+  TestWald
+    test_shape -> [ndarray.shape]
+    test_positive -> [np.positive]
+    test_dtype -> [dtype system]
+
+  TestPareto
+    test_shape -> [ndarray.shape]
+    test_positive -> [np.positive]
+    test_dtype -> [dtype system]
+
+  TestBinomial
+    test_shape -> [ndarray.shape]
+    test_range -> [unknown]
+    test_dtype -> [dtype system]
+    test_moments -> [unknown]
+
+  TestPoisson
+    test_shape -> [ndarray.shape]
+    test_non_negative -> [np.negative]
+    test_dtype -> [dtype system]
+    test_moments -> [unknown]
+
+  TestGeometric
+    test_shape -> [ndarray.shape]
+    test_positive -> [np.positive]
+    test_dtype -> [dtype system]
+
+  TestZipf
+    test_shape -> [ndarray.shape]
+    test_positive -> [np.positive]
+    test_dtype -> [dtype system]
+
+  TestLogseries
+    test_shape -> [ndarray.shape]
+    test_positive -> [np.positive]
+    test_dtype -> [dtype system]
+
+  TestNegativeBinomial
+    test_shape -> [ndarray.shape]
+    test_non_negative -> [np.negative]
+    test_dtype -> [dtype system]
+
+  TestHypergeometric
+    test_shape -> [ndarray.shape]
+    test_range -> [np.tri]
+    test_dtype -> [dtype system]
+
+  TestF
+    test_shape -> [ndarray.shape]
+    test_positive -> [np.positive]
+    test_dtype -> [dtype system]
+
+  TestMultinomial
+    test_shape -> [ndarray.shape]
+    test_shape_with_size -> [ndarray.shape]
+    test_sum -> [np.sum]
+    test_dtype -> [dtype system]
+
+  TestMultivariateNormal
+    test_shape -> [ndarray.shape]
+    test_dtype -> [dtype system]
+    test_moments -> [np.linalg.norm]
+
+  TestDirichlet
+    test_shape -> [ndarray.shape]
+    test_sums_to_one -> [np.std]
+    test_dtype -> [dtype system]
+
+
+=== test_random_gaps.py ===
+  TestRandomSample
+    test_shape -> [ndarray.shape]
+    test_range -> [np.random]
+    test_dtype -> [dtype system]
+    test_scalar -> [np.random]
+
+  TestRanf
+    test_is_callable -> [ndarray.__str__]
+
+  TestSample
+    test_is_callable -> [np.all]
+
+  TestPower
+    test_shape -> [ndarray.shape]
+    test_range -> [np.power]
+    test_dtype -> [dtype system]
+    test_moments -> [np.power]
+
+  TestNoncentralChisquare
+    test_shape -> [ndarray.shape]
+    test_positive -> [np.positive]
+    test_dtype -> [dtype system]
+    test_moments -> [np.square]
+
+  TestNoncentralF
+    test_shape -> [ndarray.shape]
+    test_positive -> [np.positive]
+    test_dtype -> [dtype system]
+
+  TestPermuted
+    test_returns_new_array -> [np.array]
+    test_shape -> [ndarray.shape]
+    test_dtype -> [dtype system]
+
+  TestDefaultRng
+    test_returns_generator -> [np.std]
+    test_random -> [np.random]
+    test_integers -> [np.std]
+    test_normal -> [np.random.normal]
+    test_uniform -> [np.random.uniform]
+    test_seed_reproducibility -> [np.random.seed]
+    test_has_distribution_methods -> [np.std]
+
+
+=== test_random_mod.py ===
+  TestSeed
+    test_reproducible -> [np.random.seed]
+
+  TestRand
+    test_shape -> [ndarray.shape]
+    test_range -> [np.random.rand]
+    test_dtype -> [dtype system]
+
+  TestRandn
+    test_shape -> [ndarray.shape]
+    test_dtype -> [dtype system]
+
+  TestRandint
+    test_shape -> [ndarray.shape]
+    test_range -> [np.random.rand]
+    test_dtype -> [dtype system]
+
+  TestRandom
+    test_shape -> [ndarray.shape]
+    test_range -> [np.random]
+    test_dtype -> [dtype system]
+
+  TestShuffle
+    test_modifies_in_place -> [np.random.shuffle]
+
+  TestPermutation
+    test_int_input -> [np.random.permutation]
+    test_dtype_int -> [dtype system]
+
+  TestChoice
+    test_from_int -> [np.random.choice]
+    test_no_replace -> [np.random.choice]
+
+  TestNormal
+    test_shape -> [ndarray.shape]
+    test_dtype -> [dtype system]
+
+  TestUniform
+    test_shape -> [ndarray.shape]
+    test_range -> [np.random.uniform]
+    test_dtype -> [dtype system]
+
+  TestBeta
+    test_shape -> [ndarray.shape]
+    test_range -> [unknown]
+    test_dtype -> [dtype system]
+
+  TestBinomial
+    test_shape -> [ndarray.shape]
+    test_range -> [unknown]
+    test_dtype -> [dtype system]
+
+  TestExponential
+    test_shape -> [ndarray.shape]
+    test_positive -> [np.positive]
+    test_dtype -> [dtype system]
+
+  TestGamma
+    test_shape -> [ndarray.shape]
+    test_positive -> [np.positive]
+    test_dtype -> [dtype system]
+
+  TestPoisson
+    test_shape -> [ndarray.shape]
+    test_non_negative -> [np.negative]
+    test_dtype -> [dtype system]
+
+  TestStandardNormal
+    test_shape -> [ndarray.shape]
+    test_dtype -> [dtype system]
+
+  TestStandardCauchy
+    test_shape -> [ndarray.shape]
+    test_dtype -> [dtype system]
+
+  TestStandardExponential
+    test_shape -> [ndarray.shape]
+    test_dtype -> [dtype system]
+
+  TestStandardGamma
+    test_shape -> [ndarray.shape]
+    test_dtype -> [dtype system]
+
+  TestStandardT
+    test_shape -> [ndarray.shape]
+    test_dtype -> [dtype system]
+
+  TestChisquare
+    test_shape -> [ndarray.shape]
+    test_positive -> [np.positive]
+    test_dtype -> [dtype system]
+
+  TestGeometric
+    test_shape -> [ndarray.shape]
+    test_positive -> [np.positive]
+    test_dtype -> [dtype system]
+
+  TestLaplace
+    test_shape -> [ndarray.shape]
+    test_dtype -> [dtype system]
+
+  TestLogistic
+    test_shape -> [ndarray.shape]
+    test_dtype -> [dtype system]
+
+  TestLognormal
+    test_shape -> [ndarray.shape]
+    test_positive -> [np.positive]
+    test_dtype -> [dtype system]
+
+  TestGumbel
+    test_shape -> [ndarray.shape]
+    test_dtype -> [dtype system]
+
+  TestRayleigh
+    test_shape -> [ndarray.shape]
+    test_positive -> [np.positive]
+    test_dtype -> [dtype system]
+
+  TestTriangular
+    test_shape -> [ndarray.shape]
+    test_range -> [np.tri]
+    test_dtype -> [dtype system]
+
+  TestWeibull
+    test_shape -> [ndarray.shape]
+    test_positive -> [np.positive]
+    test_dtype -> [dtype system]
+
+  TestVonmises
+    test_shape -> [ndarray.shape]
+    test_dtype -> [dtype system]
+
+  TestWald
+    test_shape -> [ndarray.shape]
+    test_positive -> [np.positive]
+    test_dtype -> [dtype system]
+
+  TestZipf
+    test_shape -> [ndarray.shape]
+    test_positive -> [np.positive]
+    test_dtype -> [dtype system]
+
+  TestPareto
+    test_shape -> [ndarray.shape]
+    test_positive -> [np.positive]
+    test_dtype -> [dtype system]
+
+  TestLogseries
+    test_shape -> [ndarray.shape]
+    test_positive -> [np.positive]
+    test_dtype -> [dtype system]
+
+  TestMultinomial
+    test_shape -> [ndarray.shape]
+    test_shape_with_size -> [ndarray.shape]
+    test_sum -> [np.sum]
+    test_dtype -> [dtype system]
+
+  TestMultivariateNormal
+    test_shape -> [ndarray.shape]
+    test_dtype -> [dtype system]
+
+  TestDirichlet
+    test_shape -> [ndarray.shape]
+    test_sums_to_one -> [np.std]
+    test_dtype -> [dtype system]
+
+  TestF
+    test_shape -> [ndarray.shape]
+    test_positive -> [np.positive]
+    test_dtype -> [dtype system]
+
+  TestHypergeometric
+    test_shape -> [ndarray.shape]
+    test_range -> [np.tri]
+    test_dtype -> [dtype system]
+
+  TestNegativeBinomial
+    test_shape -> [ndarray.shape]
+    test_non_negative -> [np.negative]
+    test_dtype -> [dtype system]
+
+
+=== test_rawkernel.py ===
+  TestRawKernelBasic
+    test_float32 -> [ndarray.__str__]
+    test_int32 -> [ndarray.__str__]
+    test_float16 -> [ndarray.__str__]
+    test_uint32 -> [ndarray.__str__]
+
+  TestRawKernelGrid
+    test_int_grid -> [ndarray.__str__]
+    test_1_tuple -> [ndarray.__str__]
+    test_2_tuple -> [ndarray.__str__]
+    test_3_tuple -> [ndarray.__str__]
+    test_4_tuple_raises -> [ndarray.__str__]
+
+  TestRawKernelSync
+    test_auto_append_sync -> [np.append]
+    test_source_already_has_sync -> [ndarray.__str__]
+
+  TestRawKernelAdvanced
+    test_eight_buffers -> [ndarray.__str__]
+    test_reuse_kernel -> [ndarray.__str__]
+    test_two_different_kernels -> [ndarray.__str__]
+    test_large_grid -> [ndarray.__str__]
+
+
+=== test_reduction_gpu.py ===
+  TestReductionGPU
+    test_std_ddof1 -> [np.std]
+    test_std_ddof1_axis -> [np.std]
+    test_var_ddof1 -> [np.var]
+    test_ptp -> [ndarray.__str__]
+    test_ptp_axis -> [ndarray.__str__]
+    test_diff_1d -> [ndarray.__str__]
+    test_diff_2d -> [ndarray.__str__]
+    test_divmod_gpu -> [np.divmod]
+    test_apply_where_sum -> [np.sum]
+
+
+=== test_reduction_params.py ===
+  TestAllOut
+    test_out_axis_none -> [np.all]
+    test_out_axis0 -> [np.all]
+
+  TestAnyOut
+    test_out_axis_none -> [np.any]
+    test_out_axis0 -> [np.any]
+
+  TestAmaxKeepdims
+    test_keepdims_axis0 -> [np.max / ndarray.max]
+    test_keepdims_axis_none -> [np.max / ndarray.max]
+
+  TestAmaxOut
+    test_out_axis_none -> [np.max / ndarray.max]
+    test_out_axis0 -> [np.max / ndarray.max]
+
+  TestAminKeepdims
+    test_keepdims_axis0 -> [np.min / ndarray.min]
+    test_keepdims_axis_none -> [np.min / ndarray.min]
+
+  TestAminOut
+    test_out_axis_none -> [np.min / ndarray.min]
+    test_out_axis0 -> [np.min / ndarray.min]
+
+  TestArgmaxKeepdims
+    test_keepdims_axis0 -> [np.argmax]
+    test_keepdims_axis_none -> [np.argmax]
+
+  TestArgmaxOut
+    test_out_axis_none -> [np.argmax]
+    test_out_axis0 -> [np.argmax]
+
+  TestArgminKeepdims
+    test_keepdims_axis0 -> [np.argmin]
+    test_keepdims_axis_none -> [np.argmin]
+
+  TestArgminOut
+    test_out_axis_none -> [np.argmin]
+    test_out_axis0 -> [np.argmin]
+
+  TestMedianKeepdims
+    test_keepdims_axis0 -> [np.median]
+    test_keepdims_axis_none -> [np.median]
+
+  TestMedianOut
+    test_out_axis_none -> [np.median]
+    test_out_axis0 -> [np.median]
+
+  TestPercentileKeepdims
+    test_keepdims_axis0 -> [np.percentile]
+    test_keepdims_axis_none -> [np.percentile]
+
+  TestPercentileOut
+    test_out_axis_none -> [np.percentile]
+    test_out_axis0 -> [np.percentile]
+
+  TestQuantileKeepdims
+    test_keepdims_axis0 -> [np.quantile]
+    test_keepdims_axis_none -> [np.quantile]
+
+  TestQuantileOut
+    test_out_axis_none -> [np.quantile]
+    test_out_axis0 -> [np.quantile]
+
+  TestPtpKeepdims
+    test_keepdims_axis0 -> [unknown]
+    test_keepdims_axis_none -> [unknown]
+
+  TestPtpOut
+    test_out_axis_none -> [unknown]
+    test_out_axis0 -> [unknown]
+
+  TestAverageKeepdims
+    test_keepdims_axis0 -> [np.average]
+    test_keepdims_axis_none -> [np.average]
+
+  TestCountNonzeroKeepdims
+    test_keepdims_axis0 -> [np.nonzero]
+    test_keepdims_axis_none -> [np.nonzero]
+
+  TestCumsumDtype
+    test_int_to_float -> [np.cumsum]
+    test_float32_dtype -> [dtype system]
+
+  TestCumsumOut
+    test_out_axis_none -> [np.cumsum]
+    test_out_axis0 -> [np.cumsum]
+
+  TestCumprodDtype
+    test_int_to_float -> [np.cumprod]
+    test_float32_dtype -> [dtype system]
+
+  TestCumprodOut
+    test_out_axis_none -> [np.cumprod]
+    test_out_axis0 -> [np.cumprod]
+
+  TestSumInitial
+    test_initial_scalar -> [np.sum]
+    test_initial_with_axis -> [np.sum]
+
+  TestSumWhere
+    test_where_mask -> [np.where]
+    test_where_with_axis -> [np.where]
+
+  TestProdInitial
+    test_initial_scalar -> [np.prod]
+    test_initial_with_axis -> [np.prod]
+
+  TestProdWhere
+    test_where_mask -> [np.where]
+
+  TestMeanWhere
+    test_where_mask -> [np.where]
+    test_where_with_axis -> [np.where]
+
+  TestStdWhere
+    test_where_mask -> [np.where]
+
+  TestVarWhere
+    test_where_mask -> [np.where]
+
+  TestMaxInitial
+    test_initial_scalar -> [np.max / ndarray.max]
+    test_initial_with_axis -> [np.max / ndarray.max]
+
+  TestMaxWhere
+    test_where_mask -> [np.where]
+
+  TestMinInitial
+    test_initial_scalar -> [np.min / ndarray.min]
+    test_initial_with_axis -> [np.min / ndarray.min]
+
+  TestMinWhere
+    test_where_mask -> [np.where]
+
+  TestBackwardCompatParams
+    test_all_no_out -> [np.all]
+    test_any_no_out -> [np.any]
+    test_amax_no_new_params -> [np.max / ndarray.max]
+    test_amin_no_new_params -> [np.min / ndarray.min]
+    test_argmax_no_new_params -> [np.argmax]
+    test_argmin_no_new_params -> [np.argmin]
+    test_median_no_new_params -> [np.median]
+    test_percentile_no_new_params -> [np.percentile]
+    test_quantile_no_new_params -> [np.quantile]
+    test_ptp_no_new_params -> [unknown]
+    test_average_no_new_params -> [np.average]
+    test_count_nonzero_no_keepdims -> [np.nonzero]
+    test_cumsum_no_new_params -> [np.cumsum]
+    test_cumprod_no_new_params -> [np.cumprod]
+    test_sum_no_initial_or_where -> [np.sum]
+    test_prod_no_initial_or_where -> [np.prod]
+    test_mean_no_where -> [np.mean]
+    test_std_no_where -> [np.std]
+    test_var_no_where -> [np.var]
+    test_max_no_initial_or_where -> [np.max / ndarray.max]
+    test_min_no_initial_or_where -> [np.min / ndarray.min]
+
+
+=== test_reductions.py ===
+  TestSum
+    test_axis_none -> [np.sum]
+    test_axis0 -> [np.sum]
+    test_axis1 -> [np.sum]
+    test_axis_neg1 -> [np.sum]
+    test_keepdims -> [np.sum]
+    test_axis_neg2_3d -> [np.sum]
+
+  TestMean
+    test_axis_none -> [np.mean]
+    test_axis0 -> [np.mean]
+    test_axis1 -> [np.mean]
+    test_axis_neg1 -> [np.mean]
+    test_keepdims -> [np.mean]
+
+  TestMax
+    test_axis_none -> [np.max / ndarray.max]
+    test_axis0 -> [np.max / ndarray.max]
+    test_axis1 -> [np.max / ndarray.max]
+    test_axis_neg1 -> [np.max / ndarray.max]
+    test_keepdims -> [np.max / ndarray.max]
+
+  TestMin
+    test_axis_none -> [np.min / ndarray.min]
+    test_axis0 -> [np.min / ndarray.min]
+    test_axis1 -> [np.min / ndarray.min]
+    test_axis_neg1 -> [np.min / ndarray.min]
+    test_keepdims -> [np.min / ndarray.min]
+
+  TestStd
+    test_axis_none -> [np.std]
+    test_axis0 -> [np.std]
+    test_keepdims -> [np.std]
+
+  TestVar
+    test_axis_none -> [np.var]
+    test_axis0 -> [np.var]
+    test_keepdims -> [np.var]
+
+  TestProd
+    test_axis_none -> [np.prod]
+    test_axis0 -> [np.prod]
+    test_keepdims -> [np.prod]
+    test_overflow_small_values -> [np.prod]
+
+  TestArgmax
+    test_axis_none -> [np.argmax]
+    test_axis0 -> [np.argmax]
+    test_axis1 -> [np.argmax]
+    test_ties -> [np.argmax]
+    test_all_equal -> [np.all]
+
+  TestArgmin
+    test_axis_none -> [np.argmin]
+    test_axis0 -> [np.argmin]
+    test_ties -> [np.argmin]
+    test_all_equal -> [np.all]
+
+  TestAny
+    test_all_true -> [np.all]
+    test_all_false -> [np.all]
+    test_mixed -> [np.any]
+    test_axis0 -> [np.any]
+    test_axis_neg1 -> [np.any]
+    test_bool_input -> [np.any]
+    test_int_input -> [np.any]
+
+  TestAll
+    test_all_true -> [np.all]
+    test_all_false -> [np.all]
+    test_mixed -> [np.all]
+    test_axis0 -> [np.all]
+    test_axis_neg1 -> [np.all]
+    test_bool_input -> [np.all]
+    test_int_input_has_zero -> [np.all]
+
+  TestCumsum
+    test_axis_none -> [np.cumsum]
+    test_axis0 -> [np.cumsum]
+    test_axis_neg1 -> [np.cumsum]
+
+  TestCumprod
+    test_axis_none -> [np.cumprod]
+    test_axis0 -> [np.cumprod]
+    test_axis_neg1 -> [np.cumprod]
+
+  TestDiff
+    test_n1 -> [np.std]
+    test_n2 -> [np.std]
+    test_axis0 -> [np.std]
+    test_axis_neg1 -> [np.std]
+
+  TestMedian
+    test_odd_count -> [np.median]
+    test_even_count -> [np.median]
+    test_basic -> [np.median]
+    test_axis0 -> [np.median]
+    test_axis_neg1 -> [np.median]
+
+  TestPercentile
+    test_basic -> [np.percentile]
+    test_axis0 -> [np.percentile]
+
+  TestQuantile
+    test_basic -> [np.quantile]
+    test_axis0 -> [np.quantile]
+
+  TestPtp
+    test_axis_none -> [unknown]
+    test_axis0 -> [unknown]
+
+  TestAverage
+    test_basic -> [np.average]
+    test_axis0 -> [np.average]
+    test_weights_1d -> [np.average]
+    test_weights_axis -> [np.average]
+
+
+=== test_reductions_gaps.py ===
+  TestStdDdof
+    test_ddof0_matches_default -> [np.std]
+    test_ddof1_axis_none -> [np.std]
+    test_ddof1_axis0 -> [np.std]
+    test_ddof1_axis_neg1 -> [np.std]
+    test_ddof1_keepdims -> [np.std]
+    test_ddof2 -> [np.std]
+
+  TestVarDdof
+    test_ddof0_matches_default -> [np.var]
+    test_ddof1_axis_none -> [np.var]
+    test_ddof1_axis0 -> [np.var]
+    test_ddof1_axis_neg1 -> [np.var]
+    test_ddof1_keepdims -> [np.var]
+    test_ddof2 -> [np.var]
+
+  TestSumOut
+    test_out_axis_none -> [np.sum]
+    test_out_axis0 -> [np.sum]
+
+  TestMeanOut
+    test_out_axis_none -> [np.mean]
+    test_out_axis0 -> [np.mean]
+
+  TestMaxOut
+    test_out_axis_none -> [np.max / ndarray.max]
+    test_out_axis0 -> [np.max / ndarray.max]
+
+  TestMinOut
+    test_out_axis_none -> [np.min / ndarray.min]
+    test_out_axis0 -> [np.min / ndarray.min]
+
+  TestProdOut
+    test_out_axis_none -> [np.prod]
+    test_out_axis0 -> [np.prod]
+
+  TestSumDtype
+    test_int_to_float -> [np.sum]
+    test_float_dtype -> [dtype system]
+    test_dtype_with_axis -> [dtype system]
+
+  TestProdDtype
+    test_int_to_float -> [np.prod]
+    test_float_dtype -> [dtype system]
+
+  TestBackwardCompat
+    test_std_no_ddof -> [np.std]
+    test_var_no_ddof -> [np.var]
+    test_sum_no_out -> [np.sum]
+    test_mean_no_out -> [np.mean]
+
+
+=== test_search.py ===
+  TestAny
+    test_any_true -> [np.any]
+    test_any_false -> [np.any]
+    test_any_all_true -> [np.all]
+    test_any_module_level -> [np.any]
+    test_any_numeric -> [np.any]
+    test_any_numeric_false -> [np.any]
+
+  TestAll
+    test_all_true -> [np.all]
+    test_all_false -> [np.all]
+    test_all_module_level -> [np.all]
+
+  TestArgmax
+    test_argmax_basic -> [np.argmax]
+    test_argmax_first_occurrence -> [np.argmax]
+    test_argmax_bool_first_true -> [np.argmax]
+    test_argmax_int -> [np.argmax]
+
+  TestArgmin
+    test_argmin_basic -> [np.argmin]
+    test_argmin_first_occurrence -> [np.argmin]
+    test_argmin_int -> [np.argmin]
+
+
+=== test_set_ops.py ===
+  TestUnion1d
+    test_basic -> [np.union1d]
+    test_disjoint -> [np.union1d]
+    test_identical -> [np.union1d]
+    test_empty -> [np.empty]
+    test_from_list -> [np.union1d]
+
+  TestIntersect1d
+    test_basic -> [np.intersect1d]
+    test_disjoint -> [np.intersect1d]
+    test_identical -> [np.intersect1d]
+    test_empty -> [np.empty]
+    test_return_indices -> [np.indices]
+
+  TestSetdiff1d
+    test_basic -> [np.setdiff1d]
+    test_disjoint -> [np.setdiff1d]
+    test_identical -> [np.setdiff1d]
+    test_empty_b -> [np.empty]
+
+  TestSetxor1d
+    test_basic -> [np.setxor1d]
+    test_disjoint -> [np.setxor1d]
+    test_identical -> [np.setxor1d]
+    test_empty -> [np.empty]
+
+  TestIn1d
+    test_basic -> [np.in1d]
+    test_invert -> [np.invert]
+    test_assume_unique -> [np.unique]
+
+  TestIsin
+    test_basic -> [np.isin]
+    test_invert -> [np.invert]
+    test_2d -> [np.isin]
+    test_assume_unique -> [np.unique]
+
+
+=== test_sort_manip.py ===
+  TestSort
+    test_sort_1d -> [np.sort]
+    test_sort_2d_default_axis -> [np.sort]
+    test_sort_2d_axis0 -> [np.sort]
+    test_sort_already_sorted -> [np.sort]
+    test_sort_from_list -> [np.sort]
+
+  TestArgsort
+    test_argsort_1d -> [np.argsort]
+    test_argsort_2d_default_axis -> [np.argsort]
+    test_argsort_2d_axis0 -> [np.argsort]
+    test_argsort_from_list -> [np.argsort]
+
+  TestUnique
+    test_unique_with_duplicates -> [np.unique]
+    test_unique_already_unique -> [np.unique]
+    test_unique_single_element -> [np.unique]
+    test_unique_from_list -> [np.unique]
+
+  TestSearchsorted
+    test_searchsorted_left -> [np.searchsorted]
+    test_searchsorted_right -> [np.searchsorted]
+    test_searchsorted_scalar -> [np.searchsorted]
+    test_searchsorted_from_list -> [np.searchsorted]
+
+  TestTile
+    test_tile_1d -> [np.tile]
+    test_tile_2d -> [np.tile]
+    test_tile_from_list -> [np.tile]
+
+  TestRepeat
+    test_repeat_1d -> [np.repeat]
+    test_repeat_with_axis -> [np.repeat]
+    test_repeat_no_axis_2d -> [np.repeat]
+    test_repeat_from_list -> [np.repeat]
+
+  TestFlip
+    test_flip_1d -> [np.flip]
+    test_flip_2d_no_axis -> [np.flip]
+    test_flip_2d_axis0 -> [np.flip]
+    test_flip_2d_axis1 -> [np.flip]
+    test_flip_from_list -> [np.flip]
+
+  TestRoll
+    test_roll_1d_positive -> [np.roll]
+    test_roll_1d_negative -> [np.roll]
+    test_roll_2d_with_axis -> [np.roll]
+    test_roll_from_list -> [np.roll]
+
+  TestSplit
+    test_split_equal -> [np.split]
+    test_split_indices -> [np.indices]
+    test_split_2d_axis0 -> [np.split]
+    test_split_from_list -> [np.split]
+
+  TestArraySplit
+    test_array_split_unequal -> [np.array]
+    test_array_split_equal -> [np.array]
+    test_array_split_from_list -> [np.array]
+
+  TestSqueeze
+    test_squeeze_all -> [np.all]
+    test_squeeze_specific_axis -> [np.squeeze]
+    test_squeeze_invalid_axis -> [np.squeeze]
+    test_squeeze_from_list -> [np.squeeze]
+
+  TestRavel
+    test_ravel_2d -> [np.ravel / ndarray.ravel]
+    test_ravel_3d -> [np.ravel / ndarray.ravel]
+    test_ravel_from_list -> [np.ravel / ndarray.ravel]
+
+  TestMoveaxis
+    test_moveaxis_3d -> [np.moveaxis]
+    test_moveaxis_swap -> [np.moveaxis]
+    test_moveaxis_from_list -> [np.moveaxis]
+
+  TestSwapaxes
+    test_swapaxes_2d -> [np.swapaxes]
+    test_swapaxes_3d -> [np.swapaxes]
+    test_swapaxes_from_list -> [np.swapaxes]
+
+  TestBroadcastTo
+    test_broadcast_to_1d -> [np.broadcast_to]
+    test_broadcast_to_scalar -> [np.broadcast_to]
+    test_broadcast_to_2d -> [np.broadcast_to]
+    test_broadcast_to_from_list -> [np.broadcast_to]
+
+
+=== test_sort_set.py ===
+  TestLexsort
+    test_lexsort_two_keys_int32 -> [np.lexsort]
+    test_lexsort_two_keys_float32 -> [np.lexsort]
+    test_lexsort_single_key -> [np.lexsort]
+    test_lexsort_from_lists -> [np.lexsort]
+
+  TestPartition
+    test_partition_1d_int32 -> [np.partition]
+    test_partition_1d_float32 -> [np.partition]
+    test_partition_2d -> [np.partition]
+    test_partition_from_list -> [np.partition]
+
+  TestArgpartition
+    test_argpartition_1d_int32 -> [np.argpartition]
+    test_argpartition_1d_float32 -> [np.argpartition]
+    test_argpartition_2d -> [np.argpartition]
+    test_argpartition_from_list -> [np.argpartition]
+
+  TestMsort
+    test_msort_1d_int32 -> [np.sort]
+    test_msort_1d_float32 -> [np.sort]
+    test_msort_2d -> [np.sort]
+    test_msort_from_list -> [np.sort]
+
+  TestSortComplex
+    test_sort_complex_real_int32 -> [np.sort]
+    test_sort_complex_real_float32 -> [np.sort]
+    test_sort_complex_preserves_order -> [np.sort]
+    test_sort_complex_from_list -> [np.sort]
+
+  TestUnion1d
+    test_union1d_int32 -> [np.union1d]
+    test_union1d_float32 -> [np.union1d]
+    test_union1d_no_overlap -> [np.union1d]
+    test_union1d_from_list -> [np.union1d]
+
+  TestIntersect1d
+    test_intersect1d_int32 -> [np.intersect1d]
+    test_intersect1d_float32 -> [np.intersect1d]
+    test_intersect1d_return_indices -> [np.intersect1d]
+    test_intersect1d_no_overlap -> [np.intersect1d]
+
+  TestSetdiff1d
+    test_setdiff1d_int32 -> [np.setdiff1d]
+    test_setdiff1d_float32 -> [np.setdiff1d]
+    test_setdiff1d_all_common -> [np.all]
+    test_setdiff1d_from_list -> [np.setdiff1d]
+
+  TestSetxor1d
+    test_setxor1d_int32 -> [np.setxor1d]
+    test_setxor1d_float32 -> [np.setxor1d]
+    test_setxor1d_no_overlap -> [np.setxor1d]
+    test_setxor1d_from_list -> [np.setxor1d]
+
+  TestIn1d
+    test_in1d_int32 -> [np.in1d]
+    test_in1d_float32 -> [np.in1d]
+    test_in1d_invert -> [np.in1d]
+    test_in1d_from_list -> [np.in1d]
+
+  TestIsin
+    test_isin_int32 -> [np.isin]
+    test_isin_float32 -> [np.isin]
+    test_isin_invert -> [np.isin]
+    test_isin_from_list -> [np.isin]
+    test_isin_2d -> [np.isin]
+
+
+=== test_sorting.py ===
+  TestSort
+    test_basic -> [np.sort]
+    test_axis_0 -> [np.sort]
+    test_already_sorted -> [np.sort]
+    test_reverse -> [np.sort]
+
+  TestArgsort
+    test_basic -> [np.argsort]
+    test_axis_0 -> [np.argsort]
+
+  TestUnique
+    test_basic -> [np.unique]
+    test_all_same -> [np.all]
+    test_all_unique -> [np.all]
+    test_empty -> [np.empty]
+
+  TestSearchsorted
+    test_left -> [np.sort]
+    test_right -> [np.sort]
+    test_scalar -> [np.sort]
+
+  TestLexsort
+    test_two_keys -> [np.sort]
+    test_three_keys -> [np.sort]
+
+  TestPartition
+    test_basic -> [np.partition]
+    test_kth_0 -> [np.partition]
+    test_2d_axis -> [np.partition]
+
+  TestArgpartition
+    test_basic -> [np.partition]
+    test_2d_axis -> [np.partition]
+
+  TestMsort
+    test_1d -> [np.sort]
+    test_2d -> [np.sort]
+    test_from_list -> [np.sort]
+
+  TestSortComplex
+    test_basic -> [np.sort]
+    test_preserves_order -> [np.sort]
+
+
+=== test_sorting_gaps.py ===
+  TestUniqueReturnIndex
+    test_basic -> [np.unique]
+    test_all_same -> [np.all]
+    test_already_sorted -> [np.unique]
+
+  TestUniqueReturnInverse
+    test_basic -> [np.linalg.inv]
+    test_reconstruction -> [np.linalg.inv]
+
+  TestUniqueReturnCounts
+    test_basic -> [np.unique]
+    test_all_same -> [np.all]
+
+  TestUniqueMultiReturn
+    test_index_and_inverse -> [np.unique]
+    test_index_and_counts -> [np.unique]
+    test_all_three -> [np.all]
+
+  TestUniqueAxis
+    test_axis0_2d -> [np.unique]
+    test_axis1_2d -> [np.unique]
+    test_axis0_with_counts -> [np.unique]
+
+  TestUniqueEqualNan
+    test_equal_nan_true -> [np.equal]
+    test_equal_nan_false -> [np.equal]
+    test_equal_nan_with_counts -> [np.equal]
+
+  TestUniqueBackwardCompat
+    test_single_arg_still_works -> [np.unique]
+    test_empty -> [np.empty]
+
+
+=== test_sorting_gpu.py ===
+  TestSortingGPU
+    test_sort_1d_float -> [np.sort]
+    test_sort_1d_int -> [np.sort]
+    test_argsort_1d -> [np.argsort]
+    test_sort_already_sorted -> [np.sort]
+    test_sort_reverse -> [np.sort]
+    test_sort_single_element -> [np.sort]
+
+  TestIndexingGPU
+    test_take_1d -> [unknown]
+    test_take_wrap -> [unknown]
+    test_fill_diagonal -> [ndarray.fill]
+    test_searchsorted -> [np.searchsorted]
+    test_flatnonzero -> [np.flatnonzero]
+
+
+=== test_stats_cum.py ===
+  TestStd
+    test_std_1d_full -> [np.std]
+    test_std_2d_full -> [np.std]
+    test_std_axis0 -> [np.std]
+    test_std_axis1 -> [np.std]
+    test_std_keepdims -> [np.std]
+    test_std_module_level -> [np.std]
+
+  TestVar
+    test_var_1d_full -> [np.var]
+    test_var_2d_full -> [np.var]
+    test_var_axis0 -> [np.var]
+    test_var_axis1 -> [np.var]
+    test_var_keepdims -> [np.var]
+    test_var_module_level -> [np.var]
+
+  TestProd
+    test_prod_1d -> [np.prod]
+    test_prod_2d_full -> [np.prod]
+    test_prod_axis0 -> [np.prod]
+    test_prod_axis1 -> [np.prod]
+    test_prod_keepdims -> [np.prod]
+    test_prod_module_level -> [np.prod]
+
+  TestMedian
+    test_median_1d -> [np.median]
+    test_median_2d_full -> [np.median]
+    test_median_axis0 -> [np.median]
+    test_median_axis1 -> [np.median]
+    test_median_even_count -> [np.median]
+
+  TestPercentile
+    test_percentile_50 -> [np.percentile]
+    test_percentile_25_75 -> [np.percentile]
+    test_percentile_axis0 -> [np.percentile]
+    test_percentile_0_and_100 -> [np.percentile]
+
+  TestCumsum
+    test_cumsum_1d -> [np.cumsum]
+    test_cumsum_2d_flat -> [np.cumsum]
+    test_cumsum_axis0 -> [np.cumsum]
+    test_cumsum_axis1 -> [np.cumsum]
+    test_cumsum_module_level -> [np.cumsum]
+
+  TestCumprod
+    test_cumprod_1d -> [np.cumprod]
+    test_cumprod_2d_flat -> [np.cumprod]
+    test_cumprod_axis0 -> [np.cumprod]
+    test_cumprod_axis1 -> [np.cumprod]
+    test_cumprod_module_level -> [np.cumprod]
+
+  TestDiff
+    test_diff_1d -> [np.std]
+    test_diff_n2 -> [np.std]
+    test_diff_2d_axis0 -> [np.std]
+    test_diff_2d_axis1 -> [np.std]
+
+  TestNanInfChecks
+    test_isnan -> [np.isnan]
+    test_isinf -> [np.isinf]
+    test_isfinite -> [np.isfinite]
+    test_isnan_no_nans -> [np.isnan]
+
+  TestNanToNum
+    test_nan_to_num_defaults -> [np.nan_to_num]
+    test_nan_to_num_custom -> [np.nan_to_num]
+
+  TestCloseComparisons
+    test_isclose_exact -> [np.isclose]
+    test_isclose_with_tolerance -> [np.isclose]
+    test_allclose_true -> [np.allclose]
+    test_allclose_false -> [np.allclose]
+
+  TestArrayEqual
+    test_equal_arrays -> [np.equal]
+    test_unequal_arrays -> [np.array]
+
+  TestCountNonzero
+    test_count_nonzero_1d -> [np.nonzero]
+    test_count_nonzero_all -> [np.all]
+    test_count_nonzero_axis -> [np.nonzero]
+    test_count_nonzero_returns_int -> [np.nonzero]
+
+  TestPlainArrayInput
+    test_std_from_list -> [np.std]
+    test_median_from_numpy -> [np.median]
+    test_isnan_from_list -> [np.isnan]
+    test_count_nonzero_from_list -> [np.nonzero]
+
+
+=== test_strides_views.py ===
+  TestReshapeView
+    test_reshape_shares_buffer -> [np.reshape / ndarray.reshape]
+    test_reshape_flat_to_2d -> [np.reshape / ndarray.reshape]
+    test_reshape_infer_dim -> [np.reshape / ndarray.reshape]
+
+  TestTransposeView
+    test_transpose_shares_buffer -> [np.transpose / ndarray.T]
+    test_transpose_values -> [np.transpose / ndarray.T]
+    test_transpose_3d -> [np.transpose / ndarray.T]
+
+  TestRavelViewCopy
+    test_ravel_contiguous_is_view -> [np.ravel / ndarray.ravel]
+    test_ravel_noncontiguous_is_copy -> [np.copy]
+    test_ravel_values_contiguous -> [np.ravel / ndarray.ravel]
+
+  TestSliceKernelInput
+    test_slice_stride2_sqrt -> [np.sqrt]
+    test_slice_offset_values -> [unknown]
+    test_transposed_as_kernel_input -> [np.transpose / ndarray.T]
+
+  TestIsContiguous
+    test_fresh_array_is_contiguous -> [np.array]
+    test_transposed_not_contiguous -> [ndarray (memory layout)]
+    test_scalar_is_contiguous -> [ndarray (memory layout)]
+    test_1d_array_is_contiguous -> [np.array]
+
+  TestStrides
+    test_strides_c_contiguous -> [ndarray (memory layout)]
+    test_strides_after_transpose -> [np.transpose / ndarray.T]
+
+  TestAscontiguousarray
+    test_already_contiguous_values_preserved -> [ndarray (memory layout)]
+    test_noncontiguous_becomes_contiguous -> [ndarray (memory layout)]
+    test_1d_contiguous -> [ndarray (memory layout)]
+
+  TestFlatten
+    test_flatten_2d -> [ndarray.flatten]
+    test_flatten_transposed -> [ndarray.flatten]
+
+  TestTProperty
+    test_T_values -> [unknown]
+    test_T_1d_is_noop -> [unknown]
+
+
+=== test_synchronize.py ===
+  TestSynchronize
+    test_no_pending_noop -> [device synchronization]
+    test_after_single_op -> [device synchronization]
+    test_after_chained_ops -> [device synchronization]
+    test_get_implicit_sync -> [ndarray.get (device->host)]
+    test_set_implicit_sync -> [device synchronization]
+    test_multiple_arrays_one_sync -> [device synchronization]
+    test_back_to_back_sync -> [device synchronization]
+    test_has_pending_false_after_sync -> [device synchronization]
+    test_has_pending_false_initially -> [device synchronization]
+    test_explicit_sync_then_get -> [ndarray.get (device->host)]
+
+
+=== test_ufunc.py ===
+  TestMaximumElementwise
+    test_maximum_basic -> [np.maximum]
+    test_maximum_int -> [np.maximum]
+    test_maximum_same_values -> [np.maximum]
+
+  TestMinimumElementwise
+    test_minimum_basic -> [np.minimum]
+    test_minimum_int -> [np.minimum]
+
+  TestMaximumAccumulate
+    test_accumulate_basic -> [np.max / ndarray.max]
+    test_accumulate_decreasing -> [np.max / ndarray.max]
+    test_accumulate_increasing -> [np.max / ndarray.max]
+    test_accumulate_int -> [np.max / ndarray.max]
+    test_accumulate_2d -> [np.max / ndarray.max]
+
+  TestMinimumAccumulate
+    test_accumulate_basic -> [np.min / ndarray.min]
+    test_accumulate_increasing -> [np.min / ndarray.min]
+
+
+=== test_ufunc_ops.py ===
+  TestBinaryArithArrayArray
+    test_array_array -> [np.array]
+
+  TestBinaryArithArrayScalar
+    test_array_scalar -> [np.array]
+
+  TestBinaryArithEdgeCases
+    test_divide_by_zero -> [np.divide]
+    test_add_nan -> [np.add]
+    test_multiply_inf -> [np.multiply]
+
+  TestExp2
+    test_basic -> [np.exp2]
+    test_zero -> [np.exp2]
+
+  TestExpm1
+    test_basic -> [np.expm1]
+    test_zero -> [np.expm1]
+
+  TestLog1p
+    test_basic -> [np.log1p]
+    test_zero -> [np.log1p]
+
+  TestCbrt
+    test_basic -> [np.cbrt]
+    test_negative -> [np.negative]
+
+  TestReciprocal
+    test_basic -> [np.reciprocal]
+    test_one -> [np.reciprocal]
+
+  TestRint
+    test_basic -> [np.tri]
+
+  TestTrunc
+    test_basic -> [np.trunc]
+    test_negative -> [np.negative]
+
+  TestAbsolute
+    test_basic -> [np.absolute]
+
+  TestFabs
+    test_basic -> [np.abs]
+
+  TestPositive
+    test_basic -> [np.positive]
+
+  TestArcsinh
+    test_basic -> [np.arcsinh]
+    test_zero -> [np.arcsinh]
+
+  TestArccosh
+    test_basic -> [np.arccosh]
+    test_one -> [np.arccosh]
+
+  TestArctanh
+    test_basic -> [np.arctanh]
+    test_zero -> [np.arctanh]
+
+  TestArctan2
+    test_basic -> [np.arctan2]
+    test_zeros -> [np.zeros]
+
+  TestHypot
+    test_basic -> [np.hypot]
+    test_pythagorean -> [np.hypot]
+
+  TestLogaddexp
+    test_basic -> [np.log]
+
+  TestLogaddexp2
+    test_basic -> [np.log]
+
+  TestHeaviside
+    test_basic -> [unknown]
+    test_zeros -> [np.zeros]
+
+  TestCopysign
+    test_basic -> [np.copy]
+
+  TestNextafter
+    test_basic -> [np.nextafter]
+    test_toward_zero -> [np.nextafter]
+
+  TestDegrees
+    test_basic -> [np.std]
+
+  TestRadians
+    test_basic -> [np.radians]
+
+  TestDeg2rad
+    test_basic -> [np.std]
+    test_zero -> [np.std]
+
+  TestRad2deg
+    test_basic -> [np.rad2deg]
+    test_zero -> [np.rad2deg]
+
+  TestSignbit
+    test_basic -> [np.sign]
+    test_special_values -> [np.sign]
+
+  TestModf
+    test_basic -> [np.modf]
+    test_negative -> [np.negative]
+
+  TestLdexp
+    test_basic -> [np.ldexp]
+
+  TestFrexp
+    test_basic -> [np.frexp]
+
+  TestAmax
+    test_basic -> [np.max / ndarray.max]
+    test_axis -> [np.max / ndarray.max]
+    test_axis1 -> [np.max / ndarray.max]
+    test_nan -> [np.max / ndarray.max]
+
+  TestAmin
+    test_basic -> [np.min / ndarray.min]
+    test_axis -> [np.min / ndarray.min]
+    test_axis1 -> [np.min / ndarray.min]
+
+  TestFmax
+    test_basic -> [np.max / ndarray.max]
+    test_nan -> [np.max / ndarray.max]
+
+  TestFmin
+    test_basic -> [np.min / ndarray.min]
+    test_nan -> [np.min / ndarray.min]
+
+  TestMaximumUfunc
+    test_basic -> [np.max / ndarray.max]
+    test_nan -> [np.max / ndarray.max]
+    test_2d -> [np.max / ndarray.max]
+    test_accumulate -> [np.max / ndarray.max]
+    test_accumulate_2d -> [np.max / ndarray.max]
+
+  TestMinimumUfunc
+    test_basic -> [np.min / ndarray.min]
+    test_nan -> [np.min / ndarray.min]
+    test_2d -> [np.min / ndarray.min]
+    test_accumulate -> [np.min / ndarray.min]
+    test_accumulate_2d -> [np.min / ndarray.min]
+
+
+=== test_window.py ===
+  TestBartlett
+    test_values -> [np.bartlett]
+    test_symmetry -> [np.bartlett]
+
+  TestBlackman
+    test_values -> [np.blackman]
+    test_symmetry -> [np.blackman]
+
+  TestHamming
+    test_values -> [np.min / ndarray.min]
+    test_symmetry -> [np.min / ndarray.min]
+
+  TestHanning
+    test_values -> [np.hanning]
+    test_symmetry -> [np.hanning]
+
+  TestKaiser
+    test_default_beta -> [np.kaiser]
+    test_beta_variants -> [np.kaiser]
+    test_symmetry -> [np.kaiser]
+
+
+=== test_window_misc.py ===
+  TestBartlett
+    test_basic -> [np.bartlett]
+    test_one -> [np.bartlett]
+    test_large -> [np.bartlett]
+
+  TestBlackman
+    test_basic -> [np.blackman]
+    test_one -> [np.blackman]
+
+  TestHamming
+    test_basic -> [np.min / ndarray.min]
+    test_one -> [np.min / ndarray.min]
+
+  TestHanning
+    test_basic -> [np.hanning]
+    test_one -> [np.hanning]
+
+  TestKaiser
+    test_basic -> [np.kaiser]
+    test_different_beta -> [np.kaiser]
+    test_one -> [np.kaiser]
+
+  TestSinc
+    test_basic -> [np.sin]
+    test_negative -> [np.negative]
+
+  TestI0
+    test_basic -> [unknown]
+    test_single -> [np.sin]
+
+  TestConvolve
+    test_full -> [np.full]
+    test_same -> [unknown]
+    test_valid -> [unknown]
+
+  TestInterp
+    test_basic -> [unknown]
+    test_left_right -> [unknown]
+
+  TestFix
+    test_basic -> [np.fix]
+    test_zero -> [np.fix]
+
+  TestUnwrap
+    test_basic -> [unknown]
+    test_large_jump -> [unknown]
+
+  TestTrapezoid
+    test_basic -> [unknown]
+    test_with_x -> [unknown]
+    test_with_dx -> [unknown]
+
+
+
+============================================================
+SUMMARY
+============================================================
+Total test files:    72
+Total test classes:  951
+Total test methods:  2755
+
+API coverage (by number of test methods):
+---------------------------------------------
+  unknown                                   260
+  dtype system                              158
+  ndarray.shape                              93
+  np.array                                   92
+  np.std                                     85
+  ndarray.__str__                            50
+  np.all                                     50
+  np.tri                                     49
+  np.sort                                    43
+  np.min / ndarray.min                       42
+  np.max / ndarray.max                       37
+  np.negative                                36
+  np.positive                                32
+  np.linalg.norm                             28
+  I/O operations                             26
+  dtype casting                              24
+  np.sum                                     24
+  np.where                                   24
+  error handling                             23
+  np.cumsum                                  22
+  np.var                                     22
+  np.any                                     21
+  complex number ops                         20
+  np.reshape / ndarray.reshape               20
+  np.stack                                   19
+  np.prod                                    19
+  np.equal                                   17
+  np.linspace                                17
+  np.square                                  17
+  np.indices                                 17
+  np.sin                                     17
+  np.ravel / ndarray.ravel                   17
+  np.cumprod                                 17
+  np.empty                                   16
+  np.copy                                    16
+  np.argmax                                  16
+  np.nonzero                                 16
+  np.median                                  16
+  np.unique                                  16
+  np.zeros                                   15
+  np.abs                                     15
+  broadcasting                               14
+  np.log                                     14
+  np.full                                    14
+  np.linalg.eigh                             14
+  np.nansum                                  14
+  ndarray.__getitem__                        14
+  np.diag                                    13
+  np.flip                                    13
+  np.argmin                                  13
+  np.identity                                12
+  np.concatenate                             12
+  np.argsort                                 12
+  np.partition                               12
+  np.isin                                    12
+  np.transpose / ndarray.T                   12
+  np.nan_to_num                              12
+  np.sign                                    11
+  ndarray.get (device->host)                 11
+  np.linalg.inv                              11
+  np.linalg.solve                            11
+  np.matmul                                  11
+  np.mean                                    11
+  np.squeeze                                 11
+  np.dot                                     11
+  np.mod                                     11
+  np.repeat                                  11
+  np.percentile                              11
+  np.power                                   10
+  ndarray.__repr__                           10
+  np.add                                     10
+  ndarray.size                               10
+  np.nanmax                                  10
+  np.nanmean                                 10
+  np.tan                                      9
+  np.round                                    9
+  configuration                               9
+  np.logspace                                 9
+  np.meshgrid                                 9
+  np.geomspace                                9
+  np.linalg.qr                                9
+  np.einsum                                   9
+  np.nanprod                                  9
+  np.nanmin                                   9
+  np.average                                  9
+  operator *                                  8
+  np.exp                                      8
+  ndarray.ndim                                8
+  operator /                                  8
+  np.split                                    8
+  np.fft.fft                                  8
+  edge cases                                  8
+  np.save                                     8
+  np.in1d                                     8
+  np.tile                                     8
+  np.roll                                     8
+  np.swapaxes                                 8
+  np.nanstd                                   8
+  np.nanvar                                   8
+  np.nanargmax                                8
+  np.nanargmin                                8
+  np.quantile                                 8
+  ndarray.__setitem__                         8
+  np.random.rand                              8
+  np.union1d                                  8
+  device synchronization                      8
+  operator -                                  7
+  ndarray.fill                                7
+  np.arange                                   7
+  np.cross                                    7
+  operator - (unary)                          7
+  np.broadcast_to                             7
+  np.clip                                     7
+  np.fft.ifft                                 7
+  np.argpartition                             7
+  np.append                                   7
+  np.rot90                                    7
+  np.insert                                   7
+  np.isnan                                    7
+  np.searchsorted                             7
+  np.intersect1d                              7
+  np.setxor1d                                 7
+  np.linalg.det                               6
+  np.linalg.svd                               6
+  np.linalg.eigvalsh                          6
+  np.fix                                      6
+  np.fft.rfft                                 6
+  np.resize                                   6
+  np.moveaxis                                 6
+  np.around                                   6
+  np.isclose                                  6
+  np.nanmedian                                6
+  np.nanpercentile                            6
+  np.nanquantile                              6
+  np.random                                   6
+  ndarray.item                                6
+  np.setdiff1d                                6
+  ndarray (memory layout)                     6
+  np.kaiser                                   6
+  np.ones                                     5
+  np.eye                                      5
+  np.frombuffer                               5
+  np.triu                                     5
+  np.linalg.cholesky                          5
+  np.outer                                    5
+  np.random.choice                            5
+  in-place operations                         5
+  np.pad                                      5
+  np.arcsin                                   5
+  np.bartlett                                 5
+  np.invert                                   4
+  np.fromfunction                             4
+  np.linalg.pinv                              4
+  np.multiply                                 4
+  np.vstack                                   4
+  np.hstack                                   4
+  np.fft.fftfreq                              4
+  np.mgrid                                    4
+  ndarray (views)                             4
+  np.floor                                    4
+  np.cos                                      4
+  np.arccos                                   4
+  np.arctan                                   4
+  np.tanh                                     4
+  np.log2                                     4
+  np.log10                                    4
+  np.isfinite                                 4
+  ndarray.flatten                             4
+  np.divmod                                   4
+  np.random.seed                              4
+  np.random.uniform                           4
+  np.lexsort                                  4
+  np.blackman                                 4
+  np.hanning                                  4
+  np.not_equal                                3
+  np.linalg.slogdet                           3
+  np.linalg.lstsq                             3
+  np.vdot                                     3
+  np.inner                                    3
+  np.tensordot                                3
+  np.kron                                     3
+  np.spacing                                  3
+  operator **                                 3
+  np.fft.fft2                                 3
+  np.fft.fftn                                 3
+  np.fft.fftshift                             3
+  np.ogrid                                    3
+  np.argwhere                                 3
+  np.isneginf                                 3
+  np.rollaxis                                 3
+  np.sinh                                     3
+  np.cosh                                     3
+  np.allclose                                 3
+  ndarray.tobytes                             3
+  ndarray.tolist                              3
+  np.isinf                                    3
+  np.nextafter                                3
+  np.random.shuffle                           3
+  np.maximum                                  3
+  np.greater                                  2
+  np.tril                                     2
+  np.load                                     2
+  ndarray.strides                             2
+  np.sqrt                                     2
+  np.fft.rfft2                                2
+  np.fft.rfftn                                2
+  np.iscomplex                                2
+  np.isreal                                   2
+  np.atleast_1d                               2
+  np.delete                                   2
+  np.fliplr                                   2
+  np.flipud                                   2
+  np.ceil                                     2
+  np.remainder                                2
+  np.isposinf                                 2
+  np.expand_dims                              2
+  np.linalg.matrix_rank                       2
+  np.random.permutation                       2
+  np.minimum                                  2
+  np.exp2                                     2
+  np.expm1                                    2
+  np.log1p                                    2
+  np.reciprocal                               2
+  np.arcsinh                                  2
+  np.arccosh                                  2
+  np.arctanh                                  2
+  np.hypot                                    2
+  np.rad2deg                                  2
+  np.less                                     1
+  np.less_equal                               1
+  np.greater_equal                            1
+  np.fft.ifft2                                1
+  np.fft.ifftn                                1
+  np.fft.irfft                                1
+  np.fft.irfft2                               1
+  np.fft.irfftn                               1
+  np.atleast_2d                               1
+  np.atleast_3d                               1
+  np.dstack                                   1
+  np.column_stack                             1
+  np.dsplit                                   1
+  np.hsplit                                   1
+  np.vsplit                                   1
+  np.trim_zeros                               1
+  np.broadcast_arrays                         1
+  np.count_nonzero                            1
+  np.array_equal                              1
+  np.full_like                                1
+  np.ones_like                                1
+  np.zeros_like                               1
+  ndarray.nbytes                              1
+  ndarray.itemsize                            1
+  ndarray.astype                              1
+  operator //                                 1
+  np.copysign                                 1
+  np.random.normal                            1
+  np.flatnonzero                              1
+  np.divide                                   1
+  np.cbrt                                     1
+  np.trunc                                    1
+  np.absolute                                 1
+  np.arctan2                                  1
+  np.radians                                  1
+  np.modf                                     1
+  np.ldexp                                    1
+  np.frexp                                    1
