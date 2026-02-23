@@ -42,15 +42,15 @@ def _logical_binary(x1, x2, np_func, gpu_op):
     return x1._boolean_op(x2, gpu_op)
 
 
-def logical_and(x1, x2):
+def logical_and(x1, x2, **kwargs):
     return _logical_binary(x1, x2, np.logical_and, "and_op")
 
 
-def logical_or(x1, x2):
+def logical_or(x1, x2, **kwargs):
     return _logical_binary(x1, x2, np.logical_or, "or_op")
 
 
-def logical_not(x):
+def logical_not(x, **kwargs):
     x = _ensure(x)
     if x.size < 4194304:
         a = x._np_data if x._np_data is not None else _cpu_view(x)
@@ -60,39 +60,39 @@ def logical_not(x):
     return ~x
 
 
-def logical_xor(x1, x2):
+def logical_xor(x1, x2, **kwargs):
     return _logical_binary(x1, x2, np.logical_xor, "xor_op")
 
 
 # -- Comparison functions (GPU-native via comparison shader) ---------------
 
 
-def greater(x1, x2):
+def greater(x1, x2, **kwargs):
     if type(x1) is not ndarray: x1 = creation.asarray(x1)
     return x1._comparison_op(x2, "gt_op")
 
 
-def greater_equal(x1, x2):
+def greater_equal(x1, x2, **kwargs):
     if type(x1) is not ndarray: x1 = creation.asarray(x1)
     return x1._comparison_op(x2, "ge_op")
 
 
-def less(x1, x2):
+def less(x1, x2, **kwargs):
     if type(x1) is not ndarray: x1 = creation.asarray(x1)
     return x1._comparison_op(x2, "lt_op")
 
 
-def less_equal(x1, x2):
+def less_equal(x1, x2, **kwargs):
     if type(x1) is not ndarray: x1 = creation.asarray(x1)
     return x1._comparison_op(x2, "le_op")
 
 
-def equal(x1, x2):
+def equal(x1, x2, **kwargs):
     if type(x1) is not ndarray: x1 = creation.asarray(x1)
     return x1._comparison_op(x2, "eq_op")
 
 
-def not_equal(x1, x2):
+def not_equal(x1, x2, **kwargs):
     if type(x1) is not ndarray: x1 = creation.asarray(x1)
     return x1._comparison_op(x2, "ne_op")
 

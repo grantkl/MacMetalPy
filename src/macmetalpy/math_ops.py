@@ -12,7 +12,7 @@ from .ndarray import (ndarray, _fast_unary, _fast_binary,
 from . import creation
 
 
-def sqrt(x):
+def sqrt(x, **kwargs):
     """Element-wise square root."""
     if _fast_unary is not None and type(x) is ndarray:
         r = _fast_unary(x, _UOP_SQRT)
@@ -23,7 +23,7 @@ def sqrt(x):
     return x._unary_op("sqrt_op")
 
 
-def exp(x):
+def exp(x, **kwargs):
     """Element-wise exponential."""
     if _fast_unary is not None and type(x) is ndarray:
         r = _fast_unary(x, _UOP_EXP)
@@ -34,7 +34,7 @@ def exp(x):
     return x._unary_op("exp_op")
 
 
-def log(x):
+def log(x, **kwargs):
     """Element-wise natural logarithm."""
     if _fast_unary is not None and type(x) is ndarray:
         r = _fast_unary(x, _UOP_LOG)
@@ -45,7 +45,7 @@ def log(x):
     return x._unary_op("log_op")
 
 
-def abs(x):
+def abs(x, **kwargs):
     """Element-wise absolute value."""
     if _fast_unary is not None and type(x) is ndarray:
         r = _fast_unary(x, _UOP_ABS)
@@ -56,7 +56,7 @@ def abs(x):
     return x._unary_op("abs_op")
 
 
-def power(x1, x2):
+def power(x1, x2, **kwargs):
     """Element-wise power."""
     if _fast_binary is not None and type(x1) is ndarray:
         r = _fast_binary(x1, x2, _OP_POW)
@@ -67,7 +67,7 @@ def power(x1, x2):
     return x1._binary_op(x2, "pow_op")
 
 
-def dot(a, b):
+def dot(a, b, out=None):
     """Dot product of two arrays."""
     if not isinstance(a, ndarray):
         a = creation.asarray(a)
@@ -82,13 +82,25 @@ def dot(a, b):
             return x._get_view()
         r = np.dot(_v(a), _v(b))
         if isinstance(r, np.ndarray):
-            return ndarray._from_np_direct(r)
-        return ndarray._from_np_direct(np.asarray(r))
+            result = ndarray._from_np_direct(r)
+        else:
+            result = ndarray._from_np_direct(np.asarray(r))
+        if out is not None:
+            out._np_data = result.astype(out.dtype).get()
+            out._buffer = None
+            return out
+        return result
     # 1-D dot product: use fused multiply-reduce kernel
     if a.ndim == 1 and b.ndim == 1:
-        return a._reduce_dot(b)
-    # 2-D: use matmul
-    return a.__matmul__(b)
+        result = a._reduce_dot(b)
+    else:
+        # 2-D: use matmul
+        result = a.__matmul__(b)
+    if out is not None:
+        out._np_data = result.astype(out.dtype).get()
+        out._buffer = None
+        return out
+    return result
 
 
 def where(condition, x=None, y=None):
@@ -146,11 +158,15 @@ def where(condition, x=None, y=None):
     return ndarray._from_buffer(out_buf, out_shape, rdtype)
 
 
-def clip(a, a_min, a_max, out=None):
+def clip(a, a_min=None, a_max=None, out=None, *, min=None, max=None):
     """Clip (limit) the values in an array (GPU-native)."""
     from ._kernel_cache import KernelCache
     from ._metal_backend import MetalBackend
 
+    if min is not None and a_min is None:
+        a_min = min
+    if max is not None and a_max is None:
+        a_max = max
     if not isinstance(a, ndarray):
         a = creation.asarray(a)
 
@@ -189,7 +205,7 @@ def clip(a, a_min, a_max, out=None):
     return result
 
 
-def concatenate(arrays, axis=0):
+def concatenate(arrays, axis=0, out=None, *, dtype=None, casting='same_kind'):
     """Join a sequence of arrays along an existing axis."""
     from ._metal_backend import MetalBackend
     from ._dtypes import METAL_TYPE_NAMES
@@ -205,12 +221,19 @@ def concatenate(arrays, axis=0):
     total_size = sum(a.size for a in arrs) if arrs else 0
     if total_size < 262144 or all(a._np_data is not None for a in arrs):
         np_arrays = [a._np_data if a._np_data is not None else a.get() for a in arrs]
-        return ndarray._from_np_direct(np.concatenate(np_arrays, axis=axis))
+        result = ndarray._from_np_direct(np.concatenate(np_arrays, axis=axis))
+        if dtype is not None:
+            result = result.astype(dtype)
+        if out is not None:
+            out._np_data = result.astype(out.dtype).get()
+            out._buffer = None
+            return out
+        return result
 
     # For 1D concatenation, use GPU copy with offsets
     if arrs and all(a.ndim == 1 for a in arrs) and axis == 0:
         total_size = sum(a.size for a in arrs)
-        out_dtype = arrs[0].dtype
+        out_dtype = dtype if dtype is not None else arrs[0].dtype
 
         metal_type = METAL_TYPE_NAMES[np.dtype(out_dtype)]
         shader_src = f"""
@@ -235,12 +258,23 @@ kernel void copy_offset(device {metal_type} *src [[buffer(0)]],
             params_buf = backend.array_to_buffer(params)
             backend.execute_kernel(shader_src, "copy_offset", arr_c.size, [arr_c._buffer, out_buf, params_buf])
             offset += arr_c.size
-        return ndarray._from_buffer(out_buf, (total_size,), out_dtype)
+        result = ndarray._from_buffer(out_buf, (total_size,), out_dtype)
+        if out is not None:
+            out._adopt_buffer(result._ensure_contiguous()._buffer)
+            return out
+        return result
 
     # Fallback for multi-dimensional
     np_arrays = [a.get() for a in arrs]
     result_np = np.concatenate(np_arrays, axis=axis)
-    return ndarray._from_np_direct(result_np)
+    result = ndarray._from_np_direct(result_np)
+    if dtype is not None:
+        result = result.astype(dtype)
+    if out is not None:
+        out._np_data = result.astype(out.dtype).get()
+        out._buffer = None
+        return out
+    return result
 
 
 def stack(arrays, axis=0, out=None, dtype=None, casting='same_kind'):
@@ -292,7 +326,7 @@ def hstack(arrays, dtype=None, casting='same_kind'):
     return result
 
 
-def sign(x):
+def sign(x, **kwargs):
     """Element-wise sign function."""
     if _fast_unary is not None and type(x) is ndarray:
         r = _fast_unary(x, _UOP_SIGN)
@@ -303,7 +337,7 @@ def sign(x):
     return x._unary_op("sign_op")
 
 
-def floor(x):
+def floor(x, **kwargs):
     """Element-wise floor."""
     if _fast_unary is not None and type(x) is ndarray:
         r = _fast_unary(x, _UOP_FLOOR)
@@ -314,7 +348,7 @@ def floor(x):
     return x._unary_op("floor_op")
 
 
-def ceil(x):
+def ceil(x, **kwargs):
     """Element-wise ceiling."""
     if _fast_unary is not None and type(x) is ndarray:
         r = _fast_unary(x, _UOP_CEIL)
@@ -325,7 +359,7 @@ def ceil(x):
     return x._unary_op("ceil_op")
 
 
-def sin(x):
+def sin(x, **kwargs):
     """Element-wise sine."""
     if _fast_unary is not None and type(x) is ndarray:
         r = _fast_unary(x, _UOP_SIN)
@@ -336,7 +370,7 @@ def sin(x):
     return x._unary_op("sin_op")
 
 
-def cos(x):
+def cos(x, **kwargs):
     """Element-wise cosine."""
     if _fast_unary is not None and type(x) is ndarray:
         r = _fast_unary(x, _UOP_COS)
@@ -347,7 +381,7 @@ def cos(x):
     return x._unary_op("cos_op")
 
 
-def tan(x):
+def tan(x, **kwargs):
     """Element-wise tangent."""
     if _fast_unary is not None and type(x) is ndarray:
         r = _fast_unary(x, _UOP_TAN)
@@ -358,7 +392,7 @@ def tan(x):
     return x._unary_op("tan_op")
 
 
-def arcsin(x):
+def arcsin(x, **kwargs):
     """Element-wise inverse sine."""
     if _fast_unary is not None and type(x) is ndarray:
         r = _fast_unary(x, _UOP_ASIN)
@@ -369,7 +403,7 @@ def arcsin(x):
     return x._unary_op("asin_op")
 
 
-def arccos(x):
+def arccos(x, **kwargs):
     """Element-wise inverse cosine."""
     if _fast_unary is not None and type(x) is ndarray:
         r = _fast_unary(x, _UOP_ACOS)
@@ -380,7 +414,7 @@ def arccos(x):
     return x._unary_op("acos_op")
 
 
-def arctan(x):
+def arctan(x, **kwargs):
     """Element-wise inverse tangent."""
     if _fast_unary is not None and type(x) is ndarray:
         r = _fast_unary(x, _UOP_ATAN)
@@ -391,7 +425,7 @@ def arctan(x):
     return x._unary_op("atan_op")
 
 
-def sinh(x):
+def sinh(x, **kwargs):
     """Element-wise hyperbolic sine."""
     if _fast_unary is not None and type(x) is ndarray:
         r = _fast_unary(x, _UOP_SINH)
@@ -402,7 +436,7 @@ def sinh(x):
     return x._unary_op("sinh_op")
 
 
-def cosh(x):
+def cosh(x, **kwargs):
     """Element-wise hyperbolic cosine."""
     if _fast_unary is not None and type(x) is ndarray:
         r = _fast_unary(x, _UOP_COSH)
@@ -413,7 +447,7 @@ def cosh(x):
     return x._unary_op("cosh_op")
 
 
-def tanh(x):
+def tanh(x, **kwargs):
     """Element-wise hyperbolic tangent."""
     if _fast_unary is not None and type(x) is ndarray:
         r = _fast_unary(x, _UOP_TANH)
@@ -424,7 +458,7 @@ def tanh(x):
     return x._unary_op("tanh_op")
 
 
-def log2(x):
+def log2(x, **kwargs):
     """Element-wise base-2 logarithm."""
     if _fast_unary is not None and type(x) is ndarray:
         r = _fast_unary(x, _UOP_LOG2)
@@ -435,7 +469,7 @@ def log2(x):
     return x._unary_op("log2_op")
 
 
-def log10(x):
+def log10(x, **kwargs):
     """Element-wise base-10 logarithm."""
     if _fast_unary is not None and type(x) is ndarray:
         r = _fast_unary(x, _UOP_LOG10)
@@ -446,7 +480,7 @@ def log10(x):
     return x._unary_op("log10_op")
 
 
-def square(x):
+def square(x, **kwargs):
     """Element-wise square."""
     if _fast_unary is not None and type(x) is ndarray:
         r = _fast_unary(x, _UOP_SQUARE)
@@ -457,7 +491,7 @@ def square(x):
     return x._unary_op("square_op")
 
 
-def negative(x):
+def negative(x, **kwargs):
     """Element-wise negation."""
     if _fast_unary is not None and type(x) is ndarray:
         r = _fast_unary(x, _UOP_NEGATIVE)
@@ -497,7 +531,7 @@ def round_(x, decimals=0, out=None):
 round = around
 
 
-def mod(x1, x2):
+def mod(x1, x2, **kwargs):
     """Element-wise remainder of division (NumPy-compatible: sign of divisor)."""
     if type(x1) is not ndarray:
         x1 = creation.asarray(x1)
@@ -508,28 +542,28 @@ def mod(x1, x2):
     return x1 - x1._binary_op(x2, "floor_divide_op") * x2
 
 
-def remainder(x1, x2):
+def remainder(x1, x2, **kwargs):
     """Element-wise remainder of division (alias for mod)."""
     return mod(x1, x2)
 
 
 # ------------------------------------------------------------------ NaN / comparison utilities
 
-def isnan(x):
+def isnan(x, **kwargs):
     """Test element-wise for NaN."""
     if type(x) is not ndarray:
         x = creation.asarray(x)
     return x._unary_predicate_op("isnan_op")
 
 
-def isinf(x):
+def isinf(x, **kwargs):
     """Test element-wise for positive or negative infinity."""
     if type(x) is not ndarray:
         x = creation.asarray(x)
     return x._unary_predicate_op("isinf_op")
 
 
-def isfinite(x):
+def isfinite(x, **kwargs):
     """Test element-wise for finiteness."""
     if type(x) is not ndarray:
         x = creation.asarray(x)

@@ -45,7 +45,7 @@ def imag(val):
     return ndarray._from_np_direct(np.imag(_get_np(val)))
 
 
-def conj(x):
+def conj(x, **kwargs):
     """Return the complex conjugate, element-wise."""
     if not isinstance(x, ndarray):
         x = creation.asarray(x)

@@ -403,6 +403,32 @@ class ndarray:
         """Return the base object if memory is from some other object."""
         return self._base
 
+    @property
+    def flags(self):
+        """Return the flags of the underlying numpy array."""
+        return self.get().flags
+
+    @property
+    def data(self):
+        """Return the buffer info of the underlying numpy array."""
+        return self.get().data
+
+    @property
+    def device(self):
+        """Return the device the array resides on."""
+        return "cpu"
+
+    @property
+    def mT(self):
+        """Matrix transpose (transposes last two axes)."""
+        np_result = self.get().mT
+        return type(self)._from_np_direct(np_result)
+
+    @property
+    def ctypes(self):
+        """Return a ctypes object for the underlying numpy array."""
+        return self.get().ctypes
+
     # ------------------------------------------------------------------ contiguity
     def _is_c_contiguous(self) -> bool:
         expected = _c_contiguous_strides(self._shape)
@@ -2483,6 +2509,70 @@ class ndarray:
     def __deepcopy__(self, memo):
         from . import creation
         return creation.array(self.get().copy())
+
+    # ------------------------------------------------------------------ array protocol
+
+    __array_priority__ = 100.0
+
+    def to_device(self, device, /, *, stream=None):
+        """Move array to the given device (only 'cpu' is supported)."""
+        if device != "cpu":
+            raise ValueError(f"Unsupported device: {device!r}. Only 'cpu' is supported.")
+        return self
+
+    def __array__(self, dtype=None, copy=None):
+        result = self.get()
+        if dtype is not None:
+            result = result.astype(dtype)
+        return result
+
+    def __array_ufunc__(self, ufunc, method, *inputs, **kwargs):
+        return NotImplemented
+
+    def __array_function__(self, func, types, args, kwargs):
+        return NotImplemented
+
+    def __array_wrap__(self, array, context=None, return_scalar=False):
+        return type(self)._from_np_direct(array)
+
+    def __array_finalize__(self, obj):
+        pass
+
+    def __array_namespace__(self, *, api_version=None):
+        import macmetalpy
+        return macmetalpy
+
+    @property
+    def __array_interface__(self):
+        return self.get().__array_interface__
+
+    @property
+    def __array_struct__(self):
+        return self.get().__array_struct__
+
+    @classmethod
+    def __class_getitem__(cls, item):
+        return cls
+
+    def __delitem__(self, key):
+        raise ValueError("cannot delete array elements")
+
+    def __dlpack__(self, *, stream=None, max_version=None, dl_device=None, copy=None):
+        return self.get().__dlpack__()
+
+    def __dlpack_device__(self):
+        return (1, 0)
+
+    def __setstate__(self, state):
+        tmp = np.ndarray.__new__(np.ndarray)
+        np.ndarray.__setstate__(tmp, state)
+        self._buffer = None
+        self._np_data = tmp
+        self._shape = tmp.shape
+        self._dtype = tmp.dtype
+        self._strides = _c_contiguous_strides(tmp.shape)
+        self._offset = 0
+        self._base = None
 
 
 # ── C dispatch table initialization ──

@@ -91,7 +91,7 @@ def kron(a, b):
     b_np = b._np_data if b._np_data is not None else _cpu_view(b)
     return ndarray._from_np_direct(np.kron(a_np, b_np))
 
-def matmul(x1, x2):
+def matmul(x1, x2, out=None, *, axes=None, axis=None, keepdims=False):
     """Matrix product of two arrays."""
     if not isinstance(x1, ndarray): x1 = creation.asarray(x1)
     if not isinstance(x2, ndarray): x2 = creation.asarray(x2)
@@ -99,10 +99,16 @@ def matmul(x1, x2):
     if x1.size < 4194304 and x2.size < 4194304:
         x1_np = x1._np_data if x1._np_data is not None else _cpu_view(x1)
         x2_np = x2._np_data if x2._np_data is not None else _cpu_view(x2)
-        return ndarray._from_np_direct(np.matmul(x1_np, x2_np))
-    if x1.ndim == 2 and x2.ndim == 2:
-        return x1.__matmul__(x2)
-    return ndarray._from_np_direct(np.matmul(x1.get(), x2.get()))
+        result = ndarray._from_np_direct(np.matmul(x1_np, x2_np))
+    elif x1.ndim == 2 and x2.ndim == 2:
+        result = x1.__matmul__(x2)
+    else:
+        result = ndarray._from_np_direct(np.matmul(x1.get(), x2.get()))
+    if out is not None:
+        out._np_data = result.astype(out.dtype).get()
+        out._buffer = None
+        return out
+    return result
 
 def einsum_path(*operands, optimize='greedy', **kwargs):
     """Evaluates the lowest cost contraction order for an einsum expression."""

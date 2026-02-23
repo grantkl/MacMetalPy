@@ -18,7 +18,7 @@ class _Ufunc2:
         self._np_func = np_func
         self._gpu_op = gpu_op_name
 
-    def __call__(self, a, b):
+    def __call__(self, a, b, **kwargs):
         """Element-wise operation via Metal GPU kernel."""
         from .ndarray import ndarray, _fast_binary, _OP_MINIMUM, _OP_MAXIMUM
         from . import creation

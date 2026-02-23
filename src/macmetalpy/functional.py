@@ -18,14 +18,14 @@ def _to_numpy(x):
     return x
 
 
-def vectorize(pyfunc, otypes=None, excluded=None, signature=None):
+def vectorize(pyfunc=None, otypes=None, doc=None, excluded=None, cache=False, signature=None):
     """Vectorize a scalar Python function, returning macmetalpy arrays.
 
     Wraps numpy.vectorize but converts inputs from GPU to CPU and wraps
     outputs back as macmetalpy arrays.
     """
     np_vfunc = np.vectorize(pyfunc, otypes=otypes, excluded=excluded,
-                            signature=signature)
+                            cache=cache, signature=signature)
 
     def wrapper(*args, **kwargs):
         np_args = [_to_numpy(a) for a in args]
@@ -36,7 +36,7 @@ def vectorize(pyfunc, otypes=None, excluded=None, signature=None):
         return creation.array(result)
 
     wrapper.__name__ = getattr(pyfunc, '__name__', 'vectorized')
-    wrapper.__doc__ = pyfunc.__doc__
+    wrapper.__doc__ = doc if doc is not None else pyfunc.__doc__
     return wrapper
 
 

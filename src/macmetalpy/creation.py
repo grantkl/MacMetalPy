@@ -40,8 +40,15 @@ def _wrap_np(np_data):
     return arr
 
 
-def empty(shape, dtype=None) -> ndarray:
+def _validate_device(device):
+    """Validate the device parameter (only None and 'cpu' are supported)."""
+    if device is not None and device != "cpu":
+        raise ValueError(f"Unsupported device: {device!r}")
+
+
+def empty(shape, dtype=None, order='C', *, like=None, device=None) -> ndarray:
     """Return a new array of given shape and type, without initialising entries."""
+    _validate_device(device)
     if isinstance(shape, int):
         shape = (shape,)
     else:
@@ -49,8 +56,9 @@ def empty(shape, dtype=None) -> ndarray:
     return _wrap_np(np.empty(shape, dtype=resolve_dtype(dtype)))
 
 
-def zeros(shape, dtype=None) -> ndarray:
+def zeros(shape, dtype=None, order='C', *, like=None, device=None) -> ndarray:
     """Return a new array of given shape filled with zeros."""
+    _validate_device(device)
     if isinstance(shape, int):
         shape = (shape,)
     else:
@@ -58,8 +66,9 @@ def zeros(shape, dtype=None) -> ndarray:
     return _wrap_np(np.zeros(shape, dtype=resolve_dtype(dtype)))
 
 
-def ones(shape, dtype=None, order='C') -> ndarray:
+def ones(shape, dtype=None, order='C', *, like=None, device=None) -> ndarray:
     """Return a new array of given shape filled with ones."""
+    _validate_device(device)
     if isinstance(shape, int):
         shape = (shape,)
     else:
@@ -67,8 +76,9 @@ def ones(shape, dtype=None, order='C') -> ndarray:
     return _wrap_np(np.ones(shape, dtype=resolve_dtype(dtype)))
 
 
-def full(shape, fill_value, dtype=None, order='C') -> ndarray:
+def full(shape, fill_value, dtype=None, order='C', *, like=None, device=None) -> ndarray:
     """Return a new array of given shape filled with *fill_value*."""
+    _validate_device(device)
     if isinstance(shape, int):
         shape = (shape,)
     else:
@@ -76,8 +86,9 @@ def full(shape, fill_value, dtype=None, order='C') -> ndarray:
     return _wrap_np(np.full(shape, fill_value, dtype=resolve_dtype(dtype)))
 
 
-def arange(start_or_stop, stop=None, step=1, dtype=None) -> ndarray:
+def arange(start_or_stop, stop=None, step=1, dtype=None, *, like=None, device=None) -> ndarray:
     """Return evenly spaced values within a given interval."""
+    _validate_device(device)
     if stop is None:
         start, stop = 0, start_or_stop
     else:
@@ -112,8 +123,9 @@ def asarray(obj, dtype=None) -> ndarray:
     return array(obj, dtype=dtype)
 
 
-def zeros_like(a, dtype=None, order='K') -> ndarray:
+def zeros_like(a, dtype=None, order='K', *, device=None) -> ndarray:
     """Return an array of zeros with the same shape as *a*."""
+    _validate_device(device)
     if isinstance(a, ndarray):
         d = dtype if dtype is not None else a.dtype
         return _wrap_np(np.zeros(a.shape, dtype=d))
@@ -121,8 +133,9 @@ def zeros_like(a, dtype=None, order='K') -> ndarray:
     return _wrap_np(np.zeros_like(a, dtype=dtype))
 
 
-def ones_like(a, dtype=None, order='K') -> ndarray:
+def ones_like(a, dtype=None, order='K', *, device=None) -> ndarray:
     """Return an array of ones with the same shape as *a*."""
+    _validate_device(device)
     if isinstance(a, ndarray):
         d = dtype if dtype is not None else a.dtype
         return _wrap_np(np.ones(a.shape, dtype=d))
@@ -130,8 +143,9 @@ def ones_like(a, dtype=None, order='K') -> ndarray:
     return _wrap_np(np.ones_like(a, dtype=dtype))
 
 
-def empty_like(a, dtype=None) -> ndarray:
+def empty_like(a, dtype=None, order='K', *, device=None) -> ndarray:
     """Return an uninitialised array with the same shape as *a*."""
+    _validate_device(device)
     if isinstance(a, ndarray):
         d = dtype if dtype is not None else a.dtype
         return _wrap_np(np.empty(a.shape, dtype=d))
@@ -139,8 +153,9 @@ def empty_like(a, dtype=None) -> ndarray:
     return _wrap_np(np.empty_like(a, dtype=dtype))
 
 
-def full_like(a, fill_value, dtype=None, order='K') -> ndarray:
+def full_like(a, fill_value, dtype=None, order='K', *, device=None) -> ndarray:
     """Return a filled array with the same shape as *a*."""
+    _validate_device(device)
     if isinstance(a, ndarray):
         shape = a.shape
         dtype = dtype if dtype is not None else a.dtype
@@ -150,8 +165,9 @@ def full_like(a, fill_value, dtype=None, order='K') -> ndarray:
     return full(shape, fill_value, dtype=dtype)
 
 
-def linspace(start, stop, num=50, endpoint=True, retstep=False, dtype=None, axis=0) -> ndarray:
+def linspace(start, stop, num=50, endpoint=True, retstep=False, dtype=None, axis=0, *, like=None, device=None) -> ndarray:
     """Return evenly spaced numbers over a specified interval."""
+    _validate_device(device)
     np_result = np.linspace(start, stop, num, endpoint=endpoint, retstep=retstep, axis=axis)
     if retstep:
         np_data, step = np_result
@@ -166,8 +182,9 @@ def linspace(start, stop, num=50, endpoint=True, retstep=False, dtype=None, axis
     return arr
 
 
-def eye(N, M=None, k=0, dtype=None, order='C') -> ndarray:
+def eye(N, M=None, k=0, dtype=None, order='C', *, like=None, device=None) -> ndarray:
     """Return a 2-D array with ones on the diagonal and zeros elsewhere."""
+    _validate_device(device)
     if M is None:
         M = N
     return _wrap_np(np.eye(N, M, k=k, dtype=resolve_dtype(dtype)))
@@ -183,12 +200,12 @@ def diag(v, k=0):
     return ndarray._from_np_direct(result)
 
 
-def identity(n, dtype=None):
+def identity(n, dtype=None, *, like=None):
     """Return the identity array (alias for eye)."""
     return eye(n, dtype=dtype)
 
 
-def tri(N, M=None, k=0, dtype=None):
+def tri(N, M=None, k=0, dtype=None, *, like=None):
     """Return array with ones at and below the given diagonal."""
     return _wrap_np(np.tri(N, M, k, dtype=resolve_dtype(dtype)))
 

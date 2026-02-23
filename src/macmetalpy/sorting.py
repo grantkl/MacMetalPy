@@ -24,8 +24,10 @@ def _get_np(a):
     return _get_np(a)
 
 
-def sort(a, axis=-1, kind=None, order=None):
+def sort(a, axis=-1, kind=None, order=None, *, stable=None):
     """Return a sorted copy of an array."""
+    if stable is not None and kind is None:
+        kind = 'stable' if stable else 'quicksort'
     if not isinstance(a, ndarray):
         a = creation.asarray(a)
 
@@ -41,8 +43,10 @@ def sort(a, axis=-1, kind=None, order=None):
     return ndarray._from_np_direct(np.sort(_get_np(a), axis=axis, kind=kind, order=order))
 
 
-def argsort(a, axis=-1, kind=None, order=None):
+def argsort(a, axis=-1, kind=None, order=None, *, stable=None):
     """Return the indices that would sort an array."""
+    if stable is not None and kind is None:
+        kind = 'stable' if stable else 'quicksort'
     if not isinstance(a, ndarray):
         a = creation.asarray(a)
 
@@ -199,7 +203,7 @@ kernel void bitonic_sort_step(device {metal_type} *data [[buffer(0)]],
 
 
 def unique(ar, return_index=False, return_inverse=False, return_counts=False,
-           axis=None, equal_nan=True):
+           axis=None, equal_nan=True, *, sorted=True):
     """Find the unique elements of an array."""
     if not isinstance(ar, ndarray):
         ar = creation.asarray(ar)

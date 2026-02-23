@@ -55,19 +55,19 @@ def _binary_bitwise(x1, x2, kernel_name):
     return ndarray._from_buffer(out_buf, a._shape, np.int32)
 
 
-def bitwise_and(x1, x2):
+def bitwise_and(x1, x2, **kwargs):
     return _binary_bitwise(x1, x2, "bit_and_op")
 
 
-def bitwise_or(x1, x2):
+def bitwise_or(x1, x2, **kwargs):
     return _binary_bitwise(x1, x2, "bit_or_op")
 
 
-def bitwise_xor(x1, x2):
+def bitwise_xor(x1, x2, **kwargs):
     return _binary_bitwise(x1, x2, "bit_xor_op")
 
 
-def invert(x):
+def invert(x, **kwargs):
     x = _ensure(x)
     # CPU fallback — pure memory op
     if x.size < _GPU_THRESHOLD_MEMORY:
@@ -86,11 +86,11 @@ bitwise_invert = invert
 bitwise_not = invert
 
 
-def left_shift(x1, x2):
+def left_shift(x1, x2, **kwargs):
     return _binary_bitwise(x1, x2, "lshift_op")
 
 
-def right_shift(x1, x2):
+def right_shift(x1, x2, **kwargs):
     return _binary_bitwise(x1, x2, "rshift_op")
 
 
@@ -112,12 +112,12 @@ def unpackbits(a, axis=None):
 # ── Math ──────────────────────────────────────────────────────────────
 
 
-def gcd(x1, x2):
+def gcd(x1, x2, **kwargs):
     x1, x2 = _ensure(x1), _ensure(x2)
     return ndarray._from_np_direct(np.gcd(_cpu_view(x1), _cpu_view(x2)))
 
 
-def lcm(x1, x2):
+def lcm(x1, x2, **kwargs):
     x1, x2 = _ensure(x1), _ensure(x2)
     return ndarray._from_np_direct(np.lcm(_cpu_view(x1), _cpu_view(x2)))
 

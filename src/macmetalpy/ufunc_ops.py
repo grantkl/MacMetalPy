@@ -35,7 +35,7 @@ def _ensure2(a, b):
 
 # ---- binary arithmetic ufuncs ----
 
-def add(x1, x2):
+def add(x1, x2, **kwargs):
     if _fast_binary is not None and type(x1) is ndarray:
         r = _fast_binary(x1, x2, _OP_ADD)
         if r is not None:
@@ -45,7 +45,7 @@ def add(x1, x2):
     return x1._binary_op(x2, "add_op")
 
 
-def subtract(x1, x2):
+def subtract(x1, x2, **kwargs):
     if _fast_binary is not None and type(x1) is ndarray:
         r = _fast_binary(x1, x2, _OP_SUB)
         if r is not None:
@@ -55,7 +55,7 @@ def subtract(x1, x2):
     return x1._binary_op(x2, "sub_op")
 
 
-def multiply(x1, x2):
+def multiply(x1, x2, **kwargs):
     if _fast_binary is not None and type(x1) is ndarray:
         r = _fast_binary(x1, x2, _OP_MUL)
         if r is not None:
@@ -65,7 +65,7 @@ def multiply(x1, x2):
     return x1._binary_op(x2, "mul_op")
 
 
-def divide(x1, x2):
+def divide(x1, x2, **kwargs):
     if type(x1) is not ndarray:
         x1 = creation.asarray(x1)
     if type(x2) is not ndarray:
@@ -78,7 +78,7 @@ def divide(x1, x2):
     return x1._binary_op(x2, "div_op")
 
 
-def true_divide(x1, x2):
+def true_divide(x1, x2, **kwargs):
     if type(x1) is not ndarray:
         x1 = creation.asarray(x1)
     if type(x2) is not ndarray:
@@ -90,7 +90,7 @@ def true_divide(x1, x2):
     return x1._binary_op(x2, "div_op")
 
 
-def floor_divide(x1, x2):
+def floor_divide(x1, x2, **kwargs):
     if _fast_binary is not None and type(x1) is ndarray:
         r = _fast_binary(x1, x2, _OP_FLOOR_DIV)
         if r is not None:
@@ -100,12 +100,12 @@ def floor_divide(x1, x2):
     return x1._binary_op(x2, "floor_divide_op")
 
 
-def float_power(x1, x2):
+def float_power(x1, x2, **kwargs):
     x1, x2 = _ensure2(x1, x2)
     return x1.astype(np.float32)._binary_op(x2.astype(np.float32), "pow_op")
 
 
-def fmod(x1, x2):
+def fmod(x1, x2, **kwargs):
     if _fast_binary is not None and type(x1) is ndarray:
         r = _fast_binary(x1, x2, _OP_FMOD)
         if r is not None:
@@ -117,7 +117,7 @@ def fmod(x1, x2):
 
 # ---- unary math ufuncs ----
 
-def exp2(x):
+def exp2(x, **kwargs):
     if _fast_unary is not None and type(x) is ndarray:
         r = _fast_unary(x, _UOP_EXP2)
         if r is not None:
@@ -126,7 +126,7 @@ def exp2(x):
     return x._unary_op("exp2_op")
 
 
-def expm1(x):
+def expm1(x, **kwargs):
     if _fast_unary is not None and type(x) is ndarray:
         r = _fast_unary(x, _UOP_EXPM1)
         if r is not None:
@@ -135,7 +135,7 @@ def expm1(x):
     return x._unary_op("expm1_op")
 
 
-def log1p(x):
+def log1p(x, **kwargs):
     if _fast_unary is not None and type(x) is ndarray:
         r = _fast_unary(x, _UOP_LOG1P)
         if r is not None:
@@ -144,7 +144,7 @@ def log1p(x):
     return x._unary_op("log1p_op")
 
 
-def cbrt(x):
+def cbrt(x, **kwargs):
     if _fast_unary is not None and type(x) is ndarray:
         r = _fast_unary(x, _UOP_CBRT)
         if r is not None:
@@ -153,7 +153,7 @@ def cbrt(x):
     return x._unary_op("cbrt_op")
 
 
-def reciprocal(x):
+def reciprocal(x, **kwargs):
     if _fast_unary is not None and type(x) is ndarray:
         r = _fast_unary(x, _UOP_RECIPROCAL)
         if r is not None:
@@ -162,7 +162,7 @@ def reciprocal(x):
     return x._unary_op("reciprocal_op")
 
 
-def rint(x):
+def rint(x, **kwargs):
     if _fast_unary is not None and type(x) is ndarray:
         r = _fast_unary(x, _UOP_RINT)
         if r is not None:
@@ -171,7 +171,7 @@ def rint(x):
     return x._unary_op("rint_op")
 
 
-def trunc(x):
+def trunc(x, **kwargs):
     if _fast_unary is not None and type(x) is ndarray:
         r = _fast_unary(x, _UOP_TRUNC)
         if r is not None:
@@ -180,7 +180,7 @@ def trunc(x):
     return x._unary_op("trunc_op")
 
 
-def absolute(x):
+def absolute(x, **kwargs):
     if _fast_unary is not None and type(x) is ndarray:
         r = _fast_unary(x, _UOP_ABS)
         if r is not None:
@@ -189,7 +189,7 @@ def absolute(x):
     return x._unary_op("abs_op")
 
 
-def fabs(x):
+def fabs(x, **kwargs):
     if _fast_unary is not None and type(x) is ndarray:
         r = _fast_unary(x, _UOP_ABS)
         if r is not None:
@@ -198,7 +198,7 @@ def fabs(x):
     return x._unary_op("abs_op")
 
 
-def positive(x):
+def positive(x, **kwargs):
     if _fast_unary is not None and type(x) is ndarray:
         r = _fast_unary(x, _UOP_POSITIVE)
         if r is not None:
@@ -209,7 +209,7 @@ def positive(x):
 
 # ---- two-argument math ufuncs ----
 
-def arctan2(x1, x2):
+def arctan2(x1, x2, **kwargs):
     if _fast_binary is not None and type(x1) is ndarray:
         r = _fast_binary(x1, x2, _OP_ATAN2)
         if r is not None:
@@ -218,7 +218,7 @@ def arctan2(x1, x2):
     return x1._binary_op(x2, "atan2_op")
 
 
-def hypot(x1, x2):
+def hypot(x1, x2, **kwargs):
     if _fast_binary is not None and type(x1) is ndarray:
         r = _fast_binary(x1, x2, _OP_HYPOT)
         if r is not None:
@@ -227,7 +227,7 @@ def hypot(x1, x2):
     return x1._binary_op(x2, "hypot_op")
 
 
-def logaddexp(x1, x2):
+def logaddexp(x1, x2, **kwargs):
     if _fast_binary is not None and type(x1) is ndarray:
         r = _fast_binary(x1, x2, _OP_LOGADDEXP)
         if r is not None:
@@ -236,7 +236,7 @@ def logaddexp(x1, x2):
     return x1._binary_op(x2, "logaddexp_op")
 
 
-def logaddexp2(x1, x2):
+def logaddexp2(x1, x2, **kwargs):
     if _fast_binary is not None and type(x1) is ndarray:
         r = _fast_binary(x1, x2, _OP_LOGADDEXP2)
         if r is not None:
@@ -245,7 +245,7 @@ def logaddexp2(x1, x2):
     return x1._binary_op(x2, "logaddexp2_op")
 
 
-def heaviside(x1, x2):
+def heaviside(x1, x2, **kwargs):
     if _fast_binary is not None and type(x1) is ndarray:
         r = _fast_binary(x1, x2, _OP_HEAVISIDE)
         if r is not None:
@@ -254,7 +254,7 @@ def heaviside(x1, x2):
     return x1._binary_op(x2, "heaviside_op")
 
 
-def copysign(x1, x2):
+def copysign(x1, x2, **kwargs):
     if _fast_binary is not None and type(x1) is ndarray:
         r = _fast_binary(x1, x2, _OP_COPYSIGN)
         if r is not None:
@@ -263,7 +263,7 @@ def copysign(x1, x2):
     return x1._binary_op(x2, "copysign_op")
 
 
-def nextafter(x1, x2):
+def nextafter(x1, x2, **kwargs):
     if _fast_binary is not None and type(x1) is ndarray:
         r = _fast_binary(x1, x2, _OP_NEXTAFTER)
         if r is not None:
@@ -274,7 +274,7 @@ def nextafter(x1, x2):
 
 # ---- inverse hyperbolic ----
 
-def arcsinh(x):
+def arcsinh(x, **kwargs):
     if _fast_unary is not None and type(x) is ndarray:
         r = _fast_unary(x, _UOP_ASINH)
         if r is not None:
@@ -283,7 +283,7 @@ def arcsinh(x):
     return x._unary_op("asinh_op")
 
 
-def arccosh(x):
+def arccosh(x, **kwargs):
     if _fast_unary is not None and type(x) is ndarray:
         r = _fast_unary(x, _UOP_ACOSH)
         if r is not None:
@@ -292,7 +292,7 @@ def arccosh(x):
     return x._unary_op("acosh_op")
 
 
-def arctanh(x):
+def arctanh(x, **kwargs):
     if _fast_unary is not None and type(x) is ndarray:
         r = _fast_unary(x, _UOP_ATANH)
         if r is not None:
@@ -303,7 +303,7 @@ def arctanh(x):
 
 # ---- angle conversions ----
 
-def degrees(x):
+def degrees(x, **kwargs):
     if _fast_unary is not None and type(x) is ndarray:
         r = _fast_unary(x, _UOP_DEGREES)
         if r is not None:
@@ -312,7 +312,7 @@ def degrees(x):
     return x._unary_op("degrees_op")
 
 
-def radians(x):
+def radians(x, **kwargs):
     if _fast_unary is not None and type(x) is ndarray:
         r = _fast_unary(x, _UOP_RADIANS)
         if r is not None:
@@ -321,7 +321,7 @@ def radians(x):
     return x._unary_op("radians_op")
 
 
-def deg2rad(x):
+def deg2rad(x, **kwargs):
     if _fast_unary is not None and type(x) is ndarray:
         r = _fast_unary(x, _UOP_RADIANS)
         if r is not None:
@@ -330,7 +330,7 @@ def deg2rad(x):
     return x._unary_op("radians_op")
 
 
-def rad2deg(x):
+def rad2deg(x, **kwargs):
     if _fast_unary is not None and type(x) is ndarray:
         r = _fast_unary(x, _UOP_DEGREES)
         if r is not None:
@@ -341,7 +341,7 @@ def rad2deg(x):
 
 # ---- special ufuncs ----
 
-def signbit(x):
+def signbit(x, **kwargs):
     if type(x) is not ndarray: x = creation.asarray(x)
     return x._unary_predicate_op("signbit_op")
 
@@ -353,7 +353,7 @@ def modf(x):
     return ndarray._from_np_direct(frac), ndarray._from_np_direct(intg)
 
 
-def ldexp(x1, x2):
+def ldexp(x1, x2, **kwargs):
     x1, x2 = _ensure2(x1, x2)
     a = x1._np_data if x1._np_data is not None else _cpu_view(x1)
     b = x2._np_data if x2._np_data is not None else _cpu_view(x2)
@@ -407,7 +407,7 @@ def amin(a, axis=None, out=None, keepdims=False, initial=np._NoValue, where=np._
     return result
 
 
-def fmax(x1, x2):
+def fmax(x1, x2, **kwargs):
     if _fast_binary is not None and type(x1) is ndarray:
         r = _fast_binary(x1, x2, _OP_FMAX)
         if r is not None:
@@ -416,7 +416,7 @@ def fmax(x1, x2):
     return x1._binary_op(x2, "fmax_op")
 
 
-def fmin(x1, x2):
+def fmin(x1, x2, **kwargs):
     if _fast_binary is not None and type(x1) is ndarray:
         r = _fast_binary(x1, x2, _OP_FMIN)
         if r is not None:
