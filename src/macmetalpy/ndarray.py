@@ -1182,7 +1182,7 @@ class ndarray:
         from ._fusion import (
             _FUSEABLE_UNARY_OPS, InputNode, UnaryOpNode, _MAX_DEPTH, materialize as _fuse_mat,
         )
-        if op_name in _FUSEABLE_UNARY_OPS and self.size > 0 and self._dtype in METAL_TYPE_NAMES and self._fusion_node is not None:
+        if op_name in _FUSEABLE_UNARY_OPS and self.size > 0 and self._dtype in METAL_TYPE_NAMES:
             if self._fusion_node is not None:
                 a_node = self._fusion_node
                 a_shape = self._shape

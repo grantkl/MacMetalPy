@@ -446,9 +446,26 @@ def materialize(arr):
     After this call, ``arr._buffer`` holds the computed data and
     ``arr._fusion_node`` is set to None.
     """
+    node = arr._fusion_node
+
+    # Fast path: single unary op → use pre-compiled shader (no dynamic MSL)
+    if isinstance(node, UnaryOpNode) and isinstance(node._input, InputNode):
+        from ._metal_backend import MetalBackend
+        from ._kernel_cache import KernelCache
+        backend = MetalBackend()
+        cache = KernelCache()
+        shader = cache.get_shader("elementwise", arr._dtype)
+        out_buf = backend.create_buffer(arr.size, arr._dtype)
+        backend.execute_kernel(shader, node._op_name, arr.size,
+                               [node._input._buffer, out_buf])
+        arr._buffer = out_buf
+        arr._fusion_node = None
+        arr._np_data = None
+        return
+
+    # Full fusion path for multi-op graphs
     from ._metal_backend import MetalBackend
 
-    node = arr._fusion_node
     metal_type = METAL_TYPE_NAMES[arr._dtype]
 
     shader_src, input_buffers, cache_key = _compile_fusion_graph(node, metal_type)
