@@ -398,7 +398,10 @@ def argwhere(a):
 
 def mask_indices(n, mask_func, k=0):
     """Return the indices to access (n, n) arrays, given a masking function."""
-    result = np.mask_indices(n, mask_func, k=k)
+    def _np_mask_func(m, k=0):
+        r = mask_func(m, k=k)
+        return _get_np(r) if isinstance(r, ndarray) else r
+    result = np.mask_indices(n, _np_mask_func, k=k)
     return tuple(ndarray._from_np_direct(np.asarray(x)) for x in result)
 
 

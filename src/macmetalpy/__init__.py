@@ -303,4 +303,35 @@ class ndenumerate:
         return next(self._impl)
 
 
+# --- Type re-exports ---
+bytes_ = _np.bytes_
+character = _np.character
+datetime64 = _np.datetime64
+flexible = _np.flexible
+object_ = _np.object_
+str_ = _np.str_
+timedelta64 = _np.timedelta64
+void = _np.void
+
+# --- Legacy class re-exports ---
+matrix = _np.matrix
+memmap = _np.memmap
+recarray = _np.recarray
+record = _np.record
+sctypeDict = _np.sctypeDict
+asmatrix = _np.asmatrix
+bmat = _np.bmat
+
+# --- Datetime functions ---
+busday_count = _np.busday_count
+busday_offset = _np.busday_offset
+busdaycalendar = _np.busdaycalendar
+is_busday = _np.is_busday
+datetime_as_string = _np.datetime_as_string
+datetime_data = _np.datetime_data
+
+# --- Module re-exports ---
+from numpy import char, dtypes, emath, exceptions, polynomial, rec, strings
+
+
 __version__ = "0.1.0"

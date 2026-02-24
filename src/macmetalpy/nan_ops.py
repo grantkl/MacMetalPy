@@ -377,8 +377,10 @@ def nanmedian(a, axis=None, out=None, overwrite_input=False, keepdims=False):
     return result
 
 
-def nanstd(a, axis=None, dtype=None, out=None, ddof=0, keepdims=False, where=np._NoValue):
+def nanstd(a, axis=None, dtype=None, out=None, ddof=0, keepdims=False, where=np._NoValue, *, correction=None, mean=None):
     """Standard deviation, ignoring NaNs."""
+    if correction is not None:
+        ddof = correction
     a = _ensure_ndarray(a)
 
     if where is not np._NoValue:
@@ -415,8 +417,10 @@ def nanstd(a, axis=None, dtype=None, out=None, ddof=0, keepdims=False, where=np.
     return result
 
 
-def nanvar(a, axis=None, dtype=None, out=None, ddof=0, keepdims=False, where=np._NoValue):
+def nanvar(a, axis=None, dtype=None, out=None, ddof=0, keepdims=False, where=np._NoValue, *, correction=None, mean=None):
     """Variance, ignoring NaNs."""
+    if correction is not None:
+        ddof = correction
     a = _ensure_ndarray(a)
 
     if where is not np._NoValue:
@@ -680,6 +684,7 @@ def ediff1d(ary, to_end=None, to_begin=None):
 def gradient(f, *varargs, axis=None, edge_order=1):
     """Return the gradient of an N-dimensional array."""
     f = _ensure_ndarray(f)
+    varargs = tuple(_get_np(v) if isinstance(v, ndarray) else v for v in varargs)
     result = np.gradient(_get_np(f), *varargs, axis=axis, edge_order=edge_order)
     if isinstance(result, list):
         return [ndarray._from_np_direct(np.asarray(r)) for r in result]

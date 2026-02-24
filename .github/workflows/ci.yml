@@ -27,11 +27,12 @@ jobs:
         run: ruff check src/ tests/
 
   test:
-    runs-on: macos-14
     strategy:
       fail-fast: false
       matrix:
+        os: [macos-14, macos-15]
         python-version: ["3.10", "3.11", "3.12"]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
 

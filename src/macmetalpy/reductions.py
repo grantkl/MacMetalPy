@@ -410,7 +410,7 @@ def argmin(a, axis=None, out=None, keepdims=False):
     return result
 
 
-def std(a, axis=None, dtype=None, out=None, keepdims=False, ddof=0, where=np._NoValue):
+def std(a, axis=None, dtype=None, out=None, keepdims=False, ddof=0, where=np._NoValue, *, correction=None, mean=None):
     """Standard deviation of array elements.
 
     Parameters
@@ -418,10 +418,16 @@ def std(a, axis=None, dtype=None, out=None, keepdims=False, ddof=0, where=np._No
     ddof : int, optional
         Delta degrees of freedom. Default is 0 (population std).
         Use ddof=1 for sample std.
+    correction : int, optional
+        NumPy 2.0 alias for ddof. If provided, overrides ddof.
+    mean : array_like, optional
+        Accepted for API compatibility but currently ignored.
     """
     from .ndarray import ndarray
     from . import creation
 
+    if correction is not None:
+        ddof = correction
     if not isinstance(a, ndarray):
         a = creation.asarray(a)
     # CPU fast path for small/medium arrays
@@ -468,7 +474,7 @@ def std(a, axis=None, dtype=None, out=None, keepdims=False, ddof=0, where=np._No
     return _copy_to_out(r, out) if out is not None else r
 
 
-def var(a, axis=None, dtype=None, out=None, keepdims=False, ddof=0, where=np._NoValue):
+def var(a, axis=None, dtype=None, out=None, keepdims=False, ddof=0, where=np._NoValue, *, correction=None, mean=None):
     """Variance of array elements.
 
     Parameters
@@ -476,10 +482,16 @@ def var(a, axis=None, dtype=None, out=None, keepdims=False, ddof=0, where=np._No
     ddof : int, optional
         Delta degrees of freedom. Default is 0 (population variance).
         Use ddof=1 for sample variance.
+    correction : int, optional
+        NumPy 2.0 alias for ddof. If provided, overrides ddof.
+    mean : array_like, optional
+        Accepted for API compatibility but currently ignored.
     """
     from .ndarray import ndarray
     from . import creation
 
+    if correction is not None:
+        ddof = correction
     if not isinstance(a, ndarray):
         a = creation.asarray(a)
     # CPU fast path for small/medium arrays

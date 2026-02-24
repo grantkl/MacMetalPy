@@ -290,8 +290,9 @@ def swapaxes(a, axis1, axis2):
     return a.transpose(axes)._ensure_contiguous()
 
 
-def broadcast_to(a, shape):
+def broadcast_to(array, shape):
     """Broadcast an array to a new shape."""
+    a = array
     from ._metal_backend import MetalBackend
     from ._dtypes import METAL_TYPE_NAMES
 
@@ -345,7 +346,7 @@ kernel void broadcast_op(device {metal_type} *src [[buffer(0)]],
 
 # ------------------------------------------------------------------ extended manipulation
 
-def reshape(a, newshape, order='C'):
+def reshape(a, newshape, order='C', *, copy=None):
     """Give a new shape to an array without changing its data."""
     if not isinstance(a, ndarray):
         a = creation.asarray(a)
@@ -423,10 +424,13 @@ def column_stack(tup):
     return ndarray._from_np_direct(np.column_stack(np_arrays))
 
 
-def concat(arrays, axis=0):
+def concat(arrays, axis=0, *, dtype=None, casting='same_kind'):
     """Alias for concatenate."""
     np_arrays = [_get_np(a) if isinstance(a, ndarray) else np.asarray(a) for a in arrays]
-    return ndarray._from_np_direct(np.concatenate(np_arrays, axis=axis))
+    result = ndarray._from_np_direct(np.concatenate(np_arrays, axis=axis))
+    if dtype is not None:
+        result = result.astype(dtype)
+    return result
 
 
 def dsplit(ary, indices_or_sections):

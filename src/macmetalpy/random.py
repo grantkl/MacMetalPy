@@ -366,6 +366,16 @@ def set_state(state):
 
 # ── BitGenerator / RNG classes (re-exports from numpy) ────────────────
 
+from numpy.random import bit_generator, mtrand, get_bit_generator, set_bit_generator
+
+
+def random_integers(low, high=None, size=None):
+    """Legacy random integers function (deprecated in NumPy)."""
+    if high is None:
+        high, low = low, 1
+    return randint(low, high + 1, size=size)
+
+
 BitGenerator = np.random.BitGenerator
 MT19937 = np.random.MT19937
 PCG64 = np.random.PCG64
