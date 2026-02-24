@@ -48,14 +48,24 @@ WARMUP_RUNS = 2
 # ---------------------------------------------------------------------------
 
 
-def _run_single_benchmark(bench_entry: dict, size_name: str, size: int, repeats: int):
+def _run_single_benchmark(bench_entry: dict, size_name: str, size: int, repeats: int,
+                          cached_numpy: dict | None = None):
     """Run one benchmark at one size tier.
+
+    If *cached_numpy* is provided and contains a matching entry, numpy timings
+    are taken from the cache instead of being re-measured.
 
     Returns a result dict with timing statistics, or an error dict on failure.
     """
     name = bench_entry["name"]
     category = bench_entry["category"]
     func = bench_entry["func"]
+
+    # Look up cached numpy result (keyed by "category/name@size_name")
+    np_cache_hit = None
+    if cached_numpy is not None:
+        cache_key = f"{category}/{name}@{size_name}"
+        np_cache_hit = cached_numpy.get(cache_key)
 
     try:
         # Warm-up
@@ -72,9 +82,15 @@ def _run_single_benchmark(bench_entry: dict, size_name: str, size: int, repeats:
         mp_median = median(mp_times)
         mp_mean = mean(mp_times)
         mp_min = min(mp_times)
-        np_median = median(np_times)
-        np_mean = mean(np_times)
-        np_min = min(np_times)
+
+        if np_cache_hit is not None:
+            np_median = np_cache_hit["np_median"]
+            np_mean = np_cache_hit["np_mean"]
+            np_min = np_cache_hit["np_min"]
+        else:
+            np_median = median(np_times)
+            np_mean = mean(np_times)
+            np_min = min(np_times)
 
         speedup = np_median / mp_median if mp_median > 0 else float("inf")
 
@@ -376,6 +392,31 @@ def _generate_report(results: list[dict], path: str):
 
 
 # ---------------------------------------------------------------------------
+# NumPy result caching
+# ---------------------------------------------------------------------------
+
+_NUMPY_CACHE_FILE = "numpy_cache.json"
+
+
+def _save_numpy_cache_raw(cache: dict, path: str):
+    """Write a numpy cache dict directly to file."""
+    with open(path, "w") as f:
+        json.dump(cache, f, indent=2)
+    print(f"  NumPy cache saved to {path} ({len(cache)} entries)")
+
+
+def _load_numpy_cache(path: str, quiet: bool = False) -> dict | None:
+    """Load cached numpy timings from file. Returns None if file doesn't exist."""
+    if not os.path.isfile(path):
+        return None
+    with open(path) as f:
+        cache = json.load(f)
+    if not quiet:
+        print(f"  Loaded NumPy cache from {path} ({len(cache)} entries)")
+    return cache
+
+
+# ---------------------------------------------------------------------------
 # Main orchestration
 # ---------------------------------------------------------------------------
 
@@ -487,7 +528,14 @@ def main():
         action="store_true",
         help="Run benchmarks serially instead of in parallel",
     )
+    parser.add_argument(
+        "--numpy-cache",
+        action="store_true",
+        help="Use cached NumPy results instead of re-timing (from numpy_cache.json)",
+    )
     args = parser.parse_args()
+
+    bench_dir = os.path.dirname(os.path.abspath(__file__))
 
     # Resolve sizes
     selected_tiers = [t.strip() for t in args.sizes.split(",") if t.strip()]
@@ -530,6 +578,16 @@ def main():
 
     total_work = len(work_items)
     print(f"  Running {total_work} benchmark jobs...")
+
+    # Load numpy cache if requested
+    cached_numpy = None
+    if args.numpy_cache:
+        cache_path = os.path.join(bench_dir, _NUMPY_CACHE_FILE)
+        cached_numpy = _load_numpy_cache(cache_path)
+        if cached_numpy is None:
+            print(f"  WARNING: No numpy cache found at {cache_path}, will time numpy normally.")
+        else:
+            print(f"  Using cached NumPy timings (re-timing macmetalpy only)")
     print()
 
     # Execute benchmarks
@@ -544,7 +602,8 @@ def main():
                 f"\r  [{completed}/{total_work}] {bench['category']}/{bench['name']} @ {tier}    "
             )
             sys.stdout.flush()
-            result = _run_single_benchmark(bench, tier, size, repeats)
+            result = _run_single_benchmark(bench, tier, size, repeats,
+                                           cached_numpy=cached_numpy)
             all_results.append(result)
             gc.collect()  # Free Metal buffers between benchmarks
     else:
@@ -552,7 +611,8 @@ def main():
         with ProcessPoolExecutor(max_workers=args.workers) as executor:
             future_to_info = {}
             for bench, tier, size, repeats in work_items:
-                future = executor.submit(_run_single_benchmark, bench, tier, size, repeats)
+                future = executor.submit(_run_single_benchmark, bench, tier, size, repeats,
+                                         cached_numpy)
                 future_to_info[future] = (bench["category"], bench["name"], tier)
 
             for future in as_completed(future_to_info):
@@ -593,9 +653,24 @@ def main():
     _print_summary(all_results)
 
     # Save JSON
-    bench_dir = os.path.dirname(os.path.abspath(__file__))
     json_path = os.path.join(bench_dir, "results.json")
     _save_json(all_results, json_path)
+
+    # Always save/update numpy cache (merge with existing)
+    np_cache_path = os.path.join(bench_dir, _NUMPY_CACHE_FILE)
+    if not args.numpy_cache:
+        # Only update cache when we actually timed numpy (not using cached values)
+        existing_cache = _load_numpy_cache(np_cache_path, quiet=True) or {}
+        for r in all_results:
+            if r["error"] is not None or r["np_median"] is None:
+                continue
+            key = f"{r['category']}/{r['name']}@{r['size_name']}"
+            existing_cache[key] = {
+                "np_median": r["np_median"],
+                "np_mean": r["np_mean"],
+                "np_min": r["np_min"],
+            }
+        _save_numpy_cache_raw(existing_cache, np_cache_path)
 
     # Generate markdown report
     report_path = os.path.join(bench_dir, "BENCHMARK_REPORT.md")

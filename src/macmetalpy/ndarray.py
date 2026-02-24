@@ -41,6 +41,7 @@ __all__ = ["ndarray"]
 _GPU_THRESHOLD = 8192  # default for heavy ops (transcendentals, power, mod)
 _GPU_THRESHOLD_LIGHT = 262144  # 256K for light ops (simple arithmetic, sqrt, etc.)
 _GPU_THRESHOLD_MEMORY = 4194304  # 4M for pure memory ops — GPU can rarely beat CPU SIMD
+_GPU_REDUCTION_THRESHOLD = 4194304  # 4M — GPU reduction dispatch overhead dominates below this
 
 # Ops that are pure memory operations (copy/negate/compare) — CPU SIMD is almost
 # always faster because GPU dispatch overhead dominates.
@@ -236,6 +237,8 @@ class ndarray:
     Parameters are internal; prefer :mod:`macmetalpy.creation` functions.
     """
 
+    _fusion_node = None  # Lazy fusion DAG node; see _fusion.py
+
     # ------------------------------------------------------------------ init
     def __init__(
         self,
@@ -325,6 +328,7 @@ class ndarray:
 
     def _ensure_gpu(self) -> ndarray:
         """Ensure data is in a Metal buffer (lazy upload from CPU)."""
+        self._materialize_if_lazy()
         if self._dtype == _F64_DTYPE or self._dtype == _C128_DTYPE:
             raise TypeError(
                 "float64/complex128 arrays cannot be uploaded to Metal GPU. "
@@ -436,6 +440,7 @@ class ndarray:
 
     def _ensure_contiguous(self) -> ndarray:
         """Return *self* if contiguous, otherwise a contiguous copy."""
+        self._materialize_if_lazy()
         if self._np_data is not None:
             # CPU-resident: make contiguous if needed, then upload
             if not self._np_data.flags['C_CONTIGUOUS']:
@@ -446,6 +451,11 @@ class ndarray:
         if self._is_c_contiguous():
             return self
         return self._contiguous_copy()
+
+    def _materialize_if_lazy(self):
+        if self._fusion_node is not None:
+            from ._fusion import materialize
+            materialize(self)
 
     def _contiguous_copy(self) -> ndarray:
         """Materialise a contiguous copy via GPU strided copy."""
@@ -519,6 +529,7 @@ class ndarray:
         For Metal-backed arrays on Apple Silicon, returns a view of unified memory.
         Callers MUST synchronize() beforehand for Metal-backed arrays.
         """
+        self._materialize_if_lazy()
         if self._np_data is not None:
             d = self._np_data
             if d.shape != self._shape:
@@ -541,6 +552,7 @@ class ndarray:
 
     def get(self, *, _force_copy: bool = False) -> np.ndarray:
         """Transfer data to host and return as a NumPy array."""
+        self._materialize_if_lazy()
         if self._np_data is not None:
             data = self._np_data
             if data.shape != self._shape:
@@ -1029,6 +1041,44 @@ class ndarray:
             a = self._gpu_broadcast_to(a, out_shape)
             b = self._gpu_broadcast_to(b, out_shape)
 
+        # --- Fusion intercept (BEFORE _ensure_contiguous) ---
+        from ._fusion import (
+            _FUSEABLE_BINARY_OPS, _BINARY_EXPR, InputNode, BinaryOpNode, _MAX_DEPTH, materialize as _fuse_mat,
+        )
+        if op_name in _FUSEABLE_BINARY_OPS and a.size > 0 and rdtype in METAL_TYPE_NAMES and (a._fusion_node is not None or b._fusion_node is not None):
+            mt = METAL_TYPE_NAMES[rdtype]
+            expr_result = _BINARY_EXPR(op_name, mt)
+            if expr_result is not None:  # None means can't fuse (e.g. int pow)
+                if a._fusion_node is not None:
+                    a_node = a._fusion_node
+                else:
+                    a = a._ensure_contiguous()
+                    a_node = InputNode(a._buffer, a._shape, rdtype)
+                if b._fusion_node is not None:
+                    b_node = b._fusion_node
+                else:
+                    b = b._ensure_contiguous()
+                    b_node = InputNode(b._buffer, b._shape, rdtype)
+                new_depth = max(a_node._depth, b_node._depth) + 1
+                if new_depth > _MAX_DEPTH:
+                    if a._fusion_node is not None:
+                        _fuse_mat(a)
+                        a_node = InputNode(a._buffer, a._shape, rdtype)
+                    if b._fusion_node is not None:
+                        _fuse_mat(b)
+                        b_node = InputNode(b._buffer, b._shape, rdtype)
+                node = BinaryOpNode(op_name, a_node, b_node, a._shape, rdtype)
+                result = ndarray.__new__(ndarray)
+                result._buffer = None
+                result._np_data = None
+                result._shape = a._shape
+                result._dtype = rdtype
+                result._strides = _c_contiguous_strides(a._shape)
+                result._offset = 0
+                result._base = None
+                result._fusion_node = node
+                return result
+
         a = a._ensure_contiguous()
         b = b._ensure_contiguous()
 
@@ -1127,6 +1177,39 @@ class ndarray:
         threshold = _UNARY_THRESHOLD.get(op_name)
         if threshold is not None and self.size < threshold:
             return self._cpu_unary(_NP_UNARY[op_name])
+
+        # --- Fusion intercept (BEFORE _ensure_contiguous) ---
+        from ._fusion import (
+            _FUSEABLE_UNARY_OPS, InputNode, UnaryOpNode, _MAX_DEPTH, materialize as _fuse_mat,
+        )
+        if op_name in _FUSEABLE_UNARY_OPS and self.size > 0 and self._dtype in METAL_TYPE_NAMES and self._fusion_node is not None:
+            if self._fusion_node is not None:
+                a_node = self._fusion_node
+                a_shape = self._shape
+                a_dtype = self._dtype
+            else:
+                a_self = self._ensure_contiguous()
+                a_node = InputNode(a_self._buffer, a_self._shape, a_self._dtype)
+                a_shape = a_self._shape
+                a_dtype = a_self._dtype
+            new_depth = a_node._depth + 1
+            if new_depth > _MAX_DEPTH:
+                if self._fusion_node is not None:
+                    _fuse_mat(self)
+                    a_node = InputNode(self._buffer, self._shape, self._dtype)
+                    a_shape = self._shape
+                    a_dtype = self._dtype
+            node = UnaryOpNode(op_name, a_node, a_shape, a_dtype)
+            result = ndarray.__new__(ndarray)
+            result._buffer = None
+            result._np_data = None
+            result._shape = a_shape
+            result._dtype = a_dtype
+            result._strides = _c_contiguous_strides(a_shape)
+            result._offset = 0
+            result._base = None
+            result._fusion_node = node
+            return result
 
         backend = MetalBackend()
         cache = KernelCache()
@@ -1673,8 +1756,8 @@ class ndarray:
     def mean(self, axis=None, keepdims=False):
         """Mean of array elements."""
         from . import creation
-        # CPU fallback — reductions are memory-bound, CPU wins up to ~4M
-        if self.size < _GPU_THRESHOLD_MEMORY:
+        # CPU fallback — optimised GPU reduction kernels win above 256K
+        if self.size < _GPU_REDUCTION_THRESHOLD:
             if self._np_data is None:
                 MetalBackend().synchronize()
             r = np.mean(self._get_view(), axis=axis, keepdims=keepdims)
@@ -1702,8 +1785,8 @@ class ndarray:
 
     def std(self, axis=None, keepdims=False):
         """Standard deviation of array elements."""
-        # CPU fallback — reductions are memory-bound
-        if self.size < _GPU_THRESHOLD_MEMORY:
+        # CPU fallback — optimised GPU reduction kernels win above 256K
+        if self.size < _GPU_REDUCTION_THRESHOLD:
             if self._np_data is None:
                 MetalBackend().synchronize()
             r = np.std(self._get_view(), axis=axis, keepdims=keepdims)
@@ -1716,8 +1799,8 @@ class ndarray:
 
     def var(self, axis=None, keepdims=False):
         """Variance of array elements."""
-        # CPU fallback — reductions are memory-bound
-        if self.size < _GPU_THRESHOLD_MEMORY:
+        # CPU fallback — optimised GPU reduction kernels win above 256K
+        if self.size < _GPU_REDUCTION_THRESHOLD:
             if self._np_data is None:
                 MetalBackend().synchronize()
             r = np.var(self._get_view(), axis=axis, keepdims=keepdims)
@@ -1747,8 +1830,8 @@ class ndarray:
     def any(self, axis=None, keepdims=False):
         """Test whether any array element evaluates to True (GPU-accelerated)."""
         from . import creation
-        # CPU fallback — reductions are memory-bound
-        if self.size < _GPU_THRESHOLD_MEMORY:
+        # CPU fallback — optimised GPU reduction kernels win above 256K
+        if self.size < _GPU_REDUCTION_THRESHOLD:
             if self._np_data is None:
                 MetalBackend().synchronize()
             r = np.any(self._get_view(), axis=axis, keepdims=keepdims)
@@ -1768,8 +1851,8 @@ class ndarray:
     def all(self, axis=None, keepdims=False):
         """Test whether all array elements evaluate to True (GPU-accelerated)."""
         from . import creation
-        # CPU fallback — reductions are memory-bound
-        if self.size < _GPU_THRESHOLD_MEMORY:
+        # CPU fallback — optimised GPU reduction kernels win above 256K
+        if self.size < _GPU_REDUCTION_THRESHOLD:
             if self._np_data is None:
                 MetalBackend().synchronize()
             r = np.all(self._get_view(), axis=axis, keepdims=keepdims)
@@ -1788,8 +1871,8 @@ class ndarray:
 
     def _reduce(self, kernel_name: str):
         """Run a full-array GPU reduction and return a 0-d ndarray."""
-        # CPU fallback — reductions are memory-bound, CPU wins up to ~4M
-        if self.size < _GPU_THRESHOLD_MEMORY:
+        # CPU fallback — optimised GPU reduction kernels win above 256K
+        if self.size < _GPU_REDUCTION_THRESHOLD:
             np_func = _NP_REDUCE.get(kernel_name)
             if np_func is not None:
                 np_data = self._np_data
@@ -1815,8 +1898,10 @@ class ndarray:
         shader = cache.get_shader("reduction", a._dtype)
 
         TGROUP = 1024
+        EPT = 8  # elements per thread — must match EPT in reduction_shader
+        ELEMS_PER_GROUP = TGROUP * EPT
         n = a.size
-        num_groups = (n + TGROUP - 1) // TGROUP
+        num_groups = (n + ELEMS_PER_GROUP - 1) // ELEMS_PER_GROUP
         grid = num_groups * TGROUP
 
         n_buf = backend.array_to_buffer(np.array([n], dtype=np.uint32))
@@ -1827,13 +1912,28 @@ class ndarray:
         while num_groups > 1:
             in_buf = out_buf
             n = num_groups
-            num_groups = (n + TGROUP - 1) // TGROUP
+            num_groups = (n + ELEMS_PER_GROUP - 1) // ELEMS_PER_GROUP
             grid = num_groups * TGROUP
             n_buf = backend.array_to_buffer(np.array([n], dtype=np.uint32))
             out_buf = backend.create_buffer(max(num_groups, 1), a._dtype)
-            backend.execute_kernel(shader, kernel_name, n, [in_buf, out_buf, n_buf])
+            backend.execute_kernel(shader, kernel_name, grid, [in_buf, out_buf, n_buf])
 
-        return ndarray._from_buffer(out_buf, (), a._dtype)
+        # Eagerly materialise the scalar result: sync once here so that
+        # every subsequent .get() is free (no sync, no buffer read).
+        backend.synchronize()
+        scalar = out_buf.contents[0]
+        if a._dtype == np.float16:
+            scalar = np.array(scalar, dtype=np.int16).view(np.float16).item()
+        result = np.asarray(scalar, dtype=a._dtype)
+        arr = ndarray.__new__(ndarray)
+        arr._buffer = None
+        arr._np_data = result
+        arr._shape = ()
+        arr._dtype = a._dtype
+        arr._strides = ()
+        arr._offset = 0
+        arr._base = None
+        return arr
 
     def _reduce_dot(self, other):
         """Fused multiply-and-sum reduction for dot products (single kernel)."""
@@ -1844,8 +1944,10 @@ class ndarray:
         shader = cache.get_shader("reduction", a._dtype)
 
         TGROUP = 1024
+        EPT = 8  # elements per thread — must match EPT in reduction_shader
+        ELEMS_PER_GROUP = TGROUP * EPT
         n = a.size
-        num_groups = (n + TGROUP - 1) // TGROUP
+        num_groups = (n + ELEMS_PER_GROUP - 1) // ELEMS_PER_GROUP
         grid = num_groups * TGROUP
 
         n_buf = backend.array_to_buffer(np.array([n], dtype=np.uint32))
@@ -1857,14 +1959,28 @@ class ndarray:
         while num_groups > 1:
             in_buf = out_buf
             n = num_groups
-            num_groups = (n + TGROUP - 1) // TGROUP
+            num_groups = (n + ELEMS_PER_GROUP - 1) // ELEMS_PER_GROUP
             grid = num_groups * TGROUP
             n_buf = backend.array_to_buffer(np.array([n], dtype=np.uint32))
             out_buf = backend.create_buffer(max(num_groups, 1), a._dtype)
-            backend.execute_kernel(shader, "reduce_sum", n,
+            backend.execute_kernel(shader, "reduce_sum", grid,
                                    [in_buf, out_buf, n_buf])
 
-        return ndarray._from_buffer(out_buf, (), a._dtype)
+        # Eagerly materialise (same as _reduce)
+        backend.synchronize()
+        scalar = out_buf.contents[0]
+        if a._dtype == np.float16:
+            scalar = np.array(scalar, dtype=np.int16).view(np.float16).item()
+        result = np.asarray(scalar, dtype=a._dtype)
+        arr = ndarray.__new__(ndarray)
+        arr._buffer = None
+        arr._np_data = result
+        arr._shape = ()
+        arr._dtype = a._dtype
+        arr._strides = ()
+        arr._offset = 0
+        arr._base = None
+        return arr
 
     def _reduce_axis(self, kernel_name: str, axis: int, keepdims: bool = False, out_dtype=None):
         """GPU axis reduction using axis_reduction_shader."""
