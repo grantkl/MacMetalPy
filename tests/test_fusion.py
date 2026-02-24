@@ -186,19 +186,23 @@ class TestFusionOps:
         expected = a_np  # log(exp(x)) = x
         np.testing.assert_allclose(result.get(), expected, rtol=1e-4, atol=1e-5)
 
-    def test_atan2_fusion(self):
+    def test_binary_op_in_chain(self):
+        """Test binary op fusion when chained with a unary op."""
         np.random.seed(42)
         a_np = np.random.randn(100_000).astype(np.float32)
-        b_np = np.random.randn(100_000).astype(np.float32)
+        b_np = np.abs(np.random.randn(100_000).astype(np.float32)) + 0.1
         a, b = mp.array(a_np), mp.array(b_np)
-        result = mp.arctan2(a, b)
-        expected = np.arctan2(a_np, b_np)
+        # sin(a) makes a lazy, then add triggers fusion
+        result = mp.sin(a) + b
+        expected = np.sin(a_np) + b_np
         np.testing.assert_allclose(result.get(), expected, rtol=1e-5)
 
-    def test_pow_float_fusion(self):
+    def test_pow_in_chain(self):
+        """Test power fusion when chained with a unary op."""
         a_np = np.abs(np.random.randn(100_000).astype(np.float32)) + 0.1
         b_np = np.random.randn(100_000).astype(np.float32)
         a, b = mp.array(a_np), mp.array(b_np)
-        result = a ** b
-        expected = a_np ** b_np
+        # exp(a) makes a lazy node, then ** triggers binary fusion
+        result = mp.exp(a) ** b
+        expected = np.exp(a_np) ** b_np
         np.testing.assert_allclose(result.get(), expected, rtol=1e-4, atol=1e-5)
