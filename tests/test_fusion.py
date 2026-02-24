@@ -197,12 +197,12 @@ class TestFusionOps:
         expected = np.sin(a_np) + b_np
         np.testing.assert_allclose(result.get(), expected, rtol=1e-5)
 
-    def test_pow_in_chain(self):
-        """Test power fusion when chained with a unary op."""
-        a_np = np.abs(np.random.randn(100_000).astype(np.float32)) + 0.1
+    def test_multiply_in_chain(self):
+        """Test multiply fusion when chained with unary ops."""
+        a_np = np.random.randn(100_000).astype(np.float32)
         b_np = np.random.randn(100_000).astype(np.float32)
         a, b = mp.array(a_np), mp.array(b_np)
-        # exp(a) makes a lazy node, then ** triggers binary fusion
-        result = mp.exp(a) ** b
-        expected = np.exp(a_np) ** b_np
-        np.testing.assert_allclose(result.get(), expected, rtol=1e-4, atol=1e-5)
+        # sin(cos(a)) builds a 2-deep lazy chain, then * sin(b) fuses
+        result = mp.sin(mp.cos(a)) * mp.sin(b)
+        expected = np.sin(np.cos(a_np)) * np.sin(b_np)
+        np.testing.assert_allclose(result.get(), expected, rtol=1e-5)
