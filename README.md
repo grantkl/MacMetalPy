@@ -102,48 +102,56 @@ numpy_array = gpu_result.get()  # Transfer to NumPy
 
 ## Benchmarks — When Does the GPU Shred?
 
-MacMetalPy vs NumPy on an **M4 Mac Mini**, float32. The GPU's advantage grows with array size — small arrays have fixed dispatch overhead, but once you're past ~100K elements, Metal starts winning, and at 10M+ it absolutely rips.
+MacMetalPy vs NumPy on an **M4 Mac Mini**, float32. Small arrays use optimized CPU paths (NumPy SIMD is hard to beat below 100K elements), while the GPU shines on large compute-heavy workloads and specialized operations.
 
 ### The Scaling Story
 
-| Operation | 1K | 100K | 1M | 10M |
-|---|---|---|---|---|
-| `a + b` | 0.43x | 0.96x | 1.07x | — |
-| `sin(a)` | 0.80x | 1.03x | 3.42x | **3.71x** |
-| `exp(a)` | 0.82x | 1.09x | 3.68x | **4.45x** |
-| `tan(a)` | 0.82x | 1.08x | 8.64x | **14.0x** |
-| `arcsin(a)` | 0.80x | 1.04x | 12.7x | **16.5x** |
-| `power(a, b)` | 0.88x | 1.05x | 6.83x | **7.71x** |
-| `floor_divide` | 0.88x | 1.04x | 17.2x | **26.7x** |
-| `mod(a, b)` | 0.85x | 1.05x | 7.02x | **12.1x** |
-| `cumsum(a)` | 0.66x | 0.96x | 2.43x | **2.81x** |
-| `nanprod(a)` | 0.69x | 0.95x | 3.95x | **5.57x** |
-| `sort(a)` | 0.90x | 1.07x | 9.16x | — |
-
-> Values are speedup vs NumPy (higher = GPU faster). **Bold** = GPU wins by 2x+.
-
-### By Category at 10M Elements
-
-| Category | Avg Speedup | GPU Wins | Highlights |
+| Operation | 1K | 100K | 1M |
 |---|---|---|---|
-| **Trig** | **8.0x** | 15/15 | Every trig op faster on GPU |
-| **Math** | **5.8x** | 8/14 | Transcendentals dominate |
-| **Ufuncs** | **5.3x** | 16/34 | `fmod` 17x, `heaviside` 20x |
-| **NaN ops** | **3.2x** | 8/9 | `nancumprod` 5.2x, `nanprod` 5.6x |
-| **Reductions** | **1.3x** | 5/13 | `prod` 4.2x, `cumsum` 2.8x |
-| **Comparisons** | **1.2x** | 3/4 | `less` 1.4x, `equal` 1.2x |
-| **Stats** | **1.3x** | 3/6 | `digitize` 2.1x |
+| `a + b` | 0.37x | 0.90x | 0.95x |
+| `sin(a)` | 0.68x | 0.96x | 0.89x |
+| `exp(a)` | 0.70x | 0.95x | 0.91x |
+| `cumsum(a)` | 0.59x | **1.38x** | **1.38x** |
+| `floor_divide` | 0.78x | 0.93x | 0.90x |
+| `mod(a, b)` | 0.76x | 0.89x | 0.89x |
+| `randn(a)` | **2.33x** | **3.51x** | **3.48x** |
+| `normal(a)` | **1.97x** | **2.36x** | **2.31x** |
+| `sort(a)` | 0.81x | 0.87x | 0.86x |
+
+> Values are speedup vs NumPy (higher = faster). **Bold** = MacMetalPy wins.
+
+### Where MacMetalPy Shreds
+
+| Category | Avg Speedup | Highlights |
+|---|---|---|
+| **Random** | **1.73x** | `randn` 3.5x, `normal` 2.4x, `randint` 2.0x — native float32 generation |
+| **Creation (f64)** | **10.2x** | `array()` 107x at 1M — skips float64 intermediates |
+| **Creation** | **2.76x** | `array()` 56x, `copyto` 88x at 1M |
+| **Ufuncs** | **1.00x** | `fabs` 10x, `heaviside` 1.2x |
+| **Indexing** | **1.00x** | `put_along_axis` 11x at 1M |
+
+### By Category at 100K / 1M Elements
+
+| Category | 100K | 1M | Notes |
+|---|---|---|---|
+| **Random** | **1.91x** | **1.91x** | Native float32 via Generator API |
+| **Creation** | **1.39x** | **6.45x** | Dtype conversion bypass at scale |
+| **Trig** | 0.95x | 0.94x | Near-parity, GPU wins above 4M |
+| **Math** | 0.90x | 0.91x | Near-parity at these sizes |
+| **Reductions** | 0.89x | 0.97x | `cumsum` 1.38x |
+| **Comparisons** | 0.90x | 0.91x | Near-parity |
+| **Sorting** | 0.87x | 0.84x | CPU SIMD path |
 
 ### The Rule of Thumb
 
 | Array Size | Who Wins | Why |
 |---|---|---|
-| **< 10K** | NumPy | GPU dispatch overhead dominates |
-| **10K – 100K** | Roughly even | Overhead amortized, GPU warming up |
-| **100K – 1M** | GPU pulls ahead | Parallel compute outpaces CPU SIMD |
-| **1M+** | **GPU shreds** | 3-27x on compute-heavy ops |
+| **< 10K** | NumPy | Python dispatch overhead dominates |
+| **10K – 100K** | Roughly even | CPU SIMD paths match NumPy |
+| **100K – 4M** | Near-parity | ~0.9x for most ops; random/creation win |
+| **4M+** | **GPU shreds** | Metal dispatch amortized, massive parallelism wins |
 
-> Run the benchmarks yourself: `python benchmarks/bench_vs_numpy.py --sizes small,medium,large,xlarge --serial`
+> Run the benchmarks yourself: `python benchmarks/bench_vs_numpy.py --numpy-cache`
 
 ---
 
