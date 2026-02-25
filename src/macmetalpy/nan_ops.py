@@ -6,10 +6,23 @@ from __future__ import annotations
 
 import numpy as np
 
-from .ndarray import ndarray
+from .ndarray import ndarray, _c_contiguous_strides
 from . import creation
 from ._kernel_cache import KernelCache
 from ._metal_backend import MetalBackend
+
+
+def _wrap_np(np_data):
+    """Fast inline ndarray construction for known-good numpy arrays."""
+    arr = ndarray.__new__(ndarray)
+    arr._buffer = None
+    arr._np_data = np_data
+    arr._shape = np_data.shape
+    arr._dtype = np_data.dtype
+    arr._strides = _c_contiguous_strides(np_data.shape)
+    arr._offset = 0
+    arr._base = None
+    return arr
 
 
 # ------------------------------------------------------------------ helpers
@@ -678,7 +691,7 @@ def ediff1d(ary, to_end=None, to_begin=None):
     te = to_end.get() if isinstance(to_end, ndarray) else to_end
     tb = to_begin.get() if isinstance(to_begin, ndarray) else to_begin
     result = np.ediff1d(np_data, to_end=te, to_begin=tb)
-    return ndarray._from_np_direct(result)
+    return _wrap_np(result)
 
 
 def gradient(f, *varargs, axis=None, edge_order=1):
@@ -687,8 +700,8 @@ def gradient(f, *varargs, axis=None, edge_order=1):
     varargs = tuple(_get_np(v) if isinstance(v, ndarray) else v for v in varargs)
     result = np.gradient(_get_np(f), *varargs, axis=axis, edge_order=edge_order)
     if isinstance(result, list):
-        return [ndarray._from_np_direct(np.asarray(r)) for r in result]
-    return ndarray._from_np_direct(np.asarray(result))
+        return [_wrap_np(np.asarray(r)) for r in result]
+    return _wrap_np(np.asarray(result))
 
 
 # ================================================================== NaN percentile/quantile

@@ -4,8 +4,21 @@ from __future__ import annotations
 
 import numpy as np
 
-from .ndarray import ndarray
+from .ndarray import ndarray, _c_contiguous_strides
 from . import creation
+
+
+def _wrap_np(np_data):
+    """Fast inline ndarray construction for known-good numpy arrays."""
+    arr = ndarray.__new__(ndarray)
+    arr._buffer = None
+    arr._np_data = np_data
+    arr._shape = np_data.shape
+    arr._dtype = np_data.dtype
+    arr._strides = _c_contiguous_strides(np_data.shape)
+    arr._offset = 0
+    arr._base = None
+    return arr
 
 
 def _cpu_view(a):
@@ -28,28 +41,32 @@ def angle(z, deg=False):
     """Return the angle of the complex argument."""
     if not isinstance(z, ndarray):
         z = creation.asarray(z)
-    return ndarray._from_np_direct(np.angle(_get_np(z), deg=deg))
+    return _wrap_np(np.angle(_get_np(z), deg=deg))
 
 
 def real(val):
     """Return the real part of the complex argument."""
     if not isinstance(val, ndarray):
         val = creation.asarray(val)
-    return ndarray._from_np_direct(np.real(_get_np(val)))
+    if not np.issubdtype(val.dtype, np.complexfloating):
+        return val
+    return _wrap_np(np.real(_get_np(val)))
 
 
 def imag(val):
     """Return the imaginary part of the complex argument."""
     if not isinstance(val, ndarray):
         val = creation.asarray(val)
-    return ndarray._from_np_direct(np.imag(_get_np(val)))
+    return _wrap_np(np.imag(_get_np(val)))
 
 
 def conj(x, **kwargs):
     """Return the complex conjugate, element-wise."""
     if not isinstance(x, ndarray):
         x = creation.asarray(x)
-    return ndarray._from_np_direct(np.conj(_get_np(x)))
+    if not np.issubdtype(x.dtype, np.complexfloating):
+        return x
+    return _wrap_np(np.conj(_get_np(x)))
 
 
 conjugate = conj
@@ -59,4 +76,4 @@ def real_if_close(a, tol=100):
     """If input is complex with all imaginary parts close to zero, return real parts."""
     if not isinstance(a, ndarray):
         a = creation.asarray(a)
-    return ndarray._from_np_direct(np.real_if_close(_get_np(a), tol=tol))
+    return _wrap_np(np.real_if_close(_get_np(a), tol=tol))

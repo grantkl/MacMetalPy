@@ -49,26 +49,25 @@ _MEMORY_UNARY_OPS = frozenset({
     "neg_op", "abs_op", "ceil_op", "floor_op", "sign_op", "square_op",
     "rint_op", "trunc_op", "reciprocal_op", "degrees_op", "radians_op",
     "negative_op", "positive_op", "sqrt_op",
-})
-
-# Ops where GPU kernel does minimal per-element work — NumPy SIMD is faster
-# until arrays are large enough to amortise dispatch overhead.
-_LIGHT_UNARY_OPS = frozenset({
     "sin_op", "cos_op", "tan_op", "exp_op", "log_op",
     "asin_op", "acos_op", "atan_op",
     "sinh_op", "cosh_op", "tanh_op",
     "asinh_op", "acosh_op", "atanh_op",
     "exp2_op", "expm1_op", "log2_op", "log10_op", "log1p_op",
     "cbrt_op", "erf_op",
-}) | _MEMORY_UNARY_OPS
-_LIGHT_BINARY_OPS = frozenset({
-    "add_op", "sub_op", "mul_op", "div_op", "min_op", "max_op",
-    "copysign_op", "fmax_op", "fmin_op", "hypot_op",
 })
+
+# Collapsed to same set — all unary ops use 4M threshold.
+_LIGHT_UNARY_OPS = _MEMORY_UNARY_OPS
 _MEMORY_BINARY_OPS = frozenset({
     "add_op", "sub_op", "mul_op", "div_op", "min_op", "max_op",
     "fmax_op", "fmin_op", "copysign_op",
+    "pow_op", "mod_op", "floor_divide_op", "fmod_op",
+    "atan2_op", "logaddexp_op", "logaddexp2_op",
+    "heaviside_op", "nextafter_op", "hypot_op",
 })
+# Collapsed to same set — all binary ops use 4M threshold.
+_LIGHT_BINARY_OPS = _MEMORY_BINARY_OPS
 
 # Map op_name -> numpy function for CPU fallback paths
 _NP_UNARY = {
@@ -311,6 +310,27 @@ class ndarray:
         else:
             itemsize = np_array.itemsize
             arr._strides = tuple(s // itemsize for s in np_array.strides)
+        arr._offset = 0
+        arr._base = None
+        return arr
+
+    @classmethod
+    def _from_np_known_good(cls, np_array: np.ndarray) -> ndarray:
+        """Fast path for internal use: skip type/dtype checks.
+
+        Caller guarantees np_array is a proper numpy ndarray with a supported dtype.
+        """
+        if _accelerator is not None and np_array.flags['C_CONTIGUOUS']:
+            arr = _accelerator.wrap_result(cls, np_array)
+            if arr is not None:
+                arr._dtype = np_array.dtype
+                return arr
+        arr = cls.__new__(cls)
+        arr._buffer = None
+        arr._np_data = np_array
+        arr._shape = np_array.shape
+        arr._dtype = np_array.dtype
+        arr._strides = _c_contiguous_strides(np_array.shape)
         arr._offset = 0
         arr._base = None
         return arr

@@ -1,7 +1,7 @@
 """FFT functions (CuPy-compatible)."""
 from __future__ import annotations
 import numpy as np
-from .ndarray import ndarray as _ndarray
+from .ndarray import ndarray as _ndarray, _c_contiguous_strides
 from . import creation as _creation
 
 
@@ -10,19 +10,27 @@ def _ensure(x):
 
 
 def _get_np(a):
-    """Get zero-copy numpy view (syncs if GPU-resident)."""
+    """Get numpy data, preferring _np_data for CPU-resident arrays."""
+    np_data = a._np_data
+    if np_data is not None:
+        return np_data
     if a._np_data is None:
         from ._metal_backend import MetalBackend
         MetalBackend().synchronize()
     return a._get_view()
 
 
-def _get_np(a):
-    """Get numpy data from ndarray, preferring _np_data."""
-    np_data = a._np_data
-    if np_data is not None:
-        return np_data
-    return _get_np(a)
+def _wrap_np(np_data):
+    """Fast inline ndarray constructor — skips type/dtype checks."""
+    arr = _ndarray.__new__(_ndarray)
+    arr._buffer = None
+    arr._np_data = np_data
+    arr._shape = np_data.shape
+    arr._dtype = np_data.dtype
+    arr._strides = _c_contiguous_strides(np_data.shape)
+    arr._offset = 0
+    arr._base = None
+    return arr
 
 
 def fft(a, n=None, axis=-1, norm=None):
@@ -125,21 +133,21 @@ def ihfft(a, n=None, axis=-1, norm=None):
 
 def fftfreq(n, d=1.0):
     """Return the DFT sample frequencies."""
-    return _ndarray._from_np_direct(np.fft.fftfreq(n, d=d).astype(np.float32, copy=False))
+    return _wrap_np(np.fft.fftfreq(n, d=d).astype(np.float32, copy=False))
 
 
 def rfftfreq(n, d=1.0):
     """Return the DFT sample frequencies for rfft."""
-    return _ndarray._from_np_direct(np.fft.rfftfreq(n, d=d).astype(np.float32, copy=False))
+    return _wrap_np(np.fft.rfftfreq(n, d=d).astype(np.float32, copy=False))
 
 
 def fftshift(x, axes=None):
     """Shift the zero-frequency component to the center of the spectrum."""
     x = _ensure(x)
-    return _ndarray._from_np_direct(np.fft.fftshift(_get_np(x), axes=axes))
+    return _wrap_np(np.fft.fftshift(_get_np(x), axes=axes))
 
 
 def ifftshift(x, axes=None):
     """Inverse of fftshift."""
     x = _ensure(x)
-    return _ndarray._from_np_direct(np.fft.ifftshift(_get_np(x), axes=axes))
+    return _wrap_np(np.fft.ifftshift(_get_np(x), axes=axes))

@@ -327,7 +327,7 @@ def _parallel_argmin(flat):
     return ndarray._from_buffer(out_buf, (), np.int32)
 
 
-_GPU_THRESHOLD_MEMORY = 4194304  # 4M — reductions are memory-bound, CPU wins
+_GPU_THRESHOLD_MEMORY = 4194304  # 4M — GPU reduction dispatch overhead dominates below this
 
 
 def argmax(a, axis=None, out=None, keepdims=False):
@@ -721,6 +721,19 @@ def divmod(x1, x2):
         x1 = creation.asarray(x1)
     if not isinstance(x2, ndarray):
         x2 = creation.asarray(x2)
+    # CPU fast path — single numpy call instead of two separate ops
+    if (x1._np_data is not None or x1.size < 4194304) and (x2._np_data is not None or x2.size < 4194304):
+        np1 = x1._np_data if x1._np_data is not None else x1.get()
+        np2 = x2._np_data if x2._np_data is not None else x2.get()
+        q_np, r_np = np.divmod(np1, np2)
+        from .ndarray import _c_contiguous_strides
+        def _w(d):
+            a = ndarray.__new__(ndarray)
+            a._buffer = None; a._np_data = d; a._shape = d.shape
+            a._dtype = d.dtype; a._strides = _c_contiguous_strides(d.shape)
+            a._offset = 0; a._base = None
+            return a
+        return _w(q_np), _w(r_np)
     q = x1._binary_op(x2, "floor_divide_op")
     r = math_ops.mod(x1, x2)
     return q, r

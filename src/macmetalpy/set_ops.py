@@ -1,8 +1,21 @@
 """Set operations (CuPy-compatible)."""
 from __future__ import annotations
 import numpy as np
-from .ndarray import ndarray
+from .ndarray import ndarray, _c_contiguous_strides
 from . import creation
+
+
+def _wrap_np(np_data):
+    """Fast inline ndarray construction for known-good numpy arrays."""
+    arr = ndarray.__new__(ndarray)
+    arr._buffer = None
+    arr._np_data = np_data
+    arr._shape = np_data.shape
+    arr._dtype = np_data.dtype
+    arr._strides = _c_contiguous_strides(np_data.shape)
+    arr._offset = 0
+    arr._base = None
+    return arr
 
 
 def _cpu_view(a):
@@ -25,7 +38,7 @@ def _to_ndarray(np_result):
     """Convert a numpy result to ndarray, handling empty arrays."""
     if np_result.size == 0:
         return creation.empty(np_result.shape, dtype=np_result.dtype)
-    return ndarray._from_np_direct(np_result)
+    return _wrap_np(np_result)
 
 
 def union1d(ar1, ar2):
@@ -72,7 +85,7 @@ def in1d(ar1, ar2, assume_unique=False, invert=False, kind=None):
     kwargs = dict(assume_unique=assume_unique, invert=invert)
     if kind is not None:
         kwargs["kind"] = kind
-    return ndarray._from_np_direct(np.isin(_get_np(ar1), _get_np(ar2), **kwargs))
+    return _wrap_np(np.isin(_get_np(ar1), _get_np(ar2), **kwargs))
 
 
 def isin(element, test_elements, assume_unique=False, invert=False, kind=None):
@@ -82,4 +95,4 @@ def isin(element, test_elements, assume_unique=False, invert=False, kind=None):
     kwargs = dict(assume_unique=assume_unique, invert=invert)
     if kind is not None:
         kwargs["kind"] = kind
-    return ndarray._from_np_direct(np.isin(_get_np(element), te, **kwargs))
+    return _wrap_np(np.isin(_get_np(element), te, **kwargs))

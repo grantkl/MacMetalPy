@@ -3,8 +3,21 @@ from __future__ import annotations
 
 import numpy as np
 
-from .ndarray import ndarray
+from .ndarray import ndarray, _c_contiguous_strides
 from . import creation
+
+
+def _wrap_np(np_data):
+    """Fast inline ndarray construction for known-good numpy arrays."""
+    arr = ndarray.__new__(ndarray)
+    arr._buffer = None
+    arr._np_data = np_data
+    arr._shape = np_data.shape
+    arr._dtype = np_data.dtype
+    arr._strides = _c_contiguous_strides(np_data.shape)
+    arr._offset = 0
+    arr._base = None
+    return arr
 
 
 def _ensure(x):
@@ -34,7 +47,7 @@ def _logical_binary(x1, x2, np_func, gpu_op):
     if x1.size < 4194304 and x2.size < 4194304:
         a = x1._np_data if x1._np_data is not None else _cpu_view(x1)
         b = x2._np_data if x2._np_data is not None else _cpu_view(x2)
-        return ndarray._from_np_direct(np_func(a, b))
+        return _wrap_np(np_func(a, b))
     if x1.dtype != np.bool_:
         x1 = x1.astype(np.bool_)
     if x2.dtype != np.bool_:
@@ -54,7 +67,7 @@ def logical_not(x, **kwargs):
     x = _ensure(x)
     if x.size < 4194304:
         a = x._np_data if x._np_data is not None else _cpu_view(x)
-        return ndarray._from_np_direct(np.logical_not(a))
+        return _wrap_np(np.logical_not(a))
     if x.dtype != np.bool_:
         x = x.astype(np.bool_)
     return ~x
@@ -103,7 +116,7 @@ def not_equal(x1, x2, **kwargs):
 def isneginf(x, out=None):
     x = _ensure(x)
     a = x._np_data if x._np_data is not None else _cpu_view(x)
-    result = ndarray._from_np_direct(np.isneginf(a))
+    result = _wrap_np(np.isneginf(a))
     if out is not None:
         out.set(result.get())
         return out
@@ -113,7 +126,7 @@ def isneginf(x, out=None):
 def isposinf(x, out=None):
     x = _ensure(x)
     a = x._np_data if x._np_data is not None else _cpu_view(x)
-    result = ndarray._from_np_direct(np.isposinf(a))
+    result = _wrap_np(np.isposinf(a))
     if out is not None:
         out.set(result.get())
         return out
@@ -123,13 +136,13 @@ def isposinf(x, out=None):
 def iscomplex(x):
     x = _ensure(x)
     a = x._np_data if x._np_data is not None else _cpu_view(x)
-    return ndarray._from_np_direct(np.asarray(np.iscomplex(a)))
+    return _wrap_np(np.asarray(np.iscomplex(a)))
 
 
 def isreal(x):
     x = _ensure(x)
     a = x._np_data if x._np_data is not None else _cpu_view(x)
-    return ndarray._from_np_direct(np.asarray(np.isreal(a)))
+    return _wrap_np(np.asarray(np.isreal(a)))
 
 
 def isscalar(element):

@@ -401,152 +401,191 @@ kernel void heaviside_op(device {metal_type} *a [[buffer(0)]],
 
 
 def reduction_shader(metal_type: str) -> str:
-    """Return MSL source with 3 parallel-reduction kernels parameterised on *metal_type*."""
+    """Return MSL source with optimised parallel-reduction kernels.
+
+    Each thread accumulates ELEMS_PER_THREAD (8) elements, then reduces
+    via simdgroup intrinsics + a small threadgroup shared-memory step.
+    This yields ~8x fewer threadgroups and replaces 10 barrier-heavy tree
+    steps with a single ``simd_sum`` / ``simd_shuffle_down`` pass.
+    """
     return (
         _MSL_HEADER
         + f"""
+// Number of elements each thread accumulates before the reduction tree.
+constant constexpr uint EPT = 8u;
+
+// ---- reduce_sum --------------------------------------------------------
 kernel void reduce_sum(device {metal_type} *input [[buffer(0)]],
                        device {metal_type} *output [[buffer(1)]],
                        device uint *n_elements [[buffer(2)]],
-                       uint tid [[thread_position_in_grid]],
                        uint lid [[thread_position_in_threadgroup]],
                        uint gid [[threadgroup_position_in_grid]],
-                       uint group_size [[threads_per_threadgroup]]) {{
-    threadgroup {metal_type} shared_data[1024];
+                       uint group_size [[threads_per_threadgroup]],
+                       uint simd_lane [[thread_index_in_simdgroup]],
+                       uint simd_id [[simdgroup_index_in_threadgroup]]) {{
     uint n = n_elements[0];
-    shared_data[lid] = (tid < n) ? input[tid] : 0;
-    // Zero out slots beyond group_size to handle non-power-of-2 threadgroups
-    for (uint i = lid + group_size; i < 1024u; i += group_size) {{
-        shared_data[i] = 0;
+    {metal_type} acc = 0;
+    uint base = gid * group_size * EPT + lid;
+    for (uint i = 0; i < EPT; i++) {{
+        uint idx = base + i * group_size;
+        if (idx < n) acc += input[idx];
     }}
+    acc = simd_sum(acc);
+    threadgroup {metal_type} shared[32];
+    if (simd_lane == 0) shared[simd_id] = acc;
     threadgroup_barrier(mem_flags::mem_threadgroup);
-
-    for (uint s = 512u; s > 0; s >>= 1) {{
-        if (lid < s) {{
-            shared_data[lid] += shared_data[lid + s];
-        }}
-        threadgroup_barrier(mem_flags::mem_threadgroup);
-    }}
-
-    if (lid == 0) {{
-        output[gid] = shared_data[0];
+    if (simd_id == 0) {{
+        uint n_sg = (group_size + 31u) / 32u;
+        acc = (lid < n_sg) ? shared[lid] : 0;
+        acc = simd_sum(acc);
+        if (lid == 0) output[gid] = acc;
     }}
 }}
 
+// ---- reduce_max (NaN-propagating) --------------------------------------
 kernel void reduce_max(device {metal_type} *input [[buffer(0)]],
                        device {metal_type} *output [[buffer(1)]],
                        device uint *n_elements [[buffer(2)]],
-                       uint tid [[thread_position_in_grid]],
                        uint lid [[thread_position_in_threadgroup]],
                        uint gid [[threadgroup_position_in_grid]],
-                       uint group_size [[threads_per_threadgroup]]) {{
-    threadgroup {metal_type} shared_data[1024];
+                       uint group_size [[threads_per_threadgroup]],
+                       uint simd_lane [[thread_index_in_simdgroup]],
+                       uint simd_id [[simdgroup_index_in_threadgroup]]) {{
     uint n = n_elements[0];
-    shared_data[lid] = (tid < n) ? input[tid] : input[0];
-    for (uint i = lid + group_size; i < 1024u; i += group_size) {{
-        shared_data[i] = input[0];
-    }}
-    threadgroup_barrier(mem_flags::mem_threadgroup);
-
-    for (uint s = 512u; s > 0; s >>= 1) {{
-        if (lid < s) {{
-            float a = static_cast<float>(shared_data[lid]);
-            float b = static_cast<float>(shared_data[lid + s]);
-            if (isnan(b) || (!isnan(a) && b > a)) {{
-                shared_data[lid] = shared_data[lid + s];
-            }}
+    {metal_type} acc = input[0];
+    uint base = gid * group_size * EPT + lid;
+    for (uint i = 0; i < EPT; i++) {{
+        uint idx = base + i * group_size;
+        if (idx < n) {{
+            {metal_type} v = input[idx];
+            float fa = static_cast<float>(acc);
+            float fb = static_cast<float>(v);
+            if (isnan(fb) || (!isnan(fa) && fb > fa)) acc = v;
         }}
-        threadgroup_barrier(mem_flags::mem_threadgroup);
     }}
-
-    if (lid == 0) {{
-        output[gid] = shared_data[0];
+    for (uint off = 16u; off > 0u; off >>= 1) {{
+        {metal_type} other = simd_shuffle_down(acc, off);
+        float fa = static_cast<float>(acc);
+        float fb = static_cast<float>(other);
+        if (isnan(fb) || (!isnan(fa) && fb > fa)) acc = other;
+    }}
+    threadgroup {metal_type} shared[32];
+    if (simd_lane == 0) shared[simd_id] = acc;
+    threadgroup_barrier(mem_flags::mem_threadgroup);
+    if (simd_id == 0) {{
+        uint n_sg = (group_size + 31u) / 32u;
+        acc = (lid < n_sg) ? shared[lid] : shared[0];
+        for (uint off = 16u; off > 0u; off >>= 1) {{
+            {metal_type} other = simd_shuffle_down(acc, off);
+            float fa = static_cast<float>(acc);
+            float fb = static_cast<float>(other);
+            if (isnan(fb) || (!isnan(fa) && fb > fa)) acc = other;
+        }}
+        if (lid == 0) output[gid] = acc;
     }}
 }}
 
+// ---- reduce_min (NaN-propagating) --------------------------------------
 kernel void reduce_min(device {metal_type} *input [[buffer(0)]],
                        device {metal_type} *output [[buffer(1)]],
                        device uint *n_elements [[buffer(2)]],
-                       uint tid [[thread_position_in_grid]],
                        uint lid [[thread_position_in_threadgroup]],
                        uint gid [[threadgroup_position_in_grid]],
-                       uint group_size [[threads_per_threadgroup]]) {{
-    threadgroup {metal_type} shared_data[1024];
+                       uint group_size [[threads_per_threadgroup]],
+                       uint simd_lane [[thread_index_in_simdgroup]],
+                       uint simd_id [[simdgroup_index_in_threadgroup]]) {{
     uint n = n_elements[0];
-    shared_data[lid] = (tid < n) ? input[tid] : input[0];
-    for (uint i = lid + group_size; i < 1024u; i += group_size) {{
-        shared_data[i] = input[0];
-    }}
-    threadgroup_barrier(mem_flags::mem_threadgroup);
-
-    for (uint s = 512u; s > 0; s >>= 1) {{
-        if (lid < s) {{
-            float a = static_cast<float>(shared_data[lid]);
-            float b = static_cast<float>(shared_data[lid + s]);
-            if (isnan(b) || (!isnan(a) && b < a)) {{
-                shared_data[lid] = shared_data[lid + s];
-            }}
+    {metal_type} acc = input[0];
+    uint base = gid * group_size * EPT + lid;
+    for (uint i = 0; i < EPT; i++) {{
+        uint idx = base + i * group_size;
+        if (idx < n) {{
+            {metal_type} v = input[idx];
+            float fa = static_cast<float>(acc);
+            float fb = static_cast<float>(v);
+            if (isnan(fb) || (!isnan(fa) && fb < fa)) acc = v;
         }}
-        threadgroup_barrier(mem_flags::mem_threadgroup);
     }}
-
-    if (lid == 0) {{
-        output[gid] = shared_data[0];
+    for (uint off = 16u; off > 0u; off >>= 1) {{
+        {metal_type} other = simd_shuffle_down(acc, off);
+        float fa = static_cast<float>(acc);
+        float fb = static_cast<float>(other);
+        if (isnan(fb) || (!isnan(fa) && fb < fa)) acc = other;
+    }}
+    threadgroup {metal_type} shared[32];
+    if (simd_lane == 0) shared[simd_id] = acc;
+    threadgroup_barrier(mem_flags::mem_threadgroup);
+    if (simd_id == 0) {{
+        uint n_sg = (group_size + 31u) / 32u;
+        acc = (lid < n_sg) ? shared[lid] : shared[0];
+        for (uint off = 16u; off > 0u; off >>= 1) {{
+            {metal_type} other = simd_shuffle_down(acc, off);
+            float fa = static_cast<float>(acc);
+            float fb = static_cast<float>(other);
+            if (isnan(fb) || (!isnan(fa) && fb < fa)) acc = other;
+        }}
+        if (lid == 0) output[gid] = acc;
     }}
 }}
 
+// ---- reduce_prod -------------------------------------------------------
 kernel void reduce_prod(device {metal_type} *input [[buffer(0)]],
                         device {metal_type} *output [[buffer(1)]],
                         device uint *n_elements [[buffer(2)]],
-                        uint tid [[thread_position_in_grid]],
                         uint lid [[thread_position_in_threadgroup]],
                         uint gid [[threadgroup_position_in_grid]],
-                        uint group_size [[threads_per_threadgroup]]) {{
-    threadgroup {metal_type} shared_data[1024];
+                        uint group_size [[threads_per_threadgroup]],
+                        uint simd_lane [[thread_index_in_simdgroup]],
+                        uint simd_id [[simdgroup_index_in_threadgroup]]) {{
     uint n = n_elements[0];
-    shared_data[lid] = (tid < n) ? input[tid] : ({metal_type})1;
-    for (uint i = lid + group_size; i < 1024u; i += group_size) {{
-        shared_data[i] = ({metal_type})1;
+    {metal_type} acc = ({metal_type})1;
+    uint base = gid * group_size * EPT + lid;
+    for (uint i = 0; i < EPT; i++) {{
+        uint idx = base + i * group_size;
+        if (idx < n) acc *= input[idx];
     }}
+    for (uint off = 16u; off > 0u; off >>= 1) {{
+        acc *= simd_shuffle_down(acc, off);
+    }}
+    threadgroup {metal_type} shared[32];
+    if (simd_lane == 0) shared[simd_id] = acc;
     threadgroup_barrier(mem_flags::mem_threadgroup);
-
-    for (uint s = 512u; s > 0; s >>= 1) {{
-        if (lid < s) {{
-            shared_data[lid] *= shared_data[lid + s];
+    if (simd_id == 0) {{
+        uint n_sg = (group_size + 31u) / 32u;
+        acc = (lid < n_sg) ? shared[lid] : ({metal_type})1;
+        for (uint off = 16u; off > 0u; off >>= 1) {{
+            acc *= simd_shuffle_down(acc, off);
         }}
-        threadgroup_barrier(mem_flags::mem_threadgroup);
-    }}
-
-    if (lid == 0) {{
-        output[gid] = shared_data[0];
+        if (lid == 0) output[gid] = acc;
     }}
 }}
 
+// ---- reduce_dot (fused multiply-accumulate) ----------------------------
 kernel void reduce_dot(device {metal_type} *a [[buffer(0)]],
                        device {metal_type} *b [[buffer(1)]],
                        device {metal_type} *output [[buffer(2)]],
                        device uint *n_elements [[buffer(3)]],
-                       uint tid [[thread_position_in_grid]],
                        uint lid [[thread_position_in_threadgroup]],
                        uint gid [[threadgroup_position_in_grid]],
-                       uint group_size [[threads_per_threadgroup]]) {{
-    threadgroup {metal_type} shared_data[1024];
+                       uint group_size [[threads_per_threadgroup]],
+                       uint simd_lane [[thread_index_in_simdgroup]],
+                       uint simd_id [[simdgroup_index_in_threadgroup]]) {{
     uint n = n_elements[0];
-    shared_data[lid] = (tid < n) ? a[tid] * b[tid] : 0;
-    for (uint i = lid + group_size; i < 1024u; i += group_size) {{
-        shared_data[i] = 0;
+    {metal_type} acc = 0;
+    uint base = gid * group_size * EPT + lid;
+    for (uint i = 0; i < EPT; i++) {{
+        uint idx = base + i * group_size;
+        if (idx < n) acc += a[idx] * b[idx];
     }}
+    acc = simd_sum(acc);
+    threadgroup {metal_type} shared[32];
+    if (simd_lane == 0) shared[simd_id] = acc;
     threadgroup_barrier(mem_flags::mem_threadgroup);
-
-    for (uint s = 512u; s > 0; s >>= 1) {{
-        if (lid < s) {{
-            shared_data[lid] += shared_data[lid + s];
-        }}
-        threadgroup_barrier(mem_flags::mem_threadgroup);
-    }}
-
-    if (lid == 0) {{
-        output[gid] = shared_data[0];
+    if (simd_id == 0) {{
+        uint n_sg = (group_size + 31u) / 32u;
+        acc = (lid < n_sg) ? shared[lid] : 0;
+        acc = simd_sum(acc);
+        if (lid == 0) output[gid] = acc;
     }}
 }}
 """

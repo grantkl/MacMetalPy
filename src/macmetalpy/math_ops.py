@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import numpy as np
 
-from .ndarray import (ndarray, _fast_unary, _fast_binary,
+from .ndarray import (ndarray, _c_contiguous_strides, _fast_unary, _fast_binary,
     _UOP_SQRT, _UOP_EXP, _UOP_LOG, _UOP_ABS, _UOP_SIGN, _UOP_FLOOR,
     _UOP_CEIL, _UOP_SIN, _UOP_COS, _UOP_TAN, _UOP_ASIN, _UOP_ACOS,
     _UOP_ATAN, _UOP_SINH, _UOP_COSH, _UOP_TANH, _UOP_LOG2, _UOP_LOG10,
@@ -723,7 +723,16 @@ def copy(a, order='K'):
 
     # CPU fast path for CPU-resident arrays
     if a._np_data is not None:
-        return ndarray._from_np_direct(a._get_view().copy())
+        copied = a._np_data.copy()
+        arr = ndarray.__new__(ndarray)
+        arr._buffer = None
+        arr._np_data = copied
+        arr._shape = copied.shape
+        arr._dtype = copied.dtype
+        arr._strides = _c_contiguous_strides(copied.shape)
+        arr._offset = 0
+        arr._base = None
+        return arr
 
     a_c = a._ensure_contiguous()
     metal_type = METAL_TYPE_NAMES[np.dtype(a.dtype)]

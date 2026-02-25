@@ -3,11 +3,24 @@ from __future__ import annotations
 
 import numpy as np
 
-from .ndarray import ndarray
+from .ndarray import ndarray, _c_contiguous_strides
 from ._kernel_cache import KernelCache
 from ._metal_backend import MetalBackend
 from ._broadcasting import broadcast_shapes, needs_broadcast
 from . import creation
+
+
+def _wrap_np(np_data):
+    """Fast inline ndarray construction for known-good numpy arrays."""
+    arr = ndarray.__new__(ndarray)
+    arr._buffer = None
+    arr._np_data = np_data
+    arr._shape = np_data.shape
+    arr._dtype = np_data.dtype
+    arr._strides = _c_contiguous_strides(np_data.shape)
+    arr._offset = 0
+    arr._base = None
+    return arr
 
 
 def _ensure(x):
@@ -129,5 +142,5 @@ def bitwise_count(a):
     result = np.bitwise_count(a_np)
     # bitwise_count returns uint8; convert to int32 for Metal compatibility
     if result.dtype == np.uint8:
-        result = result.view(np.int8).astype(np.int16, copy=False)
-    return ndarray._from_np_direct(result)
+        result = result.astype(np.int16, copy=False)
+    return _wrap_np(result)
