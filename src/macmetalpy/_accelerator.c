@@ -7,10 +7,12 @@
  *   unary_op_fast(a, np_func, threshold)          — fused unary op
  *
  * New dispatch-table functions (METH_FASTCALL):
- *   init_dispatch(ndarray_type, bool_dtype, binary_list, unary_list, cmp_list)
+ *   init_dispatch(ndarray_type, bool_dtype, binary_list, unary_list, cmp_list[, reduce_list])
  *   fast_binary(a, b, op_id)
  *   fast_unary(a, op_id)
  *   fast_cmp(a, b, op_id)
+ *   fast_reduce(a, op_id)
+ *   wrap_np(np_array)                          — fast ndarray wrapping
  */
 
 #define PY_SSIZE_T_CLEAN
@@ -53,6 +55,7 @@ typedef struct {
 static OpEntry binary_table[MAX_OPS];
 static OpEntry unary_table[MAX_OPS];
 static OpEntry cmp_table[MAX_OPS];
+static OpEntry reduce_table[MAX_OPS];
 
 static PyTypeObject *cached_ndarray_type = NULL;
 static PyObject     *cached_bool_dtype   = NULL;
@@ -491,9 +494,9 @@ populate_table(OpEntry *table, PyObject *list, const char *name)
 static PyObject *
 accel_init_dispatch(PyObject *self, PyObject *const *args, Py_ssize_t nargs)
 {
-    if (nargs != 5) {
+    if (nargs < 5 || nargs > 6) {
         PyErr_Format(PyExc_TypeError,
-                     "init_dispatch() takes 5 arguments (%zd given)", nargs);
+                     "init_dispatch() takes 5 or 6 arguments (%zd given)", nargs);
         return NULL;
     }
 
@@ -531,6 +534,11 @@ accel_init_dispatch(PyObject *self, PyObject *const *args, Py_ssize_t nargs)
         return NULL;
     if (populate_table(cmp_table, cmp_list, "cmp_list") < 0)
         return NULL;
+
+    if (nargs >= 6) {
+        if (populate_table(reduce_table, args[5], "reduce_list") < 0)
+            return NULL;
+    }
 
     Py_RETURN_NONE;
 }
@@ -785,6 +793,92 @@ accel_fast_cmp(PyObject *self, PyObject *const *args, Py_ssize_t nargs)
 }
 
 /* ------------------------------------------------------------------ */
+/* fast_reduce(a, op_id) -> ndarray | None  — METH_FASTCALL          */
+/* ------------------------------------------------------------------ */
+static PyObject *
+accel_fast_reduce(PyObject *self, PyObject *const *args, Py_ssize_t nargs)
+{
+    if (nargs != 2) {
+        PyErr_Format(PyExc_TypeError,
+                     "fast_reduce() takes 2 arguments (%zd given)", nargs);
+        return NULL;
+    }
+
+    PyObject *a = args[0];
+    Py_ssize_t op_id = PyLong_AsSsize_t(args[1]);
+    if (op_id == -1 && PyErr_Occurred()) return NULL;
+
+    if (op_id < 0 || op_id >= MAX_OPS || !reduce_table[op_id].np_func)
+        Py_RETURN_NONE;
+
+    OpEntry *entry = &reduce_table[op_id];
+
+    /* 1. Check type(a) == cached_ndarray_type */
+    if (Py_TYPE(a) != cached_ndarray_type)
+        Py_RETURN_NONE;
+
+    /* 2. Get a._np_data via direct dict access */
+    PyObject *a_np = dict_read(a, str_np_data);
+    if (!a_np || a_np == Py_None)
+        Py_RETURN_NONE;
+
+    /* 3. Verify _np_data is a numpy array */
+    if (!PyArray_Check(a_np))
+        Py_RETURN_NONE;
+
+    /* 4. Check a._np_data.size < threshold */
+    npy_intp a_size = PyArray_SIZE((PyArrayObject *)a_np);
+    if (a_size >= entry->threshold)
+        Py_RETURN_NONE;
+
+    /* 5. Skip float64 dtype */
+    PyObject *a_dtype = dict_read(a, str_dtype);
+    if (!a_dtype)
+        Py_RETURN_NONE;
+    if (a_dtype == cached_float64_dtype)
+        Py_RETURN_NONE;
+
+    /* 6. Call np_func(a_np) via vectorcall */
+    PyObject *result = PyObject_Vectorcall(
+        entry->np_func, &a_np, 1, NULL);
+    if (!result) return NULL;
+
+    /* Ensure result is a numpy array (reductions return scalars) */
+    if (!PyArray_Check(result)) {
+        PyObject *arr = PyArray_FROM_O(result);
+        Py_DECREF(result);
+        if (!arr) return NULL;
+        result = arr;
+    }
+
+    /* 7. Wrap result */
+    PyObject *wrapped = wrap_result_fast(result, NULL);
+    Py_DECREF(result);
+    return wrapped;
+}
+
+/* ------------------------------------------------------------------ */
+/* wrap_np(np_array) -> ndarray  — METH_FASTCALL                      */
+/* Public exposure of the fast wrap_result_fast path                   */
+/* ------------------------------------------------------------------ */
+static PyObject *
+accel_wrap_np(PyObject *self, PyObject *const *args, Py_ssize_t nargs)
+{
+    if (nargs != 1) {
+        PyErr_Format(PyExc_TypeError,
+                     "wrap_np() takes 1 argument (%zd given)", nargs);
+        return NULL;
+    }
+
+    PyObject *np_array = args[0];
+
+    if (!PyArray_Check(np_array))
+        Py_RETURN_NONE;
+
+    return wrap_result_fast(np_array, NULL);
+}
+
+/* ------------------------------------------------------------------ */
 /* Module method table                                                */
 /* ------------------------------------------------------------------ */
 static PyMethodDef accel_methods[] = {
@@ -801,7 +895,7 @@ static PyMethodDef accel_methods[] = {
 
     /* New dispatch-table functions (METH_FASTCALL) */
     {"init_dispatch",  (PyCFunction)accel_init_dispatch, METH_FASTCALL,
-     "init_dispatch(ndarray_type, bool_dtype, binary_list, unary_list, cmp_list)\n"
+     "init_dispatch(ndarray_type, bool_dtype, binary_list, unary_list, cmp_list[, reduce_list])\n"
      "One-time setup that populates the dispatch tables."},
     {"fast_binary",    (PyCFunction)accel_fast_binary,   METH_FASTCALL,
      "fast_binary(a, b, op_id) -> ndarray | None\n"
@@ -812,6 +906,11 @@ static PyMethodDef accel_methods[] = {
     {"fast_cmp",       (PyCFunction)accel_fast_cmp,      METH_FASTCALL,
      "fast_cmp(a, b, op_id) -> ndarray | None\n"
      "Dispatch-table comparison op. Returns None on fast-path miss."},
+    {"fast_reduce",    (PyCFunction)accel_fast_reduce,   METH_FASTCALL,
+     "fast_reduce(a, op_id) -> ndarray | None\n"
+     "Dispatch-table reduction op. Returns None on fast-path miss."},
+    {"wrap_np",        (PyCFunction)accel_wrap_np,       METH_FASTCALL,
+     "Wrap a numpy array into an ndarray using the fast path"},
 
     {NULL, NULL, 0, NULL}
 };
@@ -862,6 +961,7 @@ PyInit__accelerator(void)
     memset(binary_table, 0, sizeof(binary_table));
     memset(unary_table,  0, sizeof(unary_table));
     memset(cmp_table,    0, sizeof(cmp_table));
+    memset(reduce_table, 0, sizeof(reduce_table));
 
     PyObject *m = PyModule_Create(&accelerator_module);
     return m;

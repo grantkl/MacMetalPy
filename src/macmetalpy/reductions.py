@@ -4,6 +4,26 @@ from __future__ import annotations
 
 import numpy as np
 
+# Deferred C fast-path refs — set by _init_fast_reduce after ndarray module loads
+_fast_reduce = None
+_ndarray_cls = None
+_ROP_SUM = 0
+_ROP_MAX = 1
+_ROP_MIN = 2
+_ROP_PROD = 3
+_ROP_MEAN = 4
+
+
+def _init_fast_reduce(fast_reduce_fn, ndarray_type, rop_sum, rop_max, rop_min, rop_prod, rop_mean):
+    global _fast_reduce, _ndarray_cls, _ROP_SUM, _ROP_MAX, _ROP_MIN, _ROP_PROD, _ROP_MEAN
+    _fast_reduce = fast_reduce_fn
+    _ndarray_cls = ndarray_type
+    _ROP_SUM = rop_sum
+    _ROP_MAX = rop_max
+    _ROP_MIN = rop_min
+    _ROP_PROD = rop_prod
+    _ROP_MEAN = rop_mean
+
 
 def _copy_to_out(result, out):
     """Copy result data into out array and return out (GPU-resident)."""
@@ -53,6 +73,13 @@ def _apply_where(a, where, fill_value):
 
 def sum(a, axis=None, dtype=None, out=None, keepdims=False, initial=np._NoValue, where=np._NoValue):
     """Sum of array elements."""
+    # C fast path: simple full-array reduction
+    if (axis is None and dtype is None and out is None and not keepdims
+            and initial is np._NoValue and where is np._NoValue
+            and _fast_reduce is not None and type(a) is _ndarray_cls):
+        r = _fast_reduce(a, _ROP_SUM)
+        if r is not None:
+            return r
     from .ndarray import ndarray
     from . import creation
 
@@ -88,6 +115,13 @@ def sum(a, axis=None, dtype=None, out=None, keepdims=False, initial=np._NoValue,
 
 def mean(a, axis=None, dtype=None, out=None, keepdims=False, where=np._NoValue):
     """Arithmetic mean of array elements."""
+    # C fast path: simple full-array reduction
+    if (axis is None and dtype is None and out is None and not keepdims
+            and where is np._NoValue
+            and _fast_reduce is not None and type(a) is _ndarray_cls):
+        r = _fast_reduce(a, _ROP_MEAN)
+        if r is not None:
+            return r
     from .ndarray import ndarray
     from . import creation
 
@@ -131,6 +165,13 @@ def mean(a, axis=None, dtype=None, out=None, keepdims=False, where=np._NoValue):
 
 def max(a, axis=None, out=None, keepdims=False, initial=np._NoValue, where=np._NoValue):
     """Maximum of array elements."""
+    # C fast path: simple full-array reduction
+    if (axis is None and out is None and not keepdims
+            and initial is np._NoValue and where is np._NoValue
+            and _fast_reduce is not None and type(a) is _ndarray_cls):
+        r = _fast_reduce(a, _ROP_MAX)
+        if r is not None:
+            return r
     from .ndarray import ndarray
     from . import creation
 
@@ -165,6 +206,13 @@ def max(a, axis=None, out=None, keepdims=False, initial=np._NoValue, where=np._N
 
 def min(a, axis=None, out=None, keepdims=False, initial=np._NoValue, where=np._NoValue):
     """Minimum of array elements."""
+    # C fast path: simple full-array reduction
+    if (axis is None and out is None and not keepdims
+            and initial is np._NoValue and where is np._NoValue
+            and _fast_reduce is not None and type(a) is _ndarray_cls):
+        r = _fast_reduce(a, _ROP_MIN)
+        if r is not None:
+            return r
     from .ndarray import ndarray
     from . import creation
 
@@ -538,6 +586,13 @@ def var(a, axis=None, dtype=None, out=None, keepdims=False, ddof=0, where=np._No
 
 def prod(a, axis=None, dtype=None, out=None, keepdims=False, initial=np._NoValue, where=np._NoValue):
     """Product of array elements."""
+    # C fast path: simple full-array reduction
+    if (axis is None and dtype is None and out is None and not keepdims
+            and initial is np._NoValue and where is np._NoValue
+            and _fast_reduce is not None and type(a) is _ndarray_cls):
+        r = _fast_reduce(a, _ROP_PROD)
+        if r is not None:
+            return r
     from .ndarray import ndarray
     from . import creation
 
@@ -721,19 +776,6 @@ def divmod(x1, x2):
         x1 = creation.asarray(x1)
     if not isinstance(x2, ndarray):
         x2 = creation.asarray(x2)
-    # CPU fast path — single numpy call instead of two separate ops
-    if (x1._np_data is not None or x1.size < 4194304) and (x2._np_data is not None or x2.size < 4194304):
-        np1 = x1._np_data if x1._np_data is not None else x1.get()
-        np2 = x2._np_data if x2._np_data is not None else x2.get()
-        q_np, r_np = np.divmod(np1, np2)
-        from .ndarray import _c_contiguous_strides
-        def _w(d):
-            a = ndarray.__new__(ndarray)
-            a._buffer = None; a._np_data = d; a._shape = d.shape
-            a._dtype = d.dtype; a._strides = _c_contiguous_strides(d.shape)
-            a._offset = 0; a._base = None
-            return a
-        return _w(q_np), _w(r_np)
     q = x1._binary_op(x2, "floor_divide_op")
     r = math_ops.mod(x1, x2)
     return q, r
@@ -808,7 +850,8 @@ def average(a, axis=None, weights=None, returned=False, keepdims=False):
 # Internal helpers called by ndarray reduction methods
 # ------------------------------------------------------------------
 
-THREADGROUP_SIZE = 256
+THREADGROUP_SIZE = 1024
+EPT = 8  # elements per thread — must match EPT in reduction_shader
 
 
 def _reduce_gpu(arr, op_name):
@@ -823,7 +866,9 @@ def _reduce_gpu(arr, op_name):
     a = arr._ensure_contiguous()
     size = a.size
 
-    num_groups = (size + THREADGROUP_SIZE - 1) // THREADGROUP_SIZE
+    elems_per_group = THREADGROUP_SIZE * EPT
+    num_groups = (size + elems_per_group - 1) // elems_per_group
+    grid_size = num_groups * THREADGROUP_SIZE
 
     shader_src = cache.get_shader("reduction", a.dtype)
 
@@ -831,9 +876,9 @@ def _reduce_gpu(arr, op_name):
     n_buf = backend.array_to_buffer(np.array([size], dtype=np.uint32))
 
     # Output buffer for partial results (one per threadgroup)
-    out_buf = backend.create_buffer(num_groups, a.dtype)
+    out_buf = backend.create_buffer(max(num_groups, 1), a.dtype)
 
-    backend.execute_kernel(shader_src, op_name, size, [a._buffer, out_buf, n_buf])
+    backend.execute_kernel(shader_src, op_name, grid_size, [a._buffer, out_buf, n_buf])
 
     # Final reduction on CPU
     partials = out_buf.contents[:num_groups].copy()

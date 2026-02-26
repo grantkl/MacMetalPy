@@ -35,7 +35,7 @@ try:
 except ImportError:
     _accelerator = None
 
-__all__ = ["ndarray"]
+__all__ = ["ndarray", "_wrap_np"]
 
 # Opt 2: arrays below this element count run on CPU via NumPy
 _GPU_THRESHOLD = 8192  # default for heavy ops (transcendentals, power, mod)
@@ -49,25 +49,26 @@ _MEMORY_UNARY_OPS = frozenset({
     "neg_op", "abs_op", "ceil_op", "floor_op", "sign_op", "square_op",
     "rint_op", "trunc_op", "reciprocal_op", "degrees_op", "radians_op",
     "negative_op", "positive_op", "sqrt_op",
+})
+
+# Ops where GPU kernel does minimal per-element work — NumPy SIMD is faster
+# until arrays are large enough to amortise dispatch overhead.
+_LIGHT_UNARY_OPS = frozenset({
     "sin_op", "cos_op", "tan_op", "exp_op", "log_op",
     "asin_op", "acos_op", "atan_op",
     "sinh_op", "cosh_op", "tanh_op",
     "asinh_op", "acosh_op", "atanh_op",
     "exp2_op", "expm1_op", "log2_op", "log10_op", "log1p_op",
     "cbrt_op", "erf_op",
+}) | _MEMORY_UNARY_OPS
+_LIGHT_BINARY_OPS = frozenset({
+    "add_op", "sub_op", "mul_op", "div_op", "min_op", "max_op",
+    "copysign_op", "fmax_op", "fmin_op", "hypot_op",
 })
-
-# Collapsed to same set — all unary ops use 4M threshold.
-_LIGHT_UNARY_OPS = _MEMORY_UNARY_OPS
 _MEMORY_BINARY_OPS = frozenset({
     "add_op", "sub_op", "mul_op", "div_op", "min_op", "max_op",
     "fmax_op", "fmin_op", "copysign_op",
-    "pow_op", "mod_op", "floor_divide_op", "fmod_op",
-    "atan2_op", "logaddexp_op", "logaddexp2_op",
-    "heaviside_op", "nextafter_op", "hypot_op",
 })
-# Collapsed to same set — all binary ops use 4M threshold.
-_LIGHT_BINARY_OPS = _MEMORY_BINARY_OPS
 
 # Map op_name -> numpy function for CPU fallback paths
 _NP_UNARY = {
@@ -183,6 +184,8 @@ _UOP_NEGATIVE = 32
 _UOP_POSITIVE = 33
 # Comparison ops
 _COP_LT, _COP_LE, _COP_GT, _COP_GE, _COP_EQ, _COP_NE = 0, 1, 2, 3, 4, 5
+# Reduction ops
+_ROP_SUM, _ROP_MAX, _ROP_MIN, _ROP_PROD, _ROP_MEAN = 0, 1, 2, 3, 4
 
 _F64_DTYPE = np.dtype(np.float64)
 _C128_DTYPE = np.dtype(np.complex128)
@@ -2712,7 +2715,7 @@ class ndarray:
 
 
 # ── C dispatch table initialization ──
-_fast_binary = _fast_unary = _fast_cmp = None
+_fast_binary = _fast_unary = _fast_cmp = _fast_reduce = None
 
 if _accelerator is not None:
     try:
@@ -2784,9 +2787,53 @@ if _accelerator is not None:
                 (np.equal, _GPU_THRESHOLD_MEMORY, 0),          # 4 = _COP_EQ
                 (np.not_equal, _GPU_THRESHOLD_MEMORY, 0),      # 5 = _COP_NE
             ],
+            [  # reduce_list
+                (np.sum,  _GPU_THRESHOLD_MEMORY, 0),   # 0 = _ROP_SUM
+                (np.max,  _GPU_THRESHOLD_MEMORY, 0),   # 1 = _ROP_MAX
+                (np.min,  _GPU_THRESHOLD_MEMORY, 0),   # 2 = _ROP_MIN
+                (np.prod, _GPU_THRESHOLD_MEMORY, 0),   # 3 = _ROP_PROD
+                (np.mean, _GPU_THRESHOLD_MEMORY, 0),   # 4 = _ROP_MEAN
+            ],
         )
         _fast_binary = _accelerator.fast_binary
         _fast_unary = _accelerator.fast_unary
         _fast_cmp = _accelerator.fast_cmp
+        _fast_reduce = getattr(_accelerator, 'fast_reduce', None)
+        if _fast_reduce is not None:
+            from . import reductions as _reductions_mod
+            _reductions_mod._init_fast_reduce(
+                _fast_reduce, ndarray,
+                _ROP_SUM, _ROP_MAX, _ROP_MIN, _ROP_PROD, _ROP_MEAN,
+            )
     except Exception:
         pass
+
+
+# ---------------------------------------------------------------------------
+# Centralized _wrap_np: uses C accelerator when available, pure-Python fallback
+# ---------------------------------------------------------------------------
+if _accelerator is not None:
+    _c_wrap_np = getattr(_accelerator, "wrap_np", None)
+else:
+    _c_wrap_np = None
+
+
+def _wrap_np(np_data):
+    """Fast ndarray construction for known-good C-contiguous numpy arrays.
+
+    Uses the C accelerator's ``wrap_np`` when available for maximum speed,
+    with a pure-Python fallback that manually sets internal fields.
+    """
+    if _c_wrap_np is not None:
+        result = _c_wrap_np(np_data)
+        if result is not None:
+            return result
+    arr = ndarray.__new__(ndarray)
+    arr._buffer = None
+    arr._np_data = np_data
+    arr._shape = np_data.shape
+    arr._dtype = np_data.dtype
+    arr._strides = _c_contiguous_strides(np_data.shape)
+    arr._offset = 0
+    arr._base = None
+    return arr

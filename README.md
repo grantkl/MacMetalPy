@@ -108,15 +108,16 @@ MacMetalPy vs NumPy on an **M4 Mac Mini**, float32. Small arrays use optimized C
 
 | Operation | 1K | 100K | 1M |
 |---|---|---|---|
-| `a + b` | 0.37x | 0.90x | 0.95x |
-| `sin(a)` | 0.68x | 0.96x | 0.89x |
-| `exp(a)` | 0.70x | 0.95x | 0.91x |
-| `cumsum(a)` | 0.59x | **1.38x** | **1.38x** |
-| `floor_divide` | 0.78x | 0.93x | 0.90x |
-| `mod(a, b)` | 0.76x | 0.89x | 0.89x |
-| `randn(a)` | **2.33x** | **3.51x** | **3.48x** |
-| `normal(a)` | **1.97x** | **2.36x** | **2.31x** |
-| `sort(a)` | 0.81x | 0.87x | 0.86x |
+| `a + b` | 0.37x | 0.89x | 0.91x |
+| `sin(a)` | 0.69x | 0.96x | **1.53x** |
+| `exp(a)` | 0.33x | 0.95x | **1.62x** |
+| `cumsum(a)` | 0.57x | **1.38x** | **1.35x** |
+| `floor_divide` | 0.76x | **2.67x** | **13.85x** |
+| `mod(a, b)` | 0.68x | **2.48x** | **9.55x** |
+| `randn(a)` | **2.79x** | **3.54x** | **3.47x** |
+| `normal(a)` | **2.00x** | **2.31x** | **2.26x** |
+| `sort(a)` | 0.83x | 0.87x | **1.41x** |
+| `searchsorted` | 0.01x | **3.97x** | **21.67x** |
 
 > Values are speedup vs NumPy (higher = faster). **Bold** = MacMetalPy wins.
 
@@ -124,23 +125,26 @@ MacMetalPy vs NumPy on an **M4 Mac Mini**, float32. Small arrays use optimized C
 
 | Category | Avg Speedup | Highlights |
 |---|---|---|
-| **Random** | **1.73x** | `randn` 3.5x, `normal` 2.4x, `randint` 2.0x — native float32 generation |
-| **Creation (f64)** | **10.2x** | `array()` 107x at 1M — skips float64 intermediates |
-| **Creation** | **2.76x** | `array()` 56x, `copyto` 88x at 1M |
-| **Ufuncs** | **1.00x** | `fabs` 10x, `heaviside` 1.2x |
-| **Indexing** | **1.00x** | `put_along_axis` 11x at 1M |
+| **Creation (f64)** | **10.56x** | `array()` 111x at 1M — skips float64 intermediates |
+| **Creation** | **2.63x** | `array()` 54x at 1M |
+| **Sorting** | **2.49x** | `searchsorted` 21.7x at 1M, `sort` 1.4x at 1M |
+| **Ufuncs** | **1.98x** | `logaddexp` 15x, `fmod` 13x at 1M |
+| **Trig** | **1.78x** | `sin` 1.5x, `exp` 1.6x at 1M — GPU shines at scale |
+| **Random** | **1.77x** | `randn` 3.5x, `normal` 2.3x — native float32 generation |
+| **Math** | **1.60x** | `floor_divide` 14x, `mod` 9.6x at 1M |
 
 ### By Category at 100K / 1M Elements
 
 | Category | 100K | 1M | Notes |
 |---|---|---|---|
-| **Random** | **1.91x** | **1.91x** | Native float32 via Generator API |
-| **Creation** | **1.39x** | **6.45x** | Dtype conversion bypass at scale |
-| **Trig** | 0.95x | 0.94x | Near-parity, GPU wins above 4M |
-| **Math** | 0.90x | 0.91x | Near-parity at these sizes |
-| **Reductions** | 0.89x | 0.97x | `cumsum` 1.38x |
-| **Comparisons** | 0.90x | 0.91x | Near-parity |
-| **Sorting** | 0.87x | 0.84x | CPU SIMD path |
+| **Random** | **1.91x** | **1.90x** | Native float32 via Generator API |
+| **Creation** | **1.43x** | **6.08x** | Dtype conversion bypass at scale |
+| **Ufuncs** | **1.50x** | **3.85x** | GPU dominates at scale |
+| **Sorting** | **1.48x** | **5.39x** | `searchsorted` 21.7x at 1M |
+| **Math** | **1.14x** | **3.13x** | `floor_divide` 14x at 1M |
+| **Trig** | **1.02x** | **3.60x** | GPU wins decisively at 1M |
+| **Reductions** | 0.93x | 0.97x | `cumsum` 1.35x |
+| **Comparisons** | 0.89x | 0.87x | Near-parity |
 
 ### The Rule of Thumb
 
@@ -148,8 +152,8 @@ MacMetalPy vs NumPy on an **M4 Mac Mini**, float32. Small arrays use optimized C
 |---|---|---|
 | **< 10K** | NumPy | Python dispatch overhead dominates |
 | **10K – 100K** | Roughly even | CPU SIMD paths match NumPy |
-| **100K – 4M** | Near-parity | ~0.9x for most ops; random/creation win |
-| **4M+** | **GPU shreds** | Metal dispatch amortized, massive parallelism wins |
+| **100K – 1M** | **GPU wins many** | Trig, math, sorting, ufuncs all >1x; random/creation dominate |
+| **1M+** | **GPU shreds** | Metal dispatch amortized, massive parallelism wins |
 
 > Run the benchmarks yourself: `python benchmarks/bench_vs_numpy.py --numpy-cache`
 
