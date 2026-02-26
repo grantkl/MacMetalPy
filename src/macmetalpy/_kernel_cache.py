@@ -29,6 +29,7 @@ _GENERATORS = {
     "parallel_reduction": _kernels.parallel_reduction_shader,
     "parallel_scan": _kernels.parallel_scan_shader,
     "nan_elementwise": _kernels.nan_elementwise_shader,
+    "nan_reduction": _kernels.nan_reduction_shader,
 }
 
 # ── Opt 5: Cached inline shader generators ──────────────────────────

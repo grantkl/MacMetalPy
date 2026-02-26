@@ -8,7 +8,7 @@ import numpy as np
 
 from ._dtypes import resolve_dtype
 from ._metal_backend import MetalBackend
-from .ndarray import ndarray, _c_contiguous_strides
+from .ndarray import ndarray, _c_contiguous_strides, _wrap_np
 
 __all__ = [
     "empty",
@@ -25,19 +25,6 @@ __all__ = [
     "linspace",
     "eye",
 ]
-
-
-def _wrap_np(np_data):
-    """Inline ndarray construction for creation ops (known-good dtype, C-contiguous)."""
-    arr = ndarray.__new__(ndarray)
-    arr._buffer = None
-    arr._np_data = np_data
-    arr._shape = np_data.shape
-    arr._dtype = np_data.dtype
-    arr._strides = _c_contiguous_strides(np_data.shape)
-    arr._offset = 0
-    arr._base = None
-    return arr
 
 
 def _validate_device(device):

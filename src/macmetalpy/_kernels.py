@@ -8,6 +8,7 @@ __all__ = [
     "where_shader", "clip_shader",
     "predicate_shader", "axis_reduction_shader", "nan_elementwise_shader",
     "parallel_reduction_shader", "parallel_scan_shader",
+    "nan_reduction_shader",
 ]
 
 _MSL_HEADER = """\
@@ -585,6 +586,142 @@ kernel void reduce_dot(device {metal_type} *a [[buffer(0)]],
         uint n_sg = (group_size + 31u) / 32u;
         acc = (lid < n_sg) ? shared[lid] : 0;
         acc = simd_sum(acc);
+        if (lid == 0) output[gid] = acc;
+    }}
+}}
+"""
+    )
+
+
+def nan_reduction_shader(metal_type: str) -> str:
+    """Return MSL source with fused NaN-aware parallel-reduction kernels.
+
+    Same structure as ``reduction_shader`` (EPT, simd intrinsics, shared memory)
+    but NaN values are handled inline instead of requiring a separate replace pass.
+    """
+    return (
+        _MSL_HEADER
+        + f"""
+// Number of elements each thread accumulates before the reduction tree.
+constant constexpr uint EPT = 8u;
+
+// ---- nan_reduce_sum (NaN treated as 0) ---------------------------------
+kernel void nan_reduce_sum(device {metal_type} *input [[buffer(0)]],
+                           device {metal_type} *output [[buffer(1)]],
+                           device uint *n_elements [[buffer(2)]],
+                           uint lid [[thread_position_in_threadgroup]],
+                           uint gid [[threadgroup_position_in_grid]],
+                           uint group_size [[threads_per_threadgroup]],
+                           uint simd_lane [[thread_index_in_simdgroup]],
+                           uint simd_id [[simdgroup_index_in_threadgroup]]) {{
+    uint n = n_elements[0];
+    {metal_type} acc = 0;
+    uint base = gid * group_size * EPT + lid;
+    for (uint i = 0; i < EPT; i++) {{
+        uint idx = base + i * group_size;
+        if (idx < n) {{
+            float v = static_cast<float>(input[idx]);
+            acc += isnan(v) ? ({metal_type})0 : input[idx];
+        }}
+    }}
+    acc = simd_sum(acc);
+    threadgroup {metal_type} shared[32];
+    if (simd_lane == 0) shared[simd_id] = acc;
+    threadgroup_barrier(mem_flags::mem_threadgroup);
+    if (simd_id == 0) {{
+        uint n_sg = (group_size + 31u) / 32u;
+        acc = (lid < n_sg) ? shared[lid] : 0;
+        acc = simd_sum(acc);
+        if (lid == 0) output[gid] = acc;
+    }}
+}}
+
+// ---- nan_reduce_max (NaN ignored, init -INFINITY) ----------------------
+kernel void nan_reduce_max(device {metal_type} *input [[buffer(0)]],
+                           device {metal_type} *output [[buffer(1)]],
+                           device uint *n_elements [[buffer(2)]],
+                           uint lid [[thread_position_in_threadgroup]],
+                           uint gid [[threadgroup_position_in_grid]],
+                           uint group_size [[threads_per_threadgroup]],
+                           uint simd_lane [[thread_index_in_simdgroup]],
+                           uint simd_id [[simdgroup_index_in_threadgroup]]) {{
+    uint n = n_elements[0];
+    {metal_type} acc = ({metal_type})(-INFINITY);
+    uint base = gid * group_size * EPT + lid;
+    for (uint i = 0; i < EPT; i++) {{
+        uint idx = base + i * group_size;
+        if (idx < n) {{
+            {metal_type} v = input[idx];
+            float fv = static_cast<float>(v);
+            if (!isnan(fv)) {{
+                float fa = static_cast<float>(acc);
+                if (fv > fa || isnan(fa)) acc = v;
+            }}
+        }}
+    }}
+    for (uint off = 16u; off > 0u; off >>= 1) {{
+        {metal_type} other = simd_shuffle_down(acc, off);
+        float fa = static_cast<float>(acc);
+        float fb = static_cast<float>(other);
+        if (!isnan(fb) && (isnan(fa) || fb > fa)) acc = other;
+    }}
+    threadgroup {metal_type} shared[32];
+    if (simd_lane == 0) shared[simd_id] = acc;
+    threadgroup_barrier(mem_flags::mem_threadgroup);
+    if (simd_id == 0) {{
+        uint n_sg = (group_size + 31u) / 32u;
+        acc = (lid < n_sg) ? shared[lid] : ({metal_type})(-INFINITY);
+        for (uint off = 16u; off > 0u; off >>= 1) {{
+            {metal_type} other = simd_shuffle_down(acc, off);
+            float fa = static_cast<float>(acc);
+            float fb = static_cast<float>(other);
+            if (!isnan(fb) && (isnan(fa) || fb > fa)) acc = other;
+        }}
+        if (lid == 0) output[gid] = acc;
+    }}
+}}
+
+// ---- nan_reduce_min (NaN ignored, init +INFINITY) ----------------------
+kernel void nan_reduce_min(device {metal_type} *input [[buffer(0)]],
+                           device {metal_type} *output [[buffer(1)]],
+                           device uint *n_elements [[buffer(2)]],
+                           uint lid [[thread_position_in_threadgroup]],
+                           uint gid [[threadgroup_position_in_grid]],
+                           uint group_size [[threads_per_threadgroup]],
+                           uint simd_lane [[thread_index_in_simdgroup]],
+                           uint simd_id [[simdgroup_index_in_threadgroup]]) {{
+    uint n = n_elements[0];
+    {metal_type} acc = ({metal_type})(INFINITY);
+    uint base = gid * group_size * EPT + lid;
+    for (uint i = 0; i < EPT; i++) {{
+        uint idx = base + i * group_size;
+        if (idx < n) {{
+            {metal_type} v = input[idx];
+            float fv = static_cast<float>(v);
+            if (!isnan(fv)) {{
+                float fa = static_cast<float>(acc);
+                if (fv < fa || isnan(fa)) acc = v;
+            }}
+        }}
+    }}
+    for (uint off = 16u; off > 0u; off >>= 1) {{
+        {metal_type} other = simd_shuffle_down(acc, off);
+        float fa = static_cast<float>(acc);
+        float fb = static_cast<float>(other);
+        if (!isnan(fb) && (isnan(fa) || fb < fa)) acc = other;
+    }}
+    threadgroup {metal_type} shared[32];
+    if (simd_lane == 0) shared[simd_id] = acc;
+    threadgroup_barrier(mem_flags::mem_threadgroup);
+    if (simd_id == 0) {{
+        uint n_sg = (group_size + 31u) / 32u;
+        acc = (lid < n_sg) ? shared[lid] : ({metal_type})(INFINITY);
+        for (uint off = 16u; off > 0u; off >>= 1) {{
+            {metal_type} other = simd_shuffle_down(acc, off);
+            float fa = static_cast<float>(acc);
+            float fb = static_cast<float>(other);
+            if (!isnan(fb) && (isnan(fa) || fb < fa)) acc = other;
+        }}
         if (lid == 0) output[gid] = acc;
     }}
 }}

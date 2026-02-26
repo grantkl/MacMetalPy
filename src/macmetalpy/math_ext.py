@@ -1,21 +1,8 @@
 """Extended math functions (CuPy-compatible)."""
 from __future__ import annotations
 import numpy as np
-from .ndarray import ndarray, _c_contiguous_strides
+from .ndarray import ndarray, _c_contiguous_strides, _wrap_np
 from . import creation
-
-
-def _wrap_np(np_data):
-    """Fast inline ndarray construction for known-good numpy arrays."""
-    arr = ndarray.__new__(ndarray)
-    arr._buffer = None
-    arr._np_data = np_data
-    arr._shape = np_data.shape
-    arr._dtype = np_data.dtype
-    arr._strides = _c_contiguous_strides(np_data.shape)
-    arr._offset = 0
-    arr._base = None
-    return arr
 
 
 def _ensure(x):
