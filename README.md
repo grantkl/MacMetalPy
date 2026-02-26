@@ -108,16 +108,16 @@ MacMetalPy vs NumPy on an **M4 Mac Mini**, float32. Small arrays use optimized C
 
 | Operation | 1K | 100K | 1M |
 |---|---|---|---|
-| `a + b` | 0.37x | 0.89x | 0.91x |
-| `sin(a)` | 0.69x | 0.96x | **1.53x** |
-| `exp(a)` | 0.33x | 0.95x | **1.62x** |
-| `cumsum(a)` | 0.57x | **1.38x** | **1.35x** |
-| `floor_divide` | 0.76x | **2.67x** | **13.85x** |
-| `mod(a, b)` | 0.68x | **2.48x** | **9.55x** |
-| `randn(a)` | **2.79x** | **3.54x** | **3.47x** |
-| `normal(a)` | **2.00x** | **2.31x** | **2.26x** |
-| `sort(a)` | 0.83x | 0.87x | **1.41x** |
-| `searchsorted` | 0.01x | **3.97x** | **21.67x** |
+| `a + b` | 0.37x | 0.90x | 0.91x |
+| `sin(a)` | 0.68x | 0.96x | **1.92x** |
+| `exp(a)` | 0.70x | 0.95x | **2.07x** |
+| `cumsum(a)` | 0.58x | **1.38x** | **1.37x** |
+| `floor_divide` | 0.77x | **3.01x** | **11.66x** |
+| `mod(a, b)` | 0.68x | **1.51x** | **5.73x** |
+| `randn(a)` | **2.62x** | **3.33x** | **3.23x** |
+| `normal(a)` | **1.90x** | **2.26x** | **2.24x** |
+| `sort(a)` | 0.78x | 0.87x | **1.46x** |
+| `searchsorted` | 0.01x | **3.24x** | **18.84x** |
 
 > Values are speedup vs NumPy (higher = faster). **Bold** = MacMetalPy wins.
 
@@ -125,26 +125,26 @@ MacMetalPy vs NumPy on an **M4 Mac Mini**, float32. Small arrays use optimized C
 
 | Category | Avg Speedup | Highlights |
 |---|---|---|
-| **Creation (f64)** | **10.56x** | `array()` 111x at 1M — skips float64 intermediates |
-| **Creation** | **2.63x** | `array()` 54x at 1M |
-| **Sorting** | **2.49x** | `searchsorted` 21.7x at 1M, `sort` 1.4x at 1M |
-| **Ufuncs** | **1.98x** | `logaddexp` 15x, `fmod` 13x at 1M |
-| **Trig** | **1.78x** | `sin` 1.5x, `exp` 1.6x at 1M — GPU shines at scale |
-| **Random** | **1.77x** | `randn` 3.5x, `normal` 2.3x — native float32 generation |
-| **Math** | **1.60x** | `floor_divide` 14x, `mod` 9.6x at 1M |
+| **Creation (f64)** | **10.59x** | `array()` 111x at 1M — skips float64 intermediates |
+| **Creation** | **2.57x** | `array()` 51x at 1M |
+| **Sorting** | **2.26x** | `searchsorted` 18.8x at 1M, `sort` 1.5x at 1M |
+| **Ufuncs** | **1.58x** | `fabs` 10x, `logaddexp` 8.5x at 1M |
+| **Trig** | **1.73x** | `sin` 1.9x, `exp` 2.1x at 1M — GPU shines at scale |
+| **Random** | **1.70x** | `randn` 3.2x, `normal` 2.2x — native float32 generation |
+| **Math** | **1.63x** | `floor_divide` 12x, `mod` 8.1x at 1M |
 
 ### By Category at 100K / 1M Elements
 
 | Category | 100K | 1M | Notes |
 |---|---|---|---|
-| **Random** | **1.91x** | **1.90x** | Native float32 via Generator API |
-| **Creation** | **1.43x** | **6.08x** | Dtype conversion bypass at scale |
-| **Ufuncs** | **1.50x** | **3.85x** | GPU dominates at scale |
-| **Sorting** | **1.48x** | **5.39x** | `searchsorted` 21.7x at 1M |
-| **Math** | **1.14x** | **3.13x** | `floor_divide` 14x at 1M |
-| **Trig** | **1.02x** | **3.60x** | GPU wins decisively at 1M |
-| **Reductions** | 0.93x | 0.97x | `cumsum` 1.35x |
-| **Comparisons** | 0.89x | 0.87x | Near-parity |
+| **Random** | **1.85x** | **1.81x** | Native float32 via Generator API |
+| **Creation** | **1.32x** | **5.94x** | Dtype conversion bypass at scale |
+| **Ufuncs** | **1.32x** | **2.85x** | GPU dominates at scale |
+| **Sorting** | **1.33x** | **4.85x** | `searchsorted` 18.8x at 1M |
+| **Math** | **1.16x** | **3.17x** | `floor_divide` 12x at 1M |
+| **Trig** | 0.98x | **3.49x** | GPU wins decisively at 1M |
+| **Reductions** | 0.93x | 0.96x | `cumsum` 1.37x |
+| **Comparisons** | 0.90x | 0.89x | Near-parity |
 
 ### The Rule of Thumb
 
