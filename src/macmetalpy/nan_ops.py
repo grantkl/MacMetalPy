@@ -6,7 +6,7 @@ from __future__ import annotations
 
 import numpy as np
 
-from .ndarray import ndarray
+from .ndarray import ndarray, _c_contiguous_strides, _wrap_np
 from . import creation
 from ._kernel_cache import KernelCache
 from ._metal_backend import MetalBackend
@@ -69,6 +69,37 @@ def _nan_replace(a_contig, kernel_name):
     return ndarray._from_buffer(clean_buf, a_contig.shape, a_contig._dtype)
 
 
+def _nan_reduce(a_contig, kernel_name):
+    """Fused NaN-aware reduction using a single GPU kernel."""
+    from .reductions import THREADGROUP_SIZE, EPT
+
+    a_contig._ensure_gpu()
+    backend = MetalBackend()
+    cache = KernelCache()
+
+    size = a_contig.size
+    elems_per_group = THREADGROUP_SIZE * EPT
+    num_groups = (size + elems_per_group - 1) // elems_per_group
+    grid_size = num_groups * THREADGROUP_SIZE
+
+    shader_src = cache.get_shader("nan_reduction", a_contig._dtype)
+    n_buf = backend.array_to_buffer(np.array([size], dtype=np.uint32))
+    out_buf = backend.create_buffer(max(num_groups, 1), a_contig._dtype)
+    backend.execute_kernel(shader_src, kernel_name, grid_size, [a_contig._buffer, out_buf, n_buf])
+
+    partials = out_buf.contents[:num_groups].copy()
+    if "sum" in kernel_name:
+        result_val = partials.sum()
+    elif "max" in kernel_name:
+        result_val = partials.max()
+    elif "min" in kernel_name:
+        result_val = partials.min()
+    else:
+        raise ValueError(f"Unknown nan reduction op: {kernel_name!r}")
+
+    return creation.array(np.array(result_val, dtype=a_contig.dtype))
+
+
 def _ensure_float(a):
     """Ensure array is a float type (NaN only exists for floats)."""
     if not np.issubdtype(a.dtype, np.floating):
@@ -110,8 +141,19 @@ def nansum(a, axis=None, dtype=None, out=None, keepdims=False, initial=np._NoVal
             return _copy_to_out(result, out)
         return result
 
-    # GPU path: replace NaN with 0, then reduce
+    # GPU path
     a_contig = a.ravel()._ensure_contiguous() if axis is None else a._ensure_contiguous()
+
+    # Fused single-kernel path for simple full-array reduction
+    if axis is None and initial is np._NoValue and dtype is None:
+        result = _nan_reduce(a_contig, "nan_reduce_sum")
+        if keepdims:
+            result = result.reshape((1,) * a.ndim)
+        if out is not None:
+            return _copy_to_out(result, out)
+        return result
+
+    # Fallback: replace NaN with 0, then reduce
     clean = _nan_replace(a_contig, "nan_replace_zero")
 
     if dtype is not None:
@@ -258,6 +300,17 @@ def nanmax(a, axis=None, out=None, keepdims=False, initial=np._NoValue, where=np
         return result
 
     a_contig = a.ravel()._ensure_contiguous() if axis is None else a._ensure_contiguous()
+
+    # Fused single-kernel path for simple full-array reduction
+    if axis is None and initial is np._NoValue:
+        result = _nan_reduce(a_contig, "nan_reduce_max")
+        if keepdims:
+            result = result.reshape((1,) * a.ndim)
+        if out is not None:
+            return _copy_to_out(result, out)
+        return result
+
+    # Fallback: replace NaN with -inf, then reduce
     clean = _nan_replace(a_contig, "nan_replace_neg_inf")
 
     result = clean.max(axis=axis if a_contig.shape == a.shape else None, keepdims=keepdims)
@@ -300,6 +353,17 @@ def nanmin(a, axis=None, out=None, keepdims=False, initial=np._NoValue, where=np
         return result
 
     a_contig = a.ravel()._ensure_contiguous() if axis is None else a._ensure_contiguous()
+
+    # Fused single-kernel path for simple full-array reduction
+    if axis is None and initial is np._NoValue:
+        result = _nan_reduce(a_contig, "nan_reduce_min")
+        if keepdims:
+            result = result.reshape((1,) * a.ndim)
+        if out is not None:
+            return _copy_to_out(result, out)
+        return result
+
+    # Fallback: replace NaN with +inf, then reduce
     clean = _nan_replace(a_contig, "nan_replace_pos_inf")
 
     result = clean.min(axis=axis if a_contig.shape == a.shape else None, keepdims=keepdims)
@@ -674,11 +738,14 @@ def digitize(x, bins, right=False):
 def ediff1d(ary, to_end=None, to_begin=None):
     """Differences between consecutive elements of an array."""
     ary = _ensure_ndarray(ary)
+    if to_end is None and to_begin is None:
+        from . import reductions
+        return reductions.diff(ary.ravel(), n=1)
     np_data = _get_np(ary)
     te = to_end.get() if isinstance(to_end, ndarray) else to_end
     tb = to_begin.get() if isinstance(to_begin, ndarray) else to_begin
     result = np.ediff1d(np_data, to_end=te, to_begin=tb)
-    return ndarray._from_np_direct(result)
+    return _wrap_np(result)
 
 
 def gradient(f, *varargs, axis=None, edge_order=1):
@@ -687,8 +754,8 @@ def gradient(f, *varargs, axis=None, edge_order=1):
     varargs = tuple(_get_np(v) if isinstance(v, ndarray) else v for v in varargs)
     result = np.gradient(_get_np(f), *varargs, axis=axis, edge_order=edge_order)
     if isinstance(result, list):
-        return [ndarray._from_np_direct(np.asarray(r)) for r in result]
-    return ndarray._from_np_direct(np.asarray(result))
+        return [_wrap_np(np.asarray(r)) for r in result]
+    return _wrap_np(np.asarray(result))
 
 
 # ================================================================== NaN percentile/quantile

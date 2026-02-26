@@ -1,7 +1,7 @@
 """Extended math functions (CuPy-compatible)."""
 from __future__ import annotations
 import numpy as np
-from .ndarray import ndarray
+from .ndarray import ndarray, _c_contiguous_strides, _wrap_np
 from . import creation
 
 
@@ -28,7 +28,7 @@ def _get_np(a):
 def sinc(x):
     """Return the sinc function."""
     x = _ensure(x)
-    return ndarray._from_np_direct(np.sinc(_get_np(x)))
+    return _wrap_np(np.sinc(_get_np(x)))
 
 
 def i0(x):
@@ -42,7 +42,7 @@ def convolve(a, v, mode='full'):
     """Returns the discrete, linear convolution of two one-dimensional sequences."""
     a = _ensure(a)
     v = _ensure(v)
-    return ndarray._from_np_direct(np.convolve(_get_np(a), _get_np(v), mode=mode))
+    return _wrap_np(np.convolve(_get_np(a), _get_np(v), mode=mode))
 
 
 def interp(x, xp, fp, left=None, right=None, period=None):
@@ -62,7 +62,7 @@ def fix(x, out=None):
     x = _ensure(x)
     # CPU fast path — avoid _unary_op dispatch overhead
     if x._np_data is not None and x.size < 4194304:
-        result = ndarray._from_np_direct(np.fix(x._np_data))
+        result = _wrap_np(np.fix(x._np_data))
     else:
         result = x._unary_op("trunc_op")
     if out is not None:
@@ -94,13 +94,13 @@ def piecewise(x, condlist, funclist, *args, **kw):
     """Evaluate a piecewise-defined function."""
     x = _ensure(x)
     np_condlist = [_get_np(c) if isinstance(c, ndarray) else c for c in condlist]
-    return ndarray._from_np_direct(np.piecewise(_get_np(x), np_condlist, funclist, *args, **kw))
+    return _wrap_np(np.piecewise(_get_np(x), np_condlist, funclist, *args, **kw))
 
 
 def spacing(x):
     """Return the distance between x and the nearest adjacent number."""
     x = _ensure(x)
-    return ndarray._from_np_direct(np.spacing(_get_np(x)))
+    return _wrap_np(np.spacing(_get_np(x)))
 
 
 def isnat(x):
@@ -112,4 +112,4 @@ def isnat(x):
         x_np = _get_np(x)
     else:
         x_np = np.asarray(x)
-    return ndarray._from_np_direct(np.isnat(x_np))
+    return _wrap_np(np.isnat(x_np))

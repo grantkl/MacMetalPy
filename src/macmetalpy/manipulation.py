@@ -635,9 +635,13 @@ def asfortranarray(a, dtype=None):
     """
     if not isinstance(a, ndarray):
         a = creation.asarray(a)
-    if dtype is not None:
-        return ndarray._from_np_direct(np.ascontiguousarray(_get_np(a), dtype=dtype))
-    return ndarray._from_np_direct(np.ascontiguousarray(_get_np(a)))
+    np_data = _get_np(a)
+    if dtype is None and np_data.flags['C_CONTIGUOUS']:
+        return a
+    target = np_data if dtype is None else np.ascontiguousarray(np_data, dtype=dtype)
+    if target is np_data:
+        return a
+    return ndarray._from_np_direct(target)
 
 
 # ── NumPy 2 array manipulation functions ─────────────────────────────

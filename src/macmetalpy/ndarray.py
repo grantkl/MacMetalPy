@@ -35,7 +35,7 @@ try:
 except ImportError:
     _accelerator = None
 
-__all__ = ["ndarray"]
+__all__ = ["ndarray", "_wrap_np"]
 
 # Opt 2: arrays below this element count run on CPU via NumPy
 _GPU_THRESHOLD = 8192  # default for heavy ops (transcendentals, power, mod)
@@ -184,6 +184,8 @@ _UOP_NEGATIVE = 32
 _UOP_POSITIVE = 33
 # Comparison ops
 _COP_LT, _COP_LE, _COP_GT, _COP_GE, _COP_EQ, _COP_NE = 0, 1, 2, 3, 4, 5
+# Reduction ops
+_ROP_SUM, _ROP_MAX, _ROP_MIN, _ROP_PROD, _ROP_MEAN = 0, 1, 2, 3, 4
 
 _F64_DTYPE = np.dtype(np.float64)
 _C128_DTYPE = np.dtype(np.complex128)
@@ -311,6 +313,27 @@ class ndarray:
         else:
             itemsize = np_array.itemsize
             arr._strides = tuple(s // itemsize for s in np_array.strides)
+        arr._offset = 0
+        arr._base = None
+        return arr
+
+    @classmethod
+    def _from_np_known_good(cls, np_array: np.ndarray) -> ndarray:
+        """Fast path for internal use: skip type/dtype checks.
+
+        Caller guarantees np_array is a proper numpy ndarray with a supported dtype.
+        """
+        if _accelerator is not None and np_array.flags['C_CONTIGUOUS']:
+            arr = _accelerator.wrap_result(cls, np_array)
+            if arr is not None:
+                arr._dtype = np_array.dtype
+                return arr
+        arr = cls.__new__(cls)
+        arr._buffer = None
+        arr._np_data = np_array
+        arr._shape = np_array.shape
+        arr._dtype = np_array.dtype
+        arr._strides = _c_contiguous_strides(np_array.shape)
         arr._offset = 0
         arr._base = None
         return arr
@@ -2692,7 +2715,7 @@ class ndarray:
 
 
 # ── C dispatch table initialization ──
-_fast_binary = _fast_unary = _fast_cmp = None
+_fast_binary = _fast_unary = _fast_cmp = _fast_reduce = None
 
 if _accelerator is not None:
     try:
@@ -2764,9 +2787,53 @@ if _accelerator is not None:
                 (np.equal, _GPU_THRESHOLD_MEMORY, 0),          # 4 = _COP_EQ
                 (np.not_equal, _GPU_THRESHOLD_MEMORY, 0),      # 5 = _COP_NE
             ],
+            [  # reduce_list
+                (np.sum,  _GPU_THRESHOLD_MEMORY, 0),   # 0 = _ROP_SUM
+                (np.max,  _GPU_THRESHOLD_MEMORY, 0),   # 1 = _ROP_MAX
+                (np.min,  _GPU_THRESHOLD_MEMORY, 0),   # 2 = _ROP_MIN
+                (np.prod, _GPU_THRESHOLD_MEMORY, 0),   # 3 = _ROP_PROD
+                (np.mean, _GPU_THRESHOLD_MEMORY, 0),   # 4 = _ROP_MEAN
+            ],
         )
         _fast_binary = _accelerator.fast_binary
         _fast_unary = _accelerator.fast_unary
         _fast_cmp = _accelerator.fast_cmp
+        _fast_reduce = getattr(_accelerator, 'fast_reduce', None)
+        if _fast_reduce is not None:
+            from . import reductions as _reductions_mod
+            _reductions_mod._init_fast_reduce(
+                _fast_reduce, ndarray,
+                _ROP_SUM, _ROP_MAX, _ROP_MIN, _ROP_PROD, _ROP_MEAN,
+            )
     except Exception:
         pass
+
+
+# ---------------------------------------------------------------------------
+# Centralized _wrap_np: uses C accelerator when available, pure-Python fallback
+# ---------------------------------------------------------------------------
+if _accelerator is not None:
+    _c_wrap_np = getattr(_accelerator, "wrap_np", None)
+else:
+    _c_wrap_np = None
+
+
+def _wrap_np(np_data):
+    """Fast ndarray construction for known-good C-contiguous numpy arrays.
+
+    Uses the C accelerator's ``wrap_np`` when available for maximum speed,
+    with a pure-Python fallback that manually sets internal fields.
+    """
+    if _c_wrap_np is not None:
+        result = _c_wrap_np(np_data)
+        if result is not None:
+            return result
+    arr = ndarray.__new__(ndarray)
+    arr._buffer = None
+    arr._np_data = np_data
+    arr._shape = np_data.shape
+    arr._dtype = np_data.dtype
+    arr._strides = _c_contiguous_strides(np_data.shape)
+    arr._offset = 0
+    arr._base = None
+    return arr

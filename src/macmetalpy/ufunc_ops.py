@@ -5,7 +5,7 @@ from .ndarray import (ndarray, _fast_unary, _fast_binary,
     _UOP_EXP2, _UOP_EXPM1, _UOP_LOG1P, _UOP_CBRT, _UOP_RECIPROCAL,
     _UOP_RINT, _UOP_TRUNC, _UOP_ABS, _UOP_POSITIVE,
     _UOP_ASINH, _UOP_ACOSH, _UOP_ATANH, _UOP_DEGREES, _UOP_RADIANS,
-    _OP_ADD, _OP_SUB, _OP_MUL, _OP_FLOOR_DIV,
+    _OP_ADD, _OP_SUB, _OP_MUL, _OP_DIV, _OP_FLOOR_DIV,
     _OP_FMOD, _OP_ATAN2, _OP_HYPOT, _OP_LOGADDEXP, _OP_LOGADDEXP2,
     _OP_HEAVISIDE, _OP_COPYSIGN, _OP_NEXTAFTER, _OP_FMAX, _OP_FMIN)
 from . import creation
@@ -66,6 +66,10 @@ def multiply(x1, x2, **kwargs):
 
 
 def divide(x1, x2, **kwargs):
+    if _fast_binary is not None and type(x1) is ndarray:
+        r = _fast_binary(x1, x2, _OP_DIV)
+        if r is not None:
+            return r
     if type(x1) is not ndarray:
         x1 = creation.asarray(x1)
     if type(x2) is not ndarray:
@@ -79,6 +83,10 @@ def divide(x1, x2, **kwargs):
 
 
 def true_divide(x1, x2, **kwargs):
+    if _fast_binary is not None and type(x1) is ndarray:
+        r = _fast_binary(x1, x2, _OP_DIV)
+        if r is not None:
+            return r
     if type(x1) is not ndarray:
         x1 = creation.asarray(x1)
     if type(x2) is not ndarray:

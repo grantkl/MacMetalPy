@@ -8,7 +8,7 @@ import numpy as np
 
 from ._dtypes import resolve_dtype
 from ._metal_backend import MetalBackend
-from .ndarray import ndarray, _c_contiguous_strides
+from .ndarray import ndarray, _c_contiguous_strides, _wrap_np
 
 __all__ = [
     "empty",
@@ -25,19 +25,6 @@ __all__ = [
     "linspace",
     "eye",
 ]
-
-
-def _wrap_np(np_data):
-    """Inline ndarray construction for creation ops (known-good dtype, C-contiguous)."""
-    arr = ndarray.__new__(ndarray)
-    arr._buffer = None
-    arr._np_data = np_data
-    arr._shape = np_data.shape
-    arr._dtype = np_data.dtype
-    arr._strides = _c_contiguous_strides(np_data.shape)
-    arr._offset = 0
-    arr._base = None
-    return arr
 
 
 def _validate_device(device):
@@ -105,13 +92,17 @@ def arange(start_or_stop, stop=None, step=1, dtype=None, *, like=None, device=No
 def array(obj, dtype=None) -> ndarray:
     """Create an ndarray from a list, NumPy array, or macmetalpy ndarray."""
     if isinstance(obj, ndarray):
-        np_data = obj.get()
+        np_data = obj._np_data if obj._np_data is not None else obj.get()
     else:
         np_data = np.asarray(obj)
 
     if dtype is not None:
         dtype = resolve_dtype(dtype)
         np_data = np_data.astype(dtype, copy=False)
+    else:
+        from ._dtypes import _PASSTHROUGH_DTYPES
+        if np_data.dtype in _PASSTHROUGH_DTYPES:
+            return _wrap_np(np_data)
     return ndarray._from_np_direct(np_data)
 
 
@@ -298,8 +289,8 @@ def geomspace(start, stop, num=50, endpoint=True, dtype=None, axis=0):
 def frombuffer(buffer, dtype=float, count=-1, offset=0):
     """Interpret a buffer as a 1-D array."""
     dtype = resolve_dtype(dtype)
-    np_data = np.frombuffer(buffer, dtype=dtype, count=count, offset=offset).copy()
-    return ndarray._from_np_direct(np_data)
+    np_data = np.frombuffer(buffer, dtype=dtype, count=count, offset=offset)
+    return _wrap_np(np_data)
 
 
 def asarray_chkfinite(a, dtype=None, order=None):

@@ -3,16 +3,8 @@ from __future__ import annotations
 
 import numpy as np
 
-from .ndarray import ndarray
+from .ndarray import ndarray, _c_contiguous_strides, _wrap_np
 from . import creation
-
-
-def _get_np(a):
-    """Get zero-copy numpy view (syncs if GPU-resident)."""
-    if a._np_data is None:
-        from ._metal_backend import MetalBackend
-        MetalBackend().synchronize()
-    return a._get_view()
 
 
 def _get_np(a):
@@ -20,7 +12,10 @@ def _get_np(a):
     np_data = a._np_data
     if np_data is not None:
         return np_data
-    return _get_np(a)
+    if a._np_data is None:
+        from ._metal_backend import MetalBackend
+        MetalBackend().synchronize()
+    return a._get_view()
 
 
 # ------------------------------------------------------------------ Take / Put
@@ -258,38 +253,38 @@ def extract(condition, arr):
 
 def diag_indices(n, ndim=2):
     """Return the indices to access the main diagonal of an array."""
-    return tuple(ndarray._from_np_direct(x) for x in np.diag_indices(n, ndim))
+    return tuple(_wrap_np(x) for x in np.diag_indices(n, ndim))
 
 
 def diag_indices_from(arr):
     """Return the indices to access the main diagonal of an n-dimensional array."""
     if not isinstance(arr, ndarray):
         arr = creation.asarray(arr)
-    return tuple(ndarray._from_np_direct(x) for x in np.diag_indices_from(_get_np(arr)))
+    return tuple(_wrap_np(x) for x in np.diag_indices_from(_get_np(arr)))
 
 
 def tril_indices(n, k=0, m=None):
     """Return the indices for the lower-triangle of an (n, m) array."""
-    return tuple(ndarray._from_np_direct(x) for x in np.tril_indices(n, k, m))
+    return tuple(_wrap_np(x) for x in np.tril_indices(n, k, m))
 
 
 def tril_indices_from(arr, k=0):
     """Return the indices for the lower-triangle of arr."""
     if not isinstance(arr, ndarray):
         arr = creation.asarray(arr)
-    return tuple(ndarray._from_np_direct(x) for x in np.tril_indices_from(_get_np(arr), k))
+    return tuple(_wrap_np(x) for x in np.tril_indices_from(_get_np(arr), k))
 
 
 def triu_indices(n, k=0, m=None):
     """Return the indices for the upper-triangle of an (n, m) array."""
-    return tuple(ndarray._from_np_direct(x) for x in np.triu_indices(n, k, m))
+    return tuple(_wrap_np(x) for x in np.triu_indices(n, k, m))
 
 
 def triu_indices_from(arr, k=0):
     """Return the indices for the upper-triangle of arr."""
     if not isinstance(arr, ndarray):
         arr = creation.asarray(arr)
-    return tuple(ndarray._from_np_direct(x) for x in np.triu_indices_from(_get_np(arr), k))
+    return tuple(_wrap_np(x) for x in np.triu_indices_from(_get_np(arr), k))
 
 
 # ------------------------------------------------------------------ Conversion
@@ -408,4 +403,4 @@ def mask_indices(n, mask_func, k=0):
 def ix_(*args):
     """Construct an open mesh from multiple sequences."""
     np_args = [_get_np(a) if isinstance(a, ndarray) else a for a in args]
-    return tuple(ndarray._from_np_direct(x) for x in np.ix_(*np_args))
+    return tuple(_wrap_np(x) for x in np.ix_(*np_args))
