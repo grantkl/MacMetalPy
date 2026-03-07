@@ -57,6 +57,9 @@ def _run_single_benchmark(bench_entry: dict, size_name: str, size: int, repeats:
 
     Returns a result dict with timing statistics, or an error dict on failure.
     """
+    if os.environ.get("_MACMETALPY_FAST_MATH") == "1":
+        import macmetalpy as _mp
+        _mp.set_config(fast_math=True)
     name = bench_entry["name"]
     category = bench_entry["category"]
     func = bench_entry["func"]
@@ -520,8 +523,8 @@ def main():
     parser.add_argument(
         "--workers",
         type=int,
-        default=3,
-        help="Number of parallel worker processes (default: 3)",
+        default=1,
+        help="Number of parallel worker processes (default: 1; >1 causes GPU contention noise)",
     )
     parser.add_argument(
         "--serial",
@@ -533,7 +536,17 @@ def main():
         action="store_true",
         help="Use cached NumPy results instead of re-timing (from numpy_cache.json)",
     )
+    parser.add_argument(
+        "--fast-math",
+        action="store_true",
+        help="Enable fast-math mode for transcendental functions",
+    )
     args = parser.parse_args()
+
+    if args.fast_math:
+        import macmetalpy as _mp
+        _mp.set_config(fast_math=True)
+        os.environ["_MACMETALPY_FAST_MATH"] = "1"
 
     bench_dir = os.path.dirname(os.path.abspath(__file__))
 

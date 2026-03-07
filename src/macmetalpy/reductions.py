@@ -375,7 +375,7 @@ def _parallel_argmin(flat):
     return ndarray._from_buffer(out_buf, (), np.int32)
 
 
-_GPU_THRESHOLD_MEMORY = 4194304  # 4M — GPU reduction dispatch overhead dominates below this
+_GPU_THRESHOLD_MEMORY = 262144  # 256K — optimised GPU kernels (EPT=8, simd) beat CPU above this
 
 
 def argmax(a, axis=None, out=None, keepdims=False):

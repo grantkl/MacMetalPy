@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import numpy as np
 
-from .ndarray import ndarray, _c_contiguous_strides, _wrap_np
+from .ndarray import ndarray, _c_contiguous_strides, _wrap_np, _GPU_THRESHOLD_MEMORY
 from . import creation
 
 
@@ -31,7 +31,7 @@ def _to_bool(x):
 
 def _logical_binary(x1, x2, np_func, gpu_op):
     x1, x2 = _ensure(x1), _ensure(x2)
-    if x1.size < 4194304 and x2.size < 4194304:
+    if x1.size < _GPU_THRESHOLD_MEMORY and x2.size < _GPU_THRESHOLD_MEMORY:
         a = x1._np_data if x1._np_data is not None else _cpu_view(x1)
         b = x2._np_data if x2._np_data is not None else _cpu_view(x2)
         return _wrap_np(np_func(a, b))
@@ -52,7 +52,7 @@ def logical_or(x1, x2, **kwargs):
 
 def logical_not(x, **kwargs):
     x = _ensure(x)
-    if x.size < 4194304:
+    if x.size < _GPU_THRESHOLD_MEMORY:
         a = x._np_data if x._np_data is not None else _cpu_view(x)
         return _wrap_np(np.logical_not(a))
     if x.dtype != np.bool_:
