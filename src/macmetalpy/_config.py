@@ -30,6 +30,7 @@ class MacMetalConfig:
                 inst.float64_behavior: Literal["downcast", "cpu_fallback"] = "cpu_fallback"
                 inst.warn_on_downcast: bool = True
                 inst.default_float_dtype = "float32"
+                inst.fast_math: bool = False
                 cls._instance = inst
             return cls._instance
 
@@ -44,6 +45,7 @@ def set_config(
     float64_behavior: Literal["downcast", "cpu_fallback"] | None = None,
     warn_on_downcast: bool | None = None,
     default_float_dtype: str | None = None,
+    fast_math: bool | None = None,
 ) -> None:
     """Update global macmetalpy configuration values."""
     cfg = get_config()
@@ -58,3 +60,5 @@ def set_config(
         cfg.warn_on_downcast = warn_on_downcast
     if default_float_dtype is not None:
         cfg.default_float_dtype = default_float_dtype
+    if fast_math is not None:
+        cfg.fast_math = fast_math

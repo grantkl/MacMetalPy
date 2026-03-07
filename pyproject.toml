@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "macmetalpy"
-version = "0.1.1"
+version = "0.1.2"
 description = "CuPy-compatible GPU array library for Apple Silicon using MetalGPU"
 readme = "README.md"
 requires-python = ">=3.10"

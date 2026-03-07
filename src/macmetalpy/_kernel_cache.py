@@ -209,14 +209,19 @@ class KernelCache:
 
     def get_shader(self, category: str, dtype: np.dtype) -> str:
         """Return the MSL source for *category* and *dtype*, generating if needed."""
+        from ._config import get_config
         dtype = np.dtype(dtype)
-        key = (category, dtype)
+        fast_math = get_config().fast_math if category == "elementwise" else False
+        key = (category, dtype, fast_math)
         if key not in self._cache:
             generator = _GENERATORS.get(category)
             if generator is None:
                 raise ValueError(f"Unknown shader category: {category!r}")
             metal_type = METAL_TYPE_NAMES[dtype]
-            self._cache[key] = generator(metal_type)
+            if category == "elementwise":
+                self._cache[key] = generator(metal_type, fast_math=fast_math)
+            else:
+                self._cache[key] = generator(metal_type)
         return self._cache[key]
 
     def clear(self) -> None:

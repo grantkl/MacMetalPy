@@ -18,13 +18,16 @@ kernel void _sync() {}
 """
 
 
-def elementwise_shader(metal_type: str) -> str:
+def elementwise_shader(metal_type: str, *, fast_math: bool = False) -> str:
     """Return MSL source with 11 elementwise kernels parameterised on *metal_type*."""
     # For pow: floats use metal_stdlib pow, ints use manual loop
     is_float = metal_type in ("float", "half")
 
+    # fast:: namespace prefix for transcendentals when fast_math is enabled
+    _f = "fast::" if fast_math else ""
+
     if is_float:
-        pow_body = f"out[id] = pow(a[id], b[id]);"
+        pow_body = f"out[id] = {_f}pow(a[id], b[id]);"
         abs_body = f"out[id] = fabs(a[id]);"
         floor_divide_body = f"out[id] = floor(a[id] / b[id]);"
     else:
@@ -93,19 +96,19 @@ kernel void abs_op(device {metal_type} *a [[buffer(0)]],
 kernel void sqrt_op(device {metal_type} *a [[buffer(0)]],
                     device {metal_type} *out [[buffer(1)]],
                     uint id [[thread_position_in_grid]]) {{
-    out[id] = sqrt(static_cast<float>(a[id]));
+    out[id] = {_f}sqrt(static_cast<float>(a[id]));
 }}
 
 kernel void exp_op(device {metal_type} *a [[buffer(0)]],
                    device {metal_type} *out [[buffer(1)]],
                    uint id [[thread_position_in_grid]]) {{
-    out[id] = exp(static_cast<float>(a[id]));
+    out[id] = {_f}exp(static_cast<float>(a[id]));
 }}
 
 kernel void log_op(device {metal_type} *a [[buffer(0)]],
                    device {metal_type} *out [[buffer(1)]],
                    uint id [[thread_position_in_grid]]) {{
-    out[id] = log(static_cast<float>(a[id]));
+    out[id] = {_f}log(static_cast<float>(a[id]));
 }}
 
 kernel void fill_scalar(device {metal_type} *out [[buffer(0)]],
@@ -137,20 +140,20 @@ kernel void sin_op(device {metal_type} *a [[buffer(0)]],
                    device {metal_type} *out [[buffer(1)]],
                    uint id [[thread_position_in_grid]]) {{
     float v = static_cast<float>(a[id]);
-    out[id] = (isnan(v) || isinf(v)) ? ({metal_type})(NAN) : ({metal_type})sin(v);
+    out[id] = (isnan(v) || isinf(v)) ? ({metal_type})(NAN) : ({metal_type}){_f}sin(v);
 }}
 
 kernel void cos_op(device {metal_type} *a [[buffer(0)]],
                    device {metal_type} *out [[buffer(1)]],
                    uint id [[thread_position_in_grid]]) {{
     float v = static_cast<float>(a[id]);
-    out[id] = (isnan(v) || isinf(v)) ? ({metal_type})(NAN) : ({metal_type})cos(v);
+    out[id] = (isnan(v) || isinf(v)) ? ({metal_type})(NAN) : ({metal_type}){_f}cos(v);
 }}
 
 kernel void tan_op(device {metal_type} *a [[buffer(0)]],
                    device {metal_type} *out [[buffer(1)]],
                    uint id [[thread_position_in_grid]]) {{
-    out[id] = tan(static_cast<float>(a[id]));
+    out[id] = {_f}tan(static_cast<float>(a[id]));
 }}
 
 kernel void asin_op(device {metal_type} *a [[buffer(0)]],
@@ -193,7 +196,7 @@ kernel void tanh_op(device {metal_type} *a [[buffer(0)]],
 kernel void log2_op(device {metal_type} *a [[buffer(0)]],
                     device {metal_type} *out [[buffer(1)]],
                     uint id [[thread_position_in_grid]]) {{
-    out[id] = log2(static_cast<float>(a[id]));
+    out[id] = {_f}log2(static_cast<float>(a[id]));
 }}
 
 kernel void log10_op(device {metal_type} *a [[buffer(0)]],
@@ -251,26 +254,26 @@ kernel void fmin_op(device {metal_type} *a [[buffer(0)]],
 kernel void exp2_op(device {metal_type} *a [[buffer(0)]],
                     device {metal_type} *out [[buffer(1)]],
                     uint id [[thread_position_in_grid]]) {{
-    out[id] = exp2(static_cast<float>(a[id]));
+    out[id] = {_f}exp2(static_cast<float>(a[id]));
 }}
 
 kernel void expm1_op(device {metal_type} *a [[buffer(0)]],
                      device {metal_type} *out [[buffer(1)]],
                      uint id [[thread_position_in_grid]]) {{
-    out[id] = exp(static_cast<float>(a[id])) - 1.0f;
+    out[id] = {_f}exp(static_cast<float>(a[id])) - 1.0f;
 }}
 
 kernel void log1p_op(device {metal_type} *a [[buffer(0)]],
                      device {metal_type} *out [[buffer(1)]],
                      uint id [[thread_position_in_grid]]) {{
-    out[id] = log(1.0f + static_cast<float>(a[id]));
+    out[id] = {_f}log(1.0f + static_cast<float>(a[id]));
 }}
 
 kernel void cbrt_op(device {metal_type} *a [[buffer(0)]],
                     device {metal_type} *out [[buffer(1)]],
                     uint id [[thread_position_in_grid]]) {{
     float v = static_cast<float>(a[id]);
-    out[id] = copysign(pow(fabs(v), 1.0f / 3.0f), v);
+    out[id] = copysign({_f}pow(fabs(v), 1.0f / 3.0f), v);
 }}
 
 kernel void reciprocal_op(device {metal_type} *a [[buffer(0)]],
@@ -341,7 +344,7 @@ kernel void hypot_op(device {metal_type} *a [[buffer(0)]],
                      device {metal_type} *out [[buffer(2)]],
                      uint id [[thread_position_in_grid]]) {{
     float av = static_cast<float>(a[id]), bv = static_cast<float>(b[id]);
-    out[id] = sqrt(av * av + bv * bv);
+    out[id] = {_f}sqrt(av * av + bv * bv);
 }}
 
 kernel void floor_divide_op(device {metal_type} *a [[buffer(0)]],
@@ -378,7 +381,7 @@ kernel void logaddexp_op(device {metal_type} *a [[buffer(0)]],
                          uint id [[thread_position_in_grid]]) {{
     float av = static_cast<float>(a[id]), bv = static_cast<float>(b[id]);
     float mx = (av > bv) ? av : bv;
-    out[id] = mx + log(exp(av - mx) + exp(bv - mx));
+    out[id] = mx + {_f}log({_f}exp(av - mx) + {_f}exp(bv - mx));
 }}
 
 kernel void logaddexp2_op(device {metal_type} *a [[buffer(0)]],
@@ -387,7 +390,7 @@ kernel void logaddexp2_op(device {metal_type} *a [[buffer(0)]],
                           uint id [[thread_position_in_grid]]) {{
     float av = static_cast<float>(a[id]), bv = static_cast<float>(b[id]);
     float mx = (av > bv) ? av : bv;
-    out[id] = mx + log2(exp2(av - mx) + exp2(bv - mx));
+    out[id] = mx + {_f}log2({_f}exp2(av - mx) + {_f}exp2(bv - mx));
 }}
 
 kernel void heaviside_op(device {metal_type} *a [[buffer(0)]],

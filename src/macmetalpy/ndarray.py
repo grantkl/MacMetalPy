@@ -41,7 +41,7 @@ __all__ = ["ndarray", "_wrap_np"]
 _GPU_THRESHOLD = 8192  # default for heavy ops (transcendentals, power, mod)
 _GPU_THRESHOLD_LIGHT = 262144  # 256K for light ops (simple arithmetic, sqrt, etc.)
 _GPU_THRESHOLD_MEMORY = 4194304  # 4M for pure memory ops — GPU can rarely beat CPU SIMD
-_GPU_REDUCTION_THRESHOLD = 4194304  # 4M — GPU reduction dispatch overhead dominates below this
+_GPU_REDUCTION_THRESHOLD = 262144  # 256K — optimised GPU kernels (EPT=8, simd) beat CPU above this
 
 # Ops that are pure memory operations (copy/negate/compare) — CPU SIMD is almost
 # always faster because GPU dispatch overhead dominates.
@@ -1779,8 +1779,8 @@ class ndarray:
     def mean(self, axis=None, keepdims=False):
         """Mean of array elements."""
         from . import creation
-        # CPU fallback — optimised GPU reduction kernels win above 256K
-        if self.size < _GPU_REDUCTION_THRESHOLD:
+        # CPU fallback — f64/c128 not supported on Metal, or small arrays
+        if self._dtype == _F64_DTYPE or self._dtype == _C128_DTYPE or self.size < _GPU_REDUCTION_THRESHOLD:
             if self._np_data is None:
                 MetalBackend().synchronize()
             r = np.mean(self._get_view(), axis=axis, keepdims=keepdims)
@@ -1808,8 +1808,8 @@ class ndarray:
 
     def std(self, axis=None, keepdims=False):
         """Standard deviation of array elements."""
-        # CPU fallback — optimised GPU reduction kernels win above 256K
-        if self.size < _GPU_REDUCTION_THRESHOLD:
+        # CPU fallback — f64/c128 or small arrays (compound op: multiple dispatches)
+        if self._dtype == _F64_DTYPE or self._dtype == _C128_DTYPE or self.size < _GPU_THRESHOLD_MEMORY:
             if self._np_data is None:
                 MetalBackend().synchronize()
             r = np.std(self._get_view(), axis=axis, keepdims=keepdims)
@@ -1822,8 +1822,8 @@ class ndarray:
 
     def var(self, axis=None, keepdims=False):
         """Variance of array elements."""
-        # CPU fallback — optimised GPU reduction kernels win above 256K
-        if self.size < _GPU_REDUCTION_THRESHOLD:
+        # CPU fallback — f64/c128 or small arrays (compound op: multiple dispatches)
+        if self._dtype == _F64_DTYPE or self._dtype == _C128_DTYPE or self.size < _GPU_THRESHOLD_MEMORY:
             if self._np_data is None:
                 MetalBackend().synchronize()
             r = np.var(self._get_view(), axis=axis, keepdims=keepdims)
@@ -1853,8 +1853,8 @@ class ndarray:
     def any(self, axis=None, keepdims=False):
         """Test whether any array element evaluates to True (GPU-accelerated)."""
         from . import creation
-        # CPU fallback — optimised GPU reduction kernels win above 256K
-        if self.size < _GPU_REDUCTION_THRESHOLD:
+        # CPU fallback — f64/c128 or small arrays (compound op: compare + reduce)
+        if self._dtype == _F64_DTYPE or self._dtype == _C128_DTYPE or self.size < _GPU_THRESHOLD_MEMORY:
             if self._np_data is None:
                 MetalBackend().synchronize()
             r = np.any(self._get_view(), axis=axis, keepdims=keepdims)
@@ -1874,8 +1874,8 @@ class ndarray:
     def all(self, axis=None, keepdims=False):
         """Test whether all array elements evaluate to True (GPU-accelerated)."""
         from . import creation
-        # CPU fallback — optimised GPU reduction kernels win above 256K
-        if self.size < _GPU_REDUCTION_THRESHOLD:
+        # CPU fallback — f64/c128 or small arrays (compound op: compare + reduce)
+        if self._dtype == _F64_DTYPE or self._dtype == _C128_DTYPE or self.size < _GPU_THRESHOLD_MEMORY:
             if self._np_data is None:
                 MetalBackend().synchronize()
             r = np.all(self._get_view(), axis=axis, keepdims=keepdims)
@@ -1894,8 +1894,8 @@ class ndarray:
 
     def _reduce(self, kernel_name: str):
         """Run a full-array GPU reduction and return a 0-d ndarray."""
-        # CPU fallback — optimised GPU reduction kernels win above 256K
-        if self.size < _GPU_REDUCTION_THRESHOLD:
+        # CPU fallback — f64/c128 not supported on Metal, or small arrays
+        if self._dtype == _F64_DTYPE or self._dtype == _C128_DTYPE or self.size < _GPU_REDUCTION_THRESHOLD:
             np_func = _NP_REDUCE.get(kernel_name)
             if np_func is not None:
                 np_data = self._np_data
@@ -2788,11 +2788,11 @@ if _accelerator is not None:
                 (np.not_equal, _GPU_THRESHOLD_MEMORY, 0),      # 5 = _COP_NE
             ],
             [  # reduce_list
-                (np.sum,  _GPU_THRESHOLD_MEMORY, 0),   # 0 = _ROP_SUM
-                (np.max,  _GPU_THRESHOLD_MEMORY, 0),   # 1 = _ROP_MAX
-                (np.min,  _GPU_THRESHOLD_MEMORY, 0),   # 2 = _ROP_MIN
-                (np.prod, _GPU_THRESHOLD_MEMORY, 0),   # 3 = _ROP_PROD
-                (np.mean, _GPU_THRESHOLD_MEMORY, 0),   # 4 = _ROP_MEAN
+                (np.sum,  _GPU_REDUCTION_THRESHOLD, 0),   # 0 = _ROP_SUM
+                (np.max,  _GPU_REDUCTION_THRESHOLD, 0),   # 1 = _ROP_MAX
+                (np.min,  _GPU_REDUCTION_THRESHOLD, 0),   # 2 = _ROP_MIN
+                (np.prod, _GPU_REDUCTION_THRESHOLD, 0),   # 3 = _ROP_PROD
+                (np.mean, _GPU_REDUCTION_THRESHOLD, 0),   # 4 = _ROP_MEAN
             ],
         )
         _fast_binary = _accelerator.fast_binary
