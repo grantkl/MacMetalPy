@@ -31,7 +31,7 @@ from .creation import (
 )
 from .math_ops import (
     sqrt, exp, log, abs, power,
-    dot, where, clip,
+    dot, where, clip, fastCopyAndTranspose,
     concatenate, stack, vstack, hstack,
     sign, floor, ceil,
     sin, cos, tan,
@@ -159,7 +159,7 @@ from . import random
 from .window import bartlett, blackman, hamming, hanning, kaiser
 
 # Math extensions
-from .math_ext import sinc, i0, convolve, interp, fix, unwrap, trapezoid, piecewise, spacing, isnat
+from .math_ext import sinc, i0, convolve, interp, fix, unwrap, trapezoid, trapz, piecewise, spacing, isnat
 
 # Complex number operations
 from .complex_ops import angle, real, imag, conj, conjugate, real_if_close
@@ -212,6 +212,7 @@ from .config_ops import (
     get_printoptions, set_printoptions, printoptions,
     getbufsize, setbufsize,
     geterr, seterr, geterrcall, seterrcall,
+    geterrobj, seterrobj, set_numeric_ops,
     get_include,
     show_config, show_runtime,
 )

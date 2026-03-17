@@ -418,7 +418,7 @@ MODULE: numpy
     datetime64(value=None, /, *args)
     double(value=0, /)
     dtype(dtype, align=False, copy=False, **kwargs)
-    errstate(*, call=<numpy._core._ufunc_config._unspecified object at 0x1094c23d0>, all=None, divide=None, over=None, under=None, invalid=None)
+    errstate(*, call=<numpy._core._ufunc_config._unspecified object at 0x10a2825d0>, all=None, divide=None, over=None, under=None, invalid=None)
     finfo(dtype)
     flatiter()
     flexible()
@@ -478,19 +478,19 @@ MODULE: numpy
     False_: bool = np.False_
     ScalarType: tuple = (<class 'int'>, <class 'float'>, <class 'complex'>, <class 'bool'>, <class 'bytes'>, <class 'str'>, <class 'memoryview'>...
     True_: bool = np.True_
-    c_: CClass = <numpy.lib._index_tricks_impl.CClass object at 0x109a66ac0>
+    c_: CClass = <numpy.lib._index_tricks_impl.CClass object at 0x10a826d80>
     e: float = 2.718281828459045
     euler_gamma: float = 0.5772156649015329
-    index_exp: IndexExpression = <numpy.lib._index_tricks_impl.IndexExpression object at 0x10961ac20>
+    index_exp: IndexExpression = <numpy.lib._index_tricks_impl.IndexExpression object at 0x10a3dac20>
     inf: float = inf
     little_endian: bool = True
-    mgrid: MGridClass = <numpy.lib._index_tricks_impl.MGridClass object at 0x10961ab30>
+    mgrid: MGridClass = <numpy.lib._index_tricks_impl.MGridClass object at 0x10a3dab30>
     nan: float = nan
     newaxis: NoneType = None
-    ogrid: OGridClass = <numpy.lib._index_tricks_impl.OGridClass object at 0x10961ab90>
+    ogrid: OGridClass = <numpy.lib._index_tricks_impl.OGridClass object at 0x10a3dab90>
     pi: float = 3.141592653589793
-    r_: RClass = <numpy.lib._index_tricks_impl.RClass object at 0x109a66a80>
-    s_: IndexExpression = <numpy.lib._index_tricks_impl.IndexExpression object at 0x10961ac80>
+    r_: RClass = <numpy.lib._index_tricks_impl.RClass object at 0x10a826d00>
+    s_: IndexExpression = <numpy.lib._index_tricks_impl.IndexExpression object at 0x10a3dac80>
     sctypeDict: dict = {'bool': <class 'numpy.bool'>, 'float16': <class 'numpy.float16'>, 'float32': <class 'numpy.float32'>, 'float64': <class...
     typecodes: dict = {'Character': 'c', 'Integer': 'bhilqnp', 'UnsignedInteger': 'BHILQNP', 'Float': 'efdg', 'Complex': 'FDG', 'AllInteger': ...
 
@@ -1062,7 +1062,7 @@ MODULE: numpy.ma
     masked: MaskedConstant = masked
     masked_print_option: _MaskedPrintOption = --
     masked_singleton: MaskedConstant = masked
-    mr_: mr_class = <numpy.ma.extras.mr_class object at 0x109f41600>
+    mr_: mr_class = <numpy.ma.extras.mr_class object at 0x10ad2d3c0>
     nomask: bool = np.False_
 
 ================================================================================
