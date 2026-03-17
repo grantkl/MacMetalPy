@@ -90,6 +90,9 @@ def trapezoid(y, x=None, dx=1.0, axis=-1):
     return ndarray._from_np_direct(result)
 
 
+trapz = trapezoid
+
+
 def piecewise(x, condlist, funclist, *args, **kw):
     """Evaluate a piecewise-defined function."""
     x = _ensure(x)

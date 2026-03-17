@@ -1894,6 +1894,10 @@ class ndarray:
 
     def _reduce(self, kernel_name: str):
         """Run a full-array GPU reduction and return a 0-d ndarray."""
+        # Bool arrays must be cast to int32 — Metal SIMD intrinsics
+        # (simd_sum, simd_shuffle_down) do not support the bool type.
+        if self._dtype == _BOOL_DTYPE:
+            return self.astype(np.int32)._reduce(kernel_name)
         # CPU fallback — f64/c128 not supported on Metal, or small arrays
         if self._dtype == _F64_DTYPE or self._dtype == _C128_DTYPE or self.size < _GPU_REDUCTION_THRESHOLD:
             np_func = _NP_REDUCE.get(kernel_name)
@@ -1960,6 +1964,9 @@ class ndarray:
 
     def _reduce_dot(self, other):
         """Fused multiply-and-sum reduction for dot products (single kernel)."""
+        # Bool arrays must be cast to int32 — Metal SIMD intrinsics don't support bool.
+        if self._dtype == _BOOL_DTYPE:
+            return self.astype(np.int32)._reduce_dot(other.astype(np.int32))
         backend = MetalBackend()
         cache = KernelCache()
         a = self._ensure_contiguous()
@@ -2008,6 +2015,9 @@ class ndarray:
     def _reduce_axis(self, kernel_name: str, axis: int, keepdims: bool = False, out_dtype=None):
         """GPU axis reduction using axis_reduction_shader."""
         from . import creation
+        # Bool arrays must be cast to int32 — Metal SIMD intrinsics don't support bool.
+        if self._dtype == _BOOL_DTYPE:
+            return self.astype(np.int32)._reduce_axis(kernel_name, axis, keepdims, out_dtype)
         axis = axis % self.ndim if axis < 0 else axis
 
         # CPU fallback — reductions are memory-bound
@@ -2058,6 +2068,9 @@ class ndarray:
     def _prefix_scan(self, kernel_name: str, axis=None):
         """GPU prefix scan (cumsum/cumprod) using block-parallel scan."""
         from . import creation
+        # Bool arrays must be cast to int32 — Metal SIMD intrinsics don't support bool.
+        if self._dtype == _BOOL_DTYPE:
+            return self.astype(np.int32)._prefix_scan(kernel_name, axis)
         # CPU fallback — reductions are memory-bound
         if self.size < _GPU_THRESHOLD_MEMORY:
             if self._np_data is None:
@@ -2666,10 +2679,57 @@ class ndarray:
         return result
 
     def __array_ufunc__(self, ufunc, method, *inputs, **kwargs):
-        return NotImplemented
+        # Try to dispatch to macmetalpy's GPU implementation first
+        if method == '__call__':
+            import macmetalpy as mmp
+            mmp_func = getattr(mmp, ufunc.__name__, None)
+            if mmp_func is not None:
+                # Convert plain numpy arrays in inputs to macmetalpy arrays
+                mmp_inputs = tuple(
+                    mmp.asarray(x) if isinstance(x, np.ndarray) else x
+                    for x in inputs
+                )
+                try:
+                    return mmp_func(*mmp_inputs, **kwargs)
+                except (TypeError, NotImplementedError):
+                    pass  # Fall through to CPU path
+
+        # CPU fallback for ufuncs we don't have a GPU path for
+        np_inputs = tuple(
+            x.get() if isinstance(x, ndarray) else x for x in inputs
+        )
+        out = kwargs.get("out")
+        if out is not None:
+            np_out = tuple(
+                x.get() if isinstance(x, ndarray) else x for x in out
+            )
+            kwargs = {**kwargs, "out": np_out}
+
+        result = getattr(ufunc, method)(*np_inputs, **kwargs)
+
+        if isinstance(result, np.ndarray):
+            if out is not None and isinstance(out[0], ndarray):
+                out[0].set(result)
+                return out[0]
+            return type(self)._from_np_direct(result)
+        elif isinstance(result, tuple):
+            return tuple(
+                type(self)._from_np_direct(r) if isinstance(r, np.ndarray) else r
+                for r in result
+            )
+        return result
 
     def __array_function__(self, func, types, args, kwargs):
+        import macmetalpy as mmp
+        # Look up matching function in macmetalpy by qualified name
+        func_name = func.__name__
+        mmp_func = getattr(mmp, func_name, None)
+        if mmp_func is not None and mmp_func is not func:
+            return mmp_func(*args, **kwargs)
         return NotImplemented
+
+    def __array_prepare__(self, array, context=None):
+        return type(self)._from_np_direct(np.asarray(array))
 
     def __array_wrap__(self, array, context=None, return_scalar=False):
         return type(self)._from_np_direct(array)
@@ -2702,9 +2762,17 @@ class ndarray:
     def __dlpack_device__(self):
         return (1, 0)
 
+    def __reduce__(self):
+        """Support pickling by delegating to numpy."""
+        return (
+            _reconstruct_ndarray,
+            (self.get(),),
+        )
+
     def __setstate__(self, state):
-        tmp = np.ndarray.__new__(np.ndarray)
-        np.ndarray.__setstate__(tmp, state)
+        # state is (version, shape, dtype, fortran_order, data_string)
+        version, shape, dtype, fortran_order, data_string = state
+        tmp = np.ndarray(shape, dtype=dtype, buffer=data_string, order='F' if fortran_order else 'C').copy()
         self._buffer = None
         self._np_data = tmp
         self._shape = tmp.shape
@@ -2712,6 +2780,11 @@ class ndarray:
         self._strides = _c_contiguous_strides(tmp.shape)
         self._offset = 0
         self._base = None
+
+
+def _reconstruct_ndarray(np_array):
+    """Pickle reconstruction helper."""
+    return ndarray._from_np_direct(np_array)
 
 
 # ── C dispatch table initialization ──

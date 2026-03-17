@@ -860,6 +860,11 @@ def _reduce_gpu(arr, op_name):
     from ._metal_backend import MetalBackend
     from . import creation
 
+    # Bool arrays must be cast to int32 — Metal SIMD intrinsics
+    # (simd_sum, simd_shuffle_down) do not support the bool type.
+    if arr._dtype == np.bool_:
+        return _reduce_gpu(arr.astype(np.int32), op_name)
+
     backend = MetalBackend()
     cache = KernelCache()
 

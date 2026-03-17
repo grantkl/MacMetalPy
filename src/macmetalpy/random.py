@@ -374,7 +374,15 @@ def set_state(state):
 
 # ── BitGenerator / RNG classes (re-exports from numpy) ────────────────
 
-from numpy.random import bit_generator, mtrand, get_bit_generator, set_bit_generator
+from numpy.random import bit_generator, mtrand
+
+try:
+    from numpy.random import get_bit_generator, set_bit_generator
+except ImportError:
+    def get_bit_generator():
+        raise NotImplementedError("get_bit_generator not available in this NumPy version")
+    def set_bit_generator(bitgen):
+        raise NotImplementedError("set_bit_generator not available in this NumPy version")
 
 
 def random_integers(low, high=None, size=None):

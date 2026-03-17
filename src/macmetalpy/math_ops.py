@@ -106,7 +106,8 @@ def dot(a, b, out=None):
 def where(condition, x=None, y=None):
     """Return elements chosen from x or y depending on condition (GPU-native)."""
     if x is None and y is None:
-        raise NotImplementedError("where() with only condition is not supported")
+        from .indexing import nonzero
+        return nonzero(condition)
     from ._broadcasting import broadcast_shapes, needs_broadcast
     from ._dtypes import result_dtype
     from ._kernel_cache import KernelCache
@@ -156,6 +157,11 @@ def where(condition, x=None, y=None):
     backend.execute_kernel(shader, "where_op", x.size,
                            [cond_int._buffer, x._buffer, y._buffer, out_buf])
     return ndarray._from_buffer(out_buf, out_shape, rdtype)
+
+
+def fastCopyAndTranspose(a):
+    """Fast copy and transpose of a 2-D array."""
+    return creation.asarray(a).T.copy()
 
 
 def clip(a, a_min=None, a_max=None, out=None, *, min=None, max=None):
