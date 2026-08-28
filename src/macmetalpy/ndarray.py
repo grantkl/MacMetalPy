@@ -667,10 +667,12 @@ class ndarray:
         arr = self._contiguous_copy()
         return arr.reshape(new_shape)
 
-    def transpose(self, axes=None) -> ndarray:
-        """Return a view with permuted axes."""
-        if axes is None:
+    def transpose(self, *axes) -> ndarray:
+        """Return a view with permuted axes (numpy-compatible: transpose(*axes) or transpose(axes_tuple))."""
+        if len(axes) == 0 or (len(axes) == 1 and axes[0] is None):
             axes = tuple(reversed(range(self.ndim)))
+        elif len(axes) == 1 and isinstance(axes[0], (tuple, list)):
+            axes = tuple(axes[0])
         else:
             axes = tuple(axes)
         # CPU-resident: transpose via numpy (preserve non-contiguous view)
@@ -1024,6 +1026,9 @@ class ndarray:
                 arr._base = None
                 return arr
             other = creation.full(self._shape, other, dtype=scalar_dtype)
+        elif isinstance(other, complex):
+            # NumPy-compatible promotion: complex scalars stay complex (handled by the complex64 CPU fallback)
+            other = creation.array(complex(other), dtype=np.complex64)
         elif not isinstance(other, ndarray):
             other = creation.array(other, dtype=self._dtype)
 
@@ -1407,6 +1412,10 @@ class ndarray:
         rdtype = result_dtype(self._dtype, other._dtype)
         a = self.astype(rdtype) if self._dtype != rdtype else self
         b = other.astype(rdtype) if other._dtype != rdtype else other
+
+        # CPU fallback for dtypes with no Metal matmul shader (complex64, float64, complex128)
+        if rdtype == np.complex64 or rdtype == _F64_DTYPE or rdtype == _C128_DTYPE:
+            return ndarray._from_np_direct(np.matmul(a.get(), b.get()))
 
         # Handle 1-D @ 2-D and 2-D @ 1-D by promoting
         a_1d = a.ndim == 1
@@ -2012,9 +2021,18 @@ class ndarray:
         arr._base = None
         return arr
 
-    def _reduce_axis(self, kernel_name: str, axis: int, keepdims: bool = False, out_dtype=None):
-        """GPU axis reduction using axis_reduction_shader."""
+    def _reduce_axis(self, kernel_name: str, axis: int | tuple[int, ...], keepdims: bool = False, out_dtype=None):
+        """GPU axis reduction using axis_reduction_shader. `axis` may be an int or a tuple of ints."""
         from . import creation
+        if isinstance(axis, tuple):
+            if not axis:
+                return self
+            # Reductions commute; reducing in descending axis order keeps the
+            # remaining axes indexed consistently between steps.
+            result = self
+            for ax in sorted(axis, reverse=True):
+                result = result._reduce_axis(kernel_name, ax, keepdims, out_dtype)
+            return result
         # Bool arrays must be cast to int32 — Metal SIMD intrinsics don't support bool.
         if self._dtype == _BOOL_DTYPE:
             return self.astype(np.int32)._reduce_axis(kernel_name, axis, keepdims, out_dtype)

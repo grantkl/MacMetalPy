@@ -14,6 +14,15 @@ __all__ = [
 _MSL_HEADER = """\
 #include <metal_stdlib>
 using namespace metal;
+// Metal's stdlib has no nextafter(); provide a float ULP-step implementation.
+inline float nextafter(float from, float to) {
+    if (isnan(from) || isnan(to)) return NAN;
+    if (from == to) return to;
+    if (from == 0.0f) return copysign(as_type<float>(1), to);
+    int i = as_type<int>(from);
+    i += ((to > from) == (from > 0.0f)) ? 1 : -1;
+    return as_type<float>(i);
+}
 kernel void _sync() {}
 """
 
